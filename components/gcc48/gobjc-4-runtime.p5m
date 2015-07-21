@@ -23,18 +23,19 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 license COPYING.RUNTIME license="GCC runtime license"
 
 dir  path=usr group=sys
-dir  path=usr/lib
-dir  path=usr/lib/$(MACH64)
-link path=usr/lib/$(MACH64)/libobjc.so target=libobjc.so.4.0.0
-link path=usr/lib/$(MACH64)/libobjc.so.4 target=libobjc.so.4.0.0 
-file usr/gcc/4.8/lib/$(MACH64)/libobjc.so.4.0.0 path=usr/lib/$(MACH64)/libobjc.so.4.0.0 pkg.depend.bypass-generate=.*
-link path=usr/lib/libobjc.so target=libobjc.so.4.0.0
-link path=usr/lib/libobjc.so.4 target=libobjc.so.4.0.0 
-file usr/gcc/4.8/lib/libobjc.so.4.0.0 path=usr/lib/libobjc.so.4.0.0 pkg.depend.bypass-generate=.*
-
-link path=usr/lib/$(MACH64)/libobjc_gc.so target=libobjc_gc.so.4.0.0
-link path=usr/lib/$(MACH64)/libobjc_gc.so.4 target=libobjc_gc.so.4.0.0
-file usr/gcc/4.8/lib/$(MACH64)/libobjc_gc.so.4.0.0 path=usr/lib/$(MACH64)/libobjc_gc.so.4.0.0
-link path=usr/lib/libobjc_gc.so target=libobjc_gc.so.4.0.0
-link path=usr/lib/libobjc_gc.so.4 target=libobjc_gc.so.4.0.0
-file usr/gcc/4.8/lib/libobjc_gc.so.4.0.0 path=usr/lib/libobjc_gc.so.4.0.0
+dir  path=usr/gcc
+dir  path=usr/gcc/4.8
+dir  path=usr/gcc/4.8/lib
+dir  path=usr/gcc/4.8/lib/$(MACH64)
+link path=usr/gcc/4.8/lib/$(MACH64)/libobjc.so target=libobjc.so.4.0.0
+link path=usr/gcc/4.8/lib/$(MACH64)/libobjc.so.4 target=libobjc.so.4.0.0
+file path=usr/gcc/4.8/lib/$(MACH64)/libobjc.so.4.0.0 pkg.depend.bypass-generate=.*
+link path=usr/gcc/4.8/lib/$(MACH64)/libobjc_gc.so target=libobjc_gc.so.4.0.0
+link path=usr/gcc/4.8/lib/$(MACH64)/libobjc_gc.so.4 target=libobjc_gc.so.4.0.0
+file path=usr/gcc/4.8/lib/$(MACH64)/libobjc_gc.so.4.0.0
+link path=usr/gcc/4.8/lib/libobjc.so target=libobjc.so.4.0.0
+link path=usr/gcc/4.8/lib/libobjc.so.4 target=libobjc.so.4.0.0
+file path=usr/gcc/4.8/lib/libobjc.so.4.0.0 pkg.depend.bypass-generate=.*
+link path=usr/gcc/4.8/lib/libobjc_gc.so target=libobjc_gc.so.4.0.0
+link path=usr/gcc/4.8/lib/libobjc_gc.so.4 target=libobjc_gc.so.4.0.0
+file path=usr/gcc/4.8/lib/libobjc_gc.so.4.0.0

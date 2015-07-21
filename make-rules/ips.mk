@@ -41,7 +41,7 @@ PKGFMT =	/usr/bin/pkgfmt
 PKGMOGRIFY =	/usr/bin/pkgmogrify
 PKGSEND =	/usr/bin/pkgsend
 ifeq   ($(strip $(PKGLINT_COMPONENT)),)
-PKGLINT =	/usr/bin/pkglint
+PKGLINT =	/bin/true
 else
 PKGLINT =	${WS_TOOLS}/pkglint
 endif
@@ -80,33 +80,33 @@ else
 AUTOGEN_MANIFEST_TRANSFORMS +=		$(WS_TOP)/transforms/drop-all
 endif
 
-PKG_MACROS +=		MACH=$(MACH)
-PKG_MACROS +=		MACH32=$(MACH32)
-PKG_MACROS +=		MACH64=$(MACH64)
-PKG_MACROS +=		PUBLISHER=$(PUBLISHER)
-PKG_MACROS +=		PUBLISHER_LOCALIZABLE=$(PUBLISHER_LOCALIZABLE)
-PKG_MACROS +=		CONSOLIDATION=$(CONSOLIDATION)
-PKG_MACROS +=		BUILD_VERSION=$(BUILD_VERSION)
-PKG_MACROS +=		SOLARIS_VERSION=$(SOLARIS_VERSION)
-PKG_MACROS +=		OS_VERSION=$(OS_VERSION)
-PKG_MACROS +=		PKG_SOLARIS_VERSION=$(PKG_SOLARIS_VERSION)
-PKG_MACROS +=		HUMAN_VERSION=$(HUMAN_VERSION)
-PKG_MACROS +=		IPS_COMPONENT_VERSION=$(IPS_COMPONENT_VERSION)
-PKG_MACROS +=		COMPONENT_VERSION=$(COMPONENT_VERSION)
-PKG_MACROS +=		COMPONENT_PROJECT_URL=$(COMPONENT_PROJECT_URL)
-PKG_MACROS +=		COMPONENT_ARCHIVE_URL=$(COMPONENT_ARCHIVE_URL)
-PKG_MACROS +=		COMPONENT_HG_URL=$(COMPONENT_HG_URL)
-PKG_MACROS +=		COMPONENT_HG_REV=$(COMPONENT_HG_REV)
-PKG_MACROS +=		COMPONENT_NAME=$(COMPONENT_NAME)
-PKG_MACROS +=		COMPONENT_FMRI=$(COMPONENT_FMRI)
-PKG_MACROS +=		COMPONENT_LICENSE="$(COMPONENT_LICENSE)"
-PKG_MACROS +=		COMPONENT_LICENSE_FILE=$(COMPONENT_LICENSE_FILE)
-PKG_MACROS +=		TPNO=$(TPNO)
-PKG_MACROS +=		USERLAND_GIT_REMOTE=$(USERLAND_GIT_REMOTE)
-PKG_MACROS +=		USERLAND_GIT_BRANCH=$(USERLAND_GIT_BRANCH)
-PKG_MACROS +=		USERLAND_GIT_REV=$(USERLAND_GIT_REV)
+PKG_MACROS +=		-D MACH=$(MACH)
+PKG_MACROS +=		-D MACH32=$(MACH32)
+PKG_MACROS +=		-D MACH64=$(MACH64)
+PKG_MACROS +=		-D PUBLISHER=$(PUBLISHER)
+PKG_MACROS +=		-D PUBLISHER_LOCALIZABLE=$(PUBLISHER_LOCALIZABLE)
+PKG_MACROS +=		-D CONSOLIDATION=$(CONSOLIDATION)
+PKG_MACROS +=		-D BUILD_VERSION=$(BUILD_VERSION)
+PKG_MACROS +=		-D SOLARIS_VERSION=$(SOLARIS_VERSION)
+PKG_MACROS +=		-D OS_VERSION=$(OS_VERSION)
+PKG_MACROS +=		-D PKG_SOLARIS_VERSION=$(PKG_SOLARIS_VERSION)
+PKG_MACROS +=		-D HUMAN_VERSION=$(HUMAN_VERSION)
+PKG_MACROS +=		-D IPS_COMPONENT_VERSION=$(IPS_COMPONENT_VERSION)
+PKG_MACROS +=		-D COMPONENT_VERSION=$(COMPONENT_VERSION)
+PKG_MACROS +=		-D COMPONENT_PROJECT_URL=$(COMPONENT_PROJECT_URL)
+PKG_MACROS +=		-D COMPONENT_ARCHIVE_URL=$(COMPONENT_ARCHIVE_URL)
+PKG_MACROS +=		-D COMPONENT_HG_URL=$(COMPONENT_HG_URL)
+PKG_MACROS +=		-D COMPONENT_HG_REV=$(COMPONENT_HG_REV)
+PKG_MACROS +=		-D COMPONENT_NAME=$(COMPONENT_NAME)
+PKG_MACROS +=		-D COMPONENT_FMRI=$(COMPONENT_FMRI)
+PKG_MACROS +=		-D COMPONENT_LICENSE="$(COMPONENT_LICENSE)"
+PKG_MACROS +=		-D COMPONENT_LICENSE_FILE=$(COMPONENT_LICENSE_FILE)
+PKG_MACROS +=		-D TPNO=$(TPNO)
+PKG_MACROS +=		-D USERLAND_GIT_REMOTE=$(USERLAND_GIT_REMOTE)
+PKG_MACROS +=		-D USERLAND_GIT_BRANCH=$(USERLAND_GIT_BRANCH)
+PKG_MACROS +=		-D USERLAND_GIT_REV=$(USERLAND_GIT_REV)
 
-PKG_OPTIONS +=		$(PKG_MACROS:%=-D %) -D COMPONENT_SUMMARY="$(COMPONENT_SUMMARY)"
+PKG_OPTIONS +=		$(PKG_MACROS) -D COMPONENT_SUMMARY="$(COMPONENT_SUMMARY)"
 
 MANGLED_DIR =	$(PROTO_DIR)/mangled
 
@@ -162,6 +162,8 @@ IPS_COMPONENT_VERSION ?=	$(COMPONENT_VERSION)
 PUBLISH_STAMP ?= $(BUILD_DIR)/.published-$(MACH)
 
 publish:		build install $(PUBLISH_STAMP)
+
+publish_only:		$(PUBLISH_STAMP)
 
 sample-manifest:	$(GENERATED).p5m
 
@@ -244,25 +246,25 @@ $(MANIFEST_BASE)-%.generated:	%.p5m $(BUILD_DIR)
 $(MANIFEST_BASE)-%.mogrified:	%.generated
 	$(PKGMOGRIFY) $(PKG_OPTIONS) $< \
 		$(PUBLISH_TRANSFORMS) | \
-		sed -e '/^$$/d' -e '/^#.*$$/d' | uniq >$@
+		sed -e '/^$$/d' -e '/^#.*$$/d' -e '/\[\]/d' | uniq >$@
 
 # mogrify parameterized manifests
 $(MANIFEST_BASE)-%.mogrified:	$(MANIFEST_BASE)-%.generated
 	$(PKGMOGRIFY) $(PKG_OPTIONS) $< \
 		$(PUBLISH_TRANSFORMS) | \
-		sed -e '/^$$/d' -e '/^#.*$$/d' | uniq >$@
+		sed -e '/^$$/d' -e '/^#.*$$/d' -e '/\[\]/d' | uniq >$@
 else
 # mogrify non-parameterized manifests
 $(MANIFEST_BASE)-%.mogrified:	%.p5m $(BUILD_DIR)
 	$(PKGMOGRIFY) $(PKG_OPTIONS) $< \
 		$(PUBLISH_TRANSFORMS) | \
-		sed -e '/^$$/d' -e '/^#.*$$/d' | uniq >$@
+		sed -e '/^$$/d' -e '/^#.*$$/d' -e '/\[\]/d' | uniq >$@
 
 # mogrify parameterized manifests
 $(MANIFEST_BASE)-%.mogrified:	$(MANIFEST_BASE)-%.p5m $(BUILD_DIR)
 	$(PKGMOGRIFY) $(PKG_OPTIONS) $< \
 		$(PUBLISH_TRANSFORMS) | \
-		sed -e '/^$$/d' -e '/^#.*$$/d' | uniq >$@
+		sed -e '/^$$/d' -e '/^#.*$$/d' -e '/\[\]/d' | uniq >$@
 endif
 
 # mangle the file contents
@@ -277,6 +279,10 @@ $(MANIFEST_BASE)-%.mangled:	$(MANIFEST_BASE)-%.mogrified $(MANGLED_DIR)
 PKGDEPEND_GENERATE_OPTIONS = -m $(PKG_PROTO_DIRS:%=-d %)
 $(MANIFEST_BASE)-%.depend:	$(MANIFEST_BASE)-%.mangled
 	$(PKGDEPEND) generate $(PKGDEPEND_GENERATE_OPTIONS) $< >$@
+	cat $@ | egrep -v "^depend fmri=__TBD" > $@.notbd
+	echo "depend fmri=consolidation/sfw/sfw-incorporation type=require" >> $@.notbd
+	echo "depend fmri=system/library type=require" >> $@.notbd
+	mv $@.notbd $@
 
 # These files should contain a list of packages that the component is known to
 # depend on.  Using resolve.deps is not required, but significantly speeds up
@@ -323,9 +329,9 @@ FRC:
 
 
 # published
-PKGSEND_PUBLISH_OPTIONS = -s $(WS_REPO) publish --fmri-in-manifest
+PKGSEND_PUBLISH_OPTIONS = -s file://$(WS_REPO) publish --fmri-in-manifest
 PKGSEND_PUBLISH_OPTIONS += $(PKG_PROTO_DIRS:%=-d %)
-PKGSEND_PUBLISH_OPTIONS += -T \*.py
+#PKGSEND_PUBLISH_OPTIONS += -T \*.py
 $(MANIFEST_BASE)-%.published:	$(MANIFEST_BASE)-%.depend.res $(BUILD_DIR)/.linted-$(MACH)
 	$(PKGSEND) $(PKGSEND_PUBLISH_OPTIONS) $<
 	$(PKGFMT) <$< >$@

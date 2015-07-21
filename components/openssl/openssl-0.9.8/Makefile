@@ -15,14 +15,14 @@
 include ../../../make-rules/shared-macros.mk
 
 COMPONENT_NAME=		openssl
-COMPONENT_VERSION=	0.9.8y
+COMPONENT_VERSION=	0.9.8zf
 COMPONENT_REVISION=	1
 COMPONENT_PROJECT_URL=	http://openssl.org
 COMPONENT_SUMMARY=	Toolkit for SSL/TLS and general purpose cryptographic library.
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
 COMPONENT_ARCHIVE_HASH=	\
-	sha256:bbecf13495e612936e3a9860c29c0701413564b7a964bf771a3575eaa867cee3
+	sha256:d5245a29128984192acc5b1fc01e37429b7a01c53cadcb2645e546718b300edb
     
 COMPONENT_ARCHIVE_URL=	https://www.openssl.org/source/$(COMPONENT_ARCHIVE)
 
@@ -35,7 +35,7 @@ CONFIGURE_SCRIPT = $(SOURCE_DIR)/Configure
 # This is to force OpenSSL's Configure script to use gmake for 'make links'. 
 # Otherwise it fails with:
 #     mksh: Fatal error in reader: Unmatched `(' on line
-CONFIGURE_ENV += MAKE="$(GMAKE)"
+CONFIGURE_ENV += MAKE="$(GMAKE)" PERL="$(PERL)"
 
 # Used in the configure options below.
 PKCS11_LIB32 = /usr/lib/libpkcs11.so.1
@@ -81,7 +81,8 @@ COMPONENT_PRE_CONFIGURE_ACTION =        ($(CLONEY) $(SOURCE_DIR) $(@D))
 COMPONENT_PRE_BUILD_ACTION = \
     ( echo "Cloning engines..."; \
       $(LN) -fs $(COMPONENT_DIR)/engines/pkcs11/*.[ch]	$(@D)/crypto/engine; \
-      $(LN) -fs $(COMPONENT_DIR)/engines/devcrypto/*.[ch]	$(@D)/engines; )
+      $(LN) -fs $(COMPONENT_DIR)/engines/devcrypto/*.[ch]	$(@D)/engines; \
+      cp -r $(COMPONENT_DIR)/engines/include/* $(@D)/include; )
 
 COMPONENT_BUILD_ARGS=
 

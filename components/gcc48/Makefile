@@ -16,7 +16,7 @@
 include ../../make-rules/shared-macros.mk
 
 COMPONENT_NAME= gcc
-COMPONENT_VERSION= 4.8.3
+COMPONENT_VERSION= 4.8.5
 MPFR_NAME= mpfr
 MPFR_VERSION=3.1.2
 MPC_NAME=mpc
@@ -27,7 +27,7 @@ COMPONENT_SUMMARY= GNU Compiler Collection
 COMPONENT_SRC= $(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE= $(COMPONENT_SRC).tar.bz2
 COMPONENT_ARCHIVE_HASH= \
-  sha256:6a8e4f11b185f4fe2ed9d7fc053e80f8c7e73f800c045f51f9d8bea33f080f1e
+  sha256:22fb1e7e0f68a63cee631d85b20461d1ea6bda162f03096350e38c8d427ecf23
 COMPONENT_ARCHIVE_URL= \
   http://ftp.gnu.org/gnu/gcc/gcc-$(COMPONENT_VERSION)/$(COMPONENT_ARCHIVE)
 COMPONENT_PROJECT_URL = http://gcc.gnu.org/
@@ -67,11 +67,11 @@ CC_BITS=
 CFLAGS=         -g -O2
 
 CONFIGURE_PREFIX= /usr/gcc/4.8
-PATH=/usr/bin:/usr/gnu/bin:/usr/perl5/bin
+PATH=/usr/gnu/bin:/usr/bin:/usr/perl5/bin
 
 PARCH = $(MACH:i386=i386-pc)
 GNU_ARCH = $(PARCH:sparc=sparc-sun)-solaris$(SOLARIS_VERSION)
-PKG_MACROS += GNU_ARCH="$(GNU_ARCH)"
+PKG_MACROS += -D GNU_ARCH="$(GNU_ARCH)"
 
 # Build recipe borrowed from OmniOS
 
@@ -92,6 +92,7 @@ CONFIGURE_OPTIONS+= --build $(GNU_ARCH)
 CONFIGURE_OPTIONS+= --target $(GNU_ARCH)
 CONFIGURE_OPTIONS+= --with-boot-ldflags=-R$(CONFIGURE_PREFIX)/lib
 CONFIGURE_OPTIONS+= --enable-plugins
+CONFIGURE_OPTIONS+= --enable-plugin
 CONFIGURE_OPTIONS+= --enable-objc-gc
 CONFIGURE_OPTIONS+= --enable-languages=c,c++,fortran,lto,objc
 CONFIGURE_OPTIONS+= --without-gnu-ld

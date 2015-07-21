@@ -259,7 +259,10 @@ def mangle_paths(manifest, search_paths, destination):
 
 def load_manifest(manifest_file):
 	manifest = pkg.manifest.Manifest()
-	manifest.set_content(pathname=manifest_file)
+	fh = open(manifest_file, "r")
+	mftxt = fh.read()
+	fh.close()
+	manifest.set_content(content=mftxt)
 
 	return manifest
 

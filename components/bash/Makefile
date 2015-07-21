@@ -37,7 +37,7 @@ include ../../make-rules/prep.mk
 include ../../make-rules/configure.mk
 include ../../make-rules/ips.mk
 
-IPS_COMPONENT_VERSION = $(COMPONENT_VERSION).45
+IPS_COMPONENT_VERSION = 4.0.28
 PATCH_LEVEL = 0
 
 PKG_PROTO_DIRS += $(COMPONENT_DIR)/Solaris

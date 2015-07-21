@@ -1,0 +1,11 @@
+--- openssl-1.0.2/crypto/modes/asm/ghash-x86_64.pl.orig	Tue Mar 10 09:07:48 2015
++++ openssl-1.0.2/crypto/modes/asm/ghash-x86_64.pl	Tue Mar 10 09:05:42 2015
+@@ -92,7 +92,7 @@
+ 
+ if (`$ENV{CC} -Wa,-v -c -o /dev/null -x assembler /dev/null 2>&1`
+ 		=~ /GNU assembler version ([2-9]\.[0-9]+)/) {
+-	$avx = ($1>=2.19) + ($1>=2.22);
++	$avx = ($1>=2.22) + ($1>=2.22);
+ }
+ 
+ if (!$avx && $win64 && ($flavour =~ /nasm/ || $ENV{ASM} =~ /nasm/) &&

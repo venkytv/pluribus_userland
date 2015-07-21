@@ -23,13 +23,23 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 license COPYING.RUNTIME license="GCC runtime license"
 
 dir  path=usr group=sys
-dir  path=usr/lib
-dir  path=usr/lib/$(MACH64)
-link path=usr/lib/$(MACH64)/libgcc_s.so target=libgcc_s.so.1
-file usr/gcc/4.8/lib/$(MACH64)/libgcc_s.so.1 path=usr/lib/$(MACH64)/libgcc_s.so.1
-link path=usr/lib/libgcc_s.so target=libgcc_s.so.1
-file usr/gcc/4.8/lib/libgcc_s.so.1 path=usr/lib/libgcc_s.so.1
-link path=usr/lib/$(MACH64)/libgomp.so target=libgomp.so.1
-file usr/gcc/4.8/lib/$(MACH64)/libgomp.so.1 path=usr/lib/$(MACH64)/libgomp.so.1
-link path=usr/lib/libgomp.so target=libgomp.so.1
-file usr/gcc/4.8/lib/libgomp.so.1 path=usr/lib/libgomp.so.1
+dir  path=usr/gcc
+dir  path=usr/gcc/4.8
+dir  path=usr/gcc/4.8/lib
+dir  path=usr/gcc/4.8/lib/$(MACH64)
+link path=usr/gcc/4.8/lib/$(MACH64)/libgcc_s.so target=libgcc_s.so.1
+file path=usr/gcc/4.8/lib/$(MACH64)/libgcc_s.so.1
+link path=usr/gcc/4.8/lib/$(MACH64)/libgomp.so target=libgomp.so.1.0.0
+link path=usr/gcc/4.8/lib/$(MACH64)/libgomp.so.1 target=libgomp.so.1.0.0
+file path=usr/gcc/4.8/lib/$(MACH64)/libgomp.so.1.0.0
+link path=usr/gcc/4.8/lib/$(MACH64)/libatomic.so target=libatomic.so.1.0.0
+link path=usr/gcc/4.8/lib/$(MACH64)/libatomic.so.1 target=libatomic.so.1.0.0
+file path=usr/gcc/4.8/lib/$(MACH64)/libatomic.so.1.0.0
+link path=usr/gcc/4.8/lib/libgcc_s.so target=libgcc_s.so.1
+file path=usr/gcc/4.8/lib/libgcc_s.so.1
+link path=usr/gcc/4.8/lib/libgomp.so target=libgomp.so.1.0.0
+link path=usr/gcc/4.8/lib/libgomp.so.1 target=libgomp.so.1.0.0
+file path=usr/gcc/4.8/lib/libgomp.so.1.0.0
+link path=usr/gcc/4.8/lib/libatomic.so target=libatomic.so.1.0.0
+link path=usr/gcc/4.8/lib/libatomic.so.1 target=libatomic.so.1.0.0
+file path=usr/gcc/4.8/lib/libatomic.so.1.0.0

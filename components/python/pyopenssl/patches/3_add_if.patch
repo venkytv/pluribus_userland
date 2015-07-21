@@ -11,8 +11,8 @@
 # The patch also adds test cases to the pyOpenSSL test suite for the added
 # functions.
 #
---- pyOpenSSL-0.13/OpenSSL/crypto/crl.c	2013-08-26 15:04:14.949389722 -0700
-+++ pyOpenSSL-0.13/OpenSSL/crypto/crl.c	2013-08-26 15:05:00.183031221 -0700
+--- pyOpenSSL-0.14/OpenSSL/crypto/crl.c	2013-08-26 15:04:14.949389722 -0700
++++ pyOpenSSL-0.14/OpenSSL/crypto/crl.c	2013-08-26 15:05:00.183031221 -0700
 @@ -180,6 +180,84 @@
      return buffer;
  }
@@ -108,8 +108,8 @@
      { NULL, NULL }
  };
  #undef ADD_METHOD
---- pyOpenSSL-0.13/OpenSSL/crypto/x509.c	2013-08-26 15:04:14.943271276 -0700
-+++ pyOpenSSL-0.13/OpenSSL/crypto/x509.c	2013-08-26 15:05:00.183501160 -0700
+--- pyOpenSSL-0.14/OpenSSL/crypto/x509.c	2013-08-26 15:04:14.943271276 -0700
++++ pyOpenSSL-0.14/OpenSSL/crypto/x509.c	2013-08-26 15:05:00.183501160 -0700
 @@ -761,6 +761,57 @@
      return (PyObject*)extobj;
  }
@@ -177,8 +177,8 @@
      { NULL, NULL }
  };
  #undef ADD_METHOD
---- pyOpenSSL-0.13/OpenSSL/test/test_crypto.py	2013-08-26 15:04:14.951459483 -0700
-+++ pyOpenSSL-0.13/OpenSSL/test/test_crypto.py	2013-08-26 15:14:40.335995703 -0700
+--- pyOpenSSL-0.14/OpenSSL/test/test_crypto.py	2013-08-26 15:04:14.951459483 -0700
++++ pyOpenSSL-0.14/OpenSSL/test/test_crypto.py	2013-08-26 15:14:40.335995703 -0700
 @@ -1090,6 +1090,18 @@
  WpOdIpB8KksUTCzV591Nr1wd
  -----END CERTIFICATE-----

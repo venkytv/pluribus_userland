@@ -94,8 +94,11 @@ $(WS_LOGS):
 	$(MKDIR) $@
 
 $(WS_REPO):
-	$(PKGREPO) create $(PKG_REPO)
-	$(PKGREPO) add-publisher -s $(PKG_REPO) $(PUBLISHER)
+	#$(PKGREPO) create $(PKG_REPO)
+	#$(PKGREPO) -s $(PKG_REPO) publisher $(PUBLISHER)
+	pkgsend -s $(PKG_REPO) create-repository --set-property \
+		publisher.prefix=$(PUBLISHER).pluribusnetworks.com
+
 # Not required for OI
 #	$(PKGREPO) add-publisher -s $(PKG_REPO) $(PUBLISHER_LOCALIZABLE)
 

@@ -1,22 +1,18 @@
---- include/curl/Makefile.in.orig	2012-05-29 07:03:55.726717894 -0700
-+++ include/curl/Makefile.in	2012-05-29 07:05:20.365485875 -0700
-@@ -349,18 +349,8 @@
- $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
+--- include/curl/Makefile.in.orig	Tue Feb 24 15:05:38 2015
++++ include/curl/Makefile.in	Thu Mar 12 00:10:50 2015
+@@ -439,13 +439,9 @@
  	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ $(am__aclocal_m4_deps):
  
 -curlbuild.h: stamp-h2
--	@if test ! -f $@; then \
--	  rm -f stamp-h2; \
--	  $(MAKE) stamp-h2; \
--	else :; fi
+-	@test -f $@ || rm -f stamp-h2
+-	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) stamp-h2
 -
 -stamp-h2: $(srcdir)/curlbuild.h.in $(top_builddir)/config.status
 +stamp-h2:
  	@rm -f stamp-h2
 -	cd $(top_builddir) && $(SHELL) ./config.status include/curl/curlbuild.h
--$(srcdir)/curlbuild.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
--	cd $(top_srcdir) && $(AUTOHEADER)
--	rm -f stamp-h2
- 	touch $@
++	touch stamp-h2
  
  distclean-hdr:
+ 	-rm -f curlbuild.h stamp-h2

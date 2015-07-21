@@ -249,7 +249,7 @@ export PARFAIT_NATIVESUNCXX=$(SPRO_VROOT)/bin/CC
 export PARFAIT_NATIVEGCC=$(GCC_ROOT)/bin/gcc
 export PARFAIT_NATIVEGXX=$(GCC_ROOT)/bin/g++
 
-GCC_ROOT =	/usr/gcc/4.8
+GCC_ROOT =	/opt/gcc/4.4.4
 
 CC.studio.32 =	$(SPRO_VROOT)/bin/cc
 CXX.studio.32 =	$(SPRO_VROOT)/bin/CC
@@ -334,11 +334,12 @@ JAVA_HOME = $(JAVA7_HOME)
 
 # This is the default BUILD version of perl
 # Not necessarily the system's default version, i.e. /usr/bin/perl
-#PERL_VERSION =  5.10.0
-PERL_VERSION =  5.16
+PERL_VERSION =  5.10.0
+#PERL_VERSION =  5.16
 
+PERL_VERSIONS = 5.10.0
 #PERL_VERSIONS = 5.10.0 5.12 5.16
-PERL_VERSIONS = 5.16
+#PERL_VERSIONS = 5.16
 
 PERL.5.10.0 =     /usr/perl5/5.10.0/bin/perl
 PERL.5.12 =     /usr/perl5/5.12/bin/perl
@@ -354,8 +355,8 @@ PERL_ARCH_FUNC=	$(shell $(1) -e 'use Config; print $$Config{archname}')
 # the studio compiler.
 #PERL_CC :=	$(shell $(PERL) -e 'use Config; print $$Config{cc}')
 
-PKG_MACROS +=   PERL_ARCH=$(PERL_ARCH)
-PKG_MACROS +=   PERL_VERSION=$(PERL_VERSION)
+PKG_MACROS +=   -D PERL_ARCH=$(PERL_ARCH)
+PKG_MACROS +=   -D PERL_VERSION=$(PERL_VERSION)
 
 PG_VERSION ?=   9.3
 PG_VERNUM =     $(subst .,,$(PG_VERSION))
@@ -371,8 +372,8 @@ PG_LIBDIR.64 =  $(PG_HOME)/lib/$(MACH64)
 PG_CONFIG.32 =  $(PG_BINDIR.32)/pg_config
 PG_CONFIG.64 =  $(PG_BINDIR.64)/pg_config
 
-PKG_MACROS +=   PG_VERSION=$(PG_VERSION)
-PKG_MACROS +=   PG_VERNUM=$(PG_VERNUM)
+PKG_MACROS +=   -D PG_VERSION=$(PG_VERSION)
+PKG_MACROS +=   -D PG_VERNUM=$(PG_VERNUM)
 
 # This is the default BUILD version of tcl
 # Not necessarily the system's default version, i.e. /usr/bin/tclsh
@@ -407,7 +408,7 @@ KSH93 =         /usr/bin/ksh93
 TOUCH =		/usr/bin/touch
 MKDIR =		/bin/mkdir -p
 RM =		/bin/rm -f
-CP =		/bin/cp -f
+CP =		/usr/gnu/bin/cp -f
 MV =		/bin/mv -f
 LN =		/bin/ln
 SYMLINK =	/bin/ln -s
