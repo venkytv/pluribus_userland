@@ -39,11 +39,15 @@ include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/configure.mk
 include $(WS_TOP)/make-rules/ips.mk
 
+PATH=/usr/gnu/bin:/usr/bin:/usr/perl5/bin
+
 COMPONENT_PRE_CONFIGURE_ACTION = ($(CLONEY) $(SOURCE_DIR) $(@D))
 
+CONFIGURE_ENV += PATH=$(PATH)
 CONFIGURE_OPTIONS  +=		--srcdir=.
 CONFIGURE_OPTIONS  +=		--infodir=$(CONFIGURE_INFODIR)
 CONFIGURE_OPTIONS  +=		PERL="$(PERL)"
+CONFIGURE_OPTIONS  +=		M4=/usr/gnu/bin/m4
 
 # common targets
 build:		$(BUILD_32)

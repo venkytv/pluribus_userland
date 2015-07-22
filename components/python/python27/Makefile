@@ -21,6 +21,7 @@
 # Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
 
 #
+COMPONENT_BUILD_ENV.32= " LD_RUN_PATH=/usr/gcc/4.8/lib:/lib:/usr/lib "
 include ../../../make-rules/shared-macros.mk
 
 PATH=/usr/bin:/usr/gnu/bin:/usr/sbin
@@ -41,8 +42,8 @@ include $(WS_TOP)/make-rules/ips.mk
 
 # Need to preserve timestamp for Grammar files.  If the pickle files are older, 
 # Python will try to rebuild them.  
-PKGSEND_PUBLISH_OPTIONS += -T \*Grammar\*.txt
-PKGSEND_PUBLISH_OPTIONS += -T \*Grammar\*.pickle
+#PKGSEND_PUBLISH_OPTIONS += -T \*Grammar\*.txt
+#PKGSEND_PUBLISH_OPTIONS += -T \*Grammar\*.pickle
 
 # We patch auto* files, so regenerate headers and configure
 COMPONENT_PREP_ACTION = \

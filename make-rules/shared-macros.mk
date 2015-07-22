@@ -249,7 +249,8 @@ export PARFAIT_NATIVESUNCXX=$(SPRO_VROOT)/bin/CC
 export PARFAIT_NATIVEGCC=$(GCC_ROOT)/bin/gcc
 export PARFAIT_NATIVEGXX=$(GCC_ROOT)/bin/g++
 
-GCC_ROOT =	/opt/gcc/4.4.4
+#GCC_ROOT =	/opt/gcc/4.4.4
+GCC_ROOT =	/usr/gcc/4.8
 
 CC.studio.32 =	$(SPRO_VROOT)/bin/cc
 CXX.studio.32 =	$(SPRO_VROOT)/bin/CC
@@ -661,7 +662,14 @@ ccs.ld.64 = -64
 gcc.ld.32 = -m32
 gcc.ld.64 = -m64
 LD_BITS =      $($(LINKER).ld.$(BITS))
-LDFLAGS =      $(LD_BITS)
+
+#
+# Point to Gcc's lib dir to pick up the correct libgcc_s and not depend
+# on the system default one.
+#
+LD_GCC_ROOT.32 = -R$(GCC_ROOT)/lib -L$(GCC_ROOT)/lib
+LD_GCC_ROOT.64 = -R$(GCC_ROOT)/lib/$(MACH64) -L$(GCC_ROOT)/lib/$(MACH64)
+LDFLAGS =      $(LD_BITS) $(LD_GCC_ROOT.$(BITS))
 
 # Reduce the symbol table size, effectively conflicting with -g.  We should
 # get linker guidance here.
@@ -727,7 +735,8 @@ LD_OPTIONS_SO +=	$(LD_Z_TEXT) $(LD_Z_DEFS) $(LD_DEF_LIBS)
 # libraries to this macro, as it will apply to everything linked during the
 # component build.
 LD_OPTIONS +=	$(LD_MAP_NOEXSTK.$(MACH)) $(LD_MAP_NOEXDATA.$(MACH)) \
-		$(LD_MAP_PAGEALIGN) $(LD_B_DIRECT) $(LD_Z_IGNORE)
+		$(LD_MAP_PAGEALIGN) $(LD_B_DIRECT) $(LD_Z_IGNORE) \
+		$(LD_GCC_ROOT.$(BITS))
 
 # only used on executables
 LD_EXEC_OPTIONS = $(LD_Z_ASLR)

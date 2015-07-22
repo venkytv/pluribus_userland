@@ -1014,16 +1014,10 @@ link path=usr/lib/libpython2.7_db.so target=libpython2.7_db.so.1.0
 link path=usr/bin/2to3 target=2to3-2.7 mediator=python mediator-version=2.7
 #link path=usr/bin/idle target=idle-2.7 mediator=python mediator-version=2.7
 #link path=usr/bin/pydoc target=pydoc-2.7 mediator=python mediator-version=2.7
-link path=usr/bin/python target=python2.7 mediator=python mediator-version=2.7
-link path=usr/bin/python-config target=python2.7-config mediator=python mediator-version=2.7
-link path=usr/bin/$(MACH64)/python target=python2.7 mediator=python mediator-version=2.7
-link path=usr/bin/$(MACH64)/python-config target=python2.7-config mediator=python mediator-version=2.7
+#link path=usr/bin/python target=python2.7 mediator=python mediator-version=2.7
+#link path=usr/bin/python-config target=python2.7-config mediator=python mediator-version=2.7
+#link path=usr/bin/$(MACH64)/python target=python2.7 mediator=python mediator-version=2.7
+#link path=usr/bin/$(MACH64)/python-config target=python2.7-config mediator=python mediator-version=2.7
 link path=usr/lib/pkgconfig/python.pc target=python-2.7.pc mediator=python mediator-version=2.7
 link path=usr/lib/$(MACH64)/pkgconfig/python.pc target=python-2.7.pc mediator=python mediator-version=2.7
 #link path=usr/share/man/man1/python.1 target=python2.7.1 mediator=python mediator-version=2.7
-
-# This optionally brings in the python tk support if tk is installed
-depend type=conditional fmri=library/python-2/tkinter-27 predicate=runtime/tk-8
-
-# If 2.6 is installed, bump it up to the current version to avoid conflicts.
-depend type=optional fmri=runtime/python-26@2.6.9,2014.0.1.2
