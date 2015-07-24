@@ -13,6 +13,7 @@
 #assign port based on process id to allow concurrent publishing
 let port=$$+1000
 repo=alpha
+pkg_path="`pwd`/../i386/repo"
 
 if [ ! -z "$1" ]; then
 	repo=$1
@@ -21,7 +22,7 @@ fi
 #
 # Start the pkg.depotd on local host
 #
-/usr/lib/pkg.depotd -d /build/moinak/oi-userland/i386/repo -p $port --readonly >/dev/null 2>&1 &
+/usr/lib/pkg.depotd -d $pkg_path -p $port --readonly >/dev/null 2>&1 &
 pid=$!
 sleep 1
 
