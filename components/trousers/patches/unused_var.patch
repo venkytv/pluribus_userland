@@ -1,0 +1,22 @@
+--- src/tcs/rpc/tcstp/rpc_evlog.c.orig	Fri Oct 16 04:06:03 2015
++++ src/tcs/rpc/tcstp/rpc_evlog.c	Fri Oct 16 04:08:06 2015
+@@ -33,7 +33,7 @@
+ 	TCS_CONTEXT_HANDLE hContext;
+ 	TSS_PCR_EVENT *pEvent = NULL;
+ 	TSS_RESULT result;
+-	UINT32 pcrIndex, number, totalSize;
++	UINT32 pcrIndex, number;
+ 	BYTE lengthOnly;
+ 
+ 	if (getData(TCSD_PACKET_TYPE_UINT32, 0, &hContext, 0, &data->comm))
+@@ -57,9 +57,7 @@
+ 
+ 	if (result == TSS_SUCCESS) {
+ 		if (lengthOnly == FALSE)
+-			totalSize = get_pcr_event_size(pEvent);
+-		else
+-			totalSize = 0;
++			(void) get_pcr_event_size(pEvent);
+ 
+ 		initData(&data->comm, 2);
+ 		if (setData(TCSD_PACKET_TYPE_UINT32, 0, &number, 0, &data->comm)) {

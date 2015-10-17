@@ -1,0 +1,14 @@
+--- src/include/trousers_types.h.orig	Fri Oct 16 03:54:56 2015
++++ src/include/trousers_types.h	Fri Oct 16 03:56:01 2015
+@@ -118,9 +118,9 @@
+ 	BYTE *encData;
+ } TSS_KEY;
+ 
+-#if (defined (__linux) || defined (linux) || defined (SOLARIS) || defined (__GLIBC__))
++#if (defined (__linux) || defined (linux) || defined (__GLIBC__))
+ #define BSD_CONST
+-#elif (defined (__OpenBSD__) || defined (__FreeBSD__))
++#elif (defined (__OpenBSD__) || defined (__FreeBSD__) || defined (SOLARIS))
+ #define BSD_CONST const
+ #endif
+ 

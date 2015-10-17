@@ -1,0 +1,18 @@
+--- src/tspi/obj_nv.c.orig	Fri Oct 16 22:27:43 2015
++++ src/tspi/obj_nv.c	Fri Oct 16 22:28:30 2015
+@@ -442,7 +442,6 @@
+ 	UINT32 data_public_size = MAX_PUBLIC_DATA_SIZE;
+ 	UINT32 offset;
+ 	UINT16 pcrread_sizeOfSelect;
+-	UINT16 pcrwrite_sizeOfSelect;
+ 	TSS_HCONTEXT tspContext;
+ 	TSS_RESULT result;
+ 
+@@ -466,7 +465,6 @@
+ 			+ sizeof(TPM_LOCALITY_SELECTION)
+ 			+ sizeof(TPM_COMPOSITE_HASH);
+ 
+-	pcrwrite_sizeOfSelect = Decode_UINT16(nv_data_public + offset);
+ 	offset = offset + sizeof(UINT16) + pcrread_sizeOfSelect + sizeof(TPM_LOCALITY_SELECTION);
+ 	memcpy(*data, nv_data_public + offset, sizeof(TPM_COMPOSITE_HASH));
+ 
