@@ -1,1 +1,1 @@
-<transform set name=pkg.fmri value=(?:pkg:/)?(.+)-###@(.*) -> emit depend nodrop=true type=conditional predicate=runtime/python-26 fmri=%<1>-26@%<2>>
+<transform set name=pkg.fmri value=(?:pkg:/)?(.+)-###@(.*) -> emit depend nodrop=true type=require fmri=%<1>-26@%<2>>

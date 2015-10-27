@@ -23,13 +23,13 @@
 
 include ../../make-rules/shared-macros.mk
 
-COMPONENT_NAME=		trousers
-COMPONENT_VERSION=	0.3.6
+COMPONENT_NAME=		ipmitool
+COMPONENT_VERSION=	1.8.11
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
-COMPONENT_PROJECT_URL=	http://sourceforge.net/projects/trousers/files/trousers/
+COMPONENT_PROJECT_URL=	http://sourceforge.net/projects/ipmitool/files/ipmitool/
 COMPONENT_ARCHIVE_HASH=	\
-	sha256:91025f60248af44df192e8df16fa6b0c0f1e48c54f6dc51626567ed95758b0d6
+	sha256:5612f4835d89a6f2cede588eef978a05d63435cf2646256300d9785d8020a13e
 COMPONENT_ARCHIVE_URL=	$(COMPONENT_PROJECT_URL)$(COMPONENT_VERSION)/$(COMPONENT_ARCHIVE)
 COMPONENT_BUGDB=	utility/tss
 
@@ -42,52 +42,22 @@ PATCH_LEVEL=0
 
 LIBS=-lnsl -lsocket -lgen
 
+CONFIGURE_OPTIONS += --bindir=/usr/sbin
 CONFIGURE_OPTIONS += --sbindir=/usr/lib
-CONFIGURE_OPTIONS += --with-gui=openssl
-CONFIGURE_OPTIONS += CC="$(CC)"
-CONFIGURE_OPTIONS += LD="$(CC)"
+CONFIGURE_OPTIONS += --mandir=/usr/share/man
+CONFIGURE_OPTIONS += --enable-intf-free=no
+CONFIGURE_OPTIONS += --enable-intf-bmc=yes
+CONFIGURE_OPTIONS += --enable-solaris-opt
 CONFIGURE_OPTIONS += CFLAGS="$(CFLAGS) -fno-strict-aliasing"
-CONFIGURE_OPTIONS += LDFLAGS="$(LDFLAGS) -lpthread -lbsm -lscf -lresolv"
 CONFIGURE_OPTIONS += LIBS="$(LIBS)"
 
 # Enable ASLR for this component
 ASLR_MODE = $(ASLR_ENABLE)
 
-COMPONENT_POST_CONFIGURE_ACTION = (cd $(COMPONENT_SRC); \
-	for f in `ls src/include/tss/*.h` ; do \
-		/usr/bin/dos2unix $$f $$f; \
-	done; \
-	for f in `ls src/include/trousers/*.h` ; do \
-		/usr/bin/dos2unix $$f $$f; \
-	done; \
-	for f in `ls src/include/*.h` ; do \
-		/usr/bin/dos2unix $$f $$f; \
-	done;)
-
-#	/usr/bin/libtoolize -f; \
-#	$(ACLOCAL); \
-#	$(AUTOMAKE) src/tspi/Makefile; \
-#	$(AUTOCONF))	
-
-#
-# We had to use cc as the linker (see CONFIGURE_OPTIONS above) so the 
-# .init and .fini sections get set correctly.  Because we use cc, we 
-# must pass the -m64 flag through cc to the linker when building 64 bit 
-# libraries.  We can't just add it to LDFLAGS because then it gets used 
-# when creating executables and static libs and generates lots of noise 
-# in the build logs.  LDARCHFLAG is only recognized by the Makefile in 
-# the src/tspi directory.
-#
-COMPONENT_BUILD_ENV.64 += LDARCHFLAG="-Wl,$(CC_BITS)"
-
-COMPONENT_TEST_TARGETS = 
-
-COMPONENT_BUILD_TARGETS = all
-
 # common targets
-build:		$(BUILD_32_and_64)
+build:		$(BUILD_32)
 
-install:	$(INSTALL_32_and_64)
+install:	$(INSTALL_32)
 
 test:		$(NO_TESTS)
 

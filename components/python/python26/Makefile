@@ -41,12 +41,12 @@ include $(WS_TOP)/make-rules/ips.mk
 
 # Need to preserve timestamp for Grammar files.  If the pickle files are older, 
 # Python will try to rebuild them.  
-PKGSEND_PUBLISH_OPTIONS += -T \*Grammar\*.txt
-PKGSEND_PUBLISH_OPTIONS += -T \*Grammar\*.pickle
+#PKGSEND_PUBLISH_OPTIONS += -T \*Grammar\*.txt
+#PKGSEND_PUBLISH_OPTIONS += -T \*Grammar\*.pickle
 
 # We patch auto* files, so regenerate headers and configure
-COMPONENT_PREP_ACTION = \
-	(cd $(@D) ; autoheader ; autoconf)
+#COMPONENT_PREP_ACTION = \
+#	(cd $(@D) ; autoheader ; autoconf)
 
 # This seems horribly wrong, but these defines break the ability to build c99
 # compliant modules or with gcc.
@@ -76,13 +76,20 @@ CPPFLAGS +=	$(shell pkg-config --cflags-only-I libffi)
 # Python puts its header files in a special place.
 LINT_FLAGS +=	-I$(SOURCE_DIR)/Include
 
+LDFLAGS.32 = -R/usr/gnu/lib -L/usr/gnu/lib -lncurses
+LDFLAGS.64 = -R/usr/gnu/lib/$(MACH64) -L/usr/gnu/lib/$(MACH64) -lncurses
+
+LDFLAGS+=   $(LDFLAGS.$(BITS))
+
 CONFIGURE_OPTIONS  +=		--infodir=$(CONFIGURE_INFODIR)
 CONFIGURE_OPTIONS  +=		--enable-shared
 CONFIGURE_OPTIONS  +=		--with-system-ffi
 CONFIGURE_OPTIONS  +=		CPPFLAGS="$(CPPFLAGS)"
 CONFIGURE_OPTIONS  +=		CCSHARED="$(CC_PIC)"
 CONFIGURE_OPTIONS  +=		DFLAGS="-$(BITS)"
+CONFIGURE_OPTIONS  +=		LDFLAGS="$(LDFLAGS)"
 COMPONENT_BUILD_ENV  +=		DFLAGS="-$(BITS)"
+COMPONENT_BUILD_ENV  +=		LDFLAGS="$(LDFLAGS)"
 
 # 64 bit shared objects need to go in a 64-bit directory
 COMPONENT_INSTALL_ARGS.64 += DESTSHARED=$(CONFIGURE_PREFIX)/lib/python2.6/lib-dynload

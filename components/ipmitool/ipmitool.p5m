@@ -1,0 +1,65 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+#
+
+<transform file path=usr.*/man/.+ -> default mangler.man.stability uncommitted>
+set name=pkg.fmri value=pkg://userland.pluribusnetworks.com/system/ipmi/ipmitool@$(IPS_COMPONENT_VERSION),5.11-0.134
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+set name=pkg.description value="IPMI management tool"
+set name=pkg.summary value=ipmitool
+set name=description value=ipmitool
+license ipmitool.license license=BSD
+set name=info.classification value=org.opensolaris.category.2008:System/Hardware
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=variant.opensolaris.zone value=global value=nonglobal
+set name=variant.arch value=i386
+depend fmri=consolidation/sfw/sfw-incorporation type=require
+depend fmri=system/library/math type=require
+depend fmri=system/library type=require
+depend fmri=library/security/openssl type=require
+depend fmri=SUNWcs type=require
+dir group=bin mode=0755 owner=root path=lib
+dir group=bin mode=0755 owner=root path=lib/svc
+dir group=bin mode=0755 owner=root path=lib/svc/method
+dir group=sys mode=0755 owner=root path=usr
+dir group=bin mode=0755 owner=root path=usr/lib
+dir group=bin mode=0755 owner=root path=usr/sbin
+dir group=bin mode=0755 owner=root path=usr/sfw
+dir group=bin mode=0755 owner=root path=usr/sfw/bin
+dir group=sys mode=0755 owner=root path=usr/share
+dir group=bin mode=0755 owner=root path=usr/share/man
+dir group=bin mode=0755 owner=root path=usr/share/man/man1
+dir group=bin mode=0755 owner=root path=usr/share/man/man8
+dir group=sys mode=0755 owner=root path=var
+dir group=sys mode=0755 owner=root path=var/svc
+dir group=sys mode=0755 owner=root path=var/svc/manifest
+dir group=sys mode=0755 owner=root path=var/svc/manifest/network
+file group=bin mode=0444 owner=root path=usr/share/man/man1/ipmitool.1
+file group=bin mode=0444 owner=root path=usr/share/man/man8/ipmievd.8
+file svc-ipmievd group=bin mode=0555 owner=root path=lib/svc/method/svc-ipmievd
+file ipmievd.xml group=sys mode=0444 owner=root path=var/svc/manifest/network/ipmievd.xml restart_fmri=svc:/system/manifest-import:default
+file elfarch=i386 elfbits=32 group=bin mode=0555 owner=root path=usr/lib/ipmievd variant.arch=i386
+file elfarch=i386 elfbits=32 group=bin mode=0555 owner=root path=usr/sbin/ipmitool variant.arch=i386
+link path=usr/sfw/bin/ipmitool target=../../sbin/ipmitool
+legacy arch=i386 category=system desc="IPMI management tool" hotline="Please contact your local service provider" name="ipmitool, (usr)" pkg=SUNWipmi variant.arch=i386 vendor="Sun Microsystems, Inc." version=11.11.0,REV=2010.02.16.04.45
+legacy arch=i386 category=system desc="IPMI management tool (root)" hotline="Please contact your local service provider" name="ipmitool, (root)" pkg=SUNWipmir variant.arch=i386 vendor="Sun Microsystems, Inc." version=11.11.0,REV=2010.02.16.04.45

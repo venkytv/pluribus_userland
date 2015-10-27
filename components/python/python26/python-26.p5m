@@ -23,7 +23,7 @@
 
 <transform file path=usr.*/man/.+ -> default mangler.man.stability uncommitted>
 set name=pkg.fmri \
-    value=pkg:/runtime/python-26@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+    value=pkg:/runtime/python-26@$(IPS_COMPONENT_VERSION),5.11-0.134
 set name=pkg.summary value="The Python interpreter, libraries and utilities"
 set name=com.oracle.info.description value="Python 2.6"
 set name=com.oracle.info.tpno value=9104
@@ -611,7 +611,7 @@ file path=usr/lib/python2.6/lib-dynload/64/math.so
 file path=usr/lib/python2.6/lib-dynload/64/mmap.so
 file path=usr/lib/python2.6/lib-dynload/64/nis.so
 file path=usr/lib/python2.6/lib-dynload/64/operator.so
-file path=usr/lib/python2.6/lib-dynload/64/ossaudiodev.so
+#file path=usr/lib/python2.6/lib-dynload/64/ossaudiodev.so
 file path=usr/lib/python2.6/lib-dynload/64/parser.so
 file path=usr/lib/python2.6/lib-dynload/64/privileges.so
 file path=usr/lib/python2.6/lib-dynload/64/pyexpat.so
@@ -621,7 +621,7 @@ file path=usr/lib/python2.6/lib-dynload/64/resource.so
 file path=usr/lib/python2.6/lib-dynload/64/select.so
 file path=usr/lib/python2.6/lib-dynload/64/spwd.so
 file path=usr/lib/python2.6/lib-dynload/64/strop.so
-file path=usr/lib/python2.6/lib-dynload/64/sunaudiodev.so
+#file path=usr/lib/python2.6/lib-dynload/64/sunaudiodev.so
 file path=usr/lib/python2.6/lib-dynload/64/syslog.so
 file path=usr/lib/python2.6/lib-dynload/64/termios.so
 file path=usr/lib/python2.6/lib-dynload/64/time.so
@@ -681,7 +681,7 @@ file path=usr/lib/python2.6/lib-dynload/math.so
 file path=usr/lib/python2.6/lib-dynload/mmap.so
 file path=usr/lib/python2.6/lib-dynload/nis.so
 file path=usr/lib/python2.6/lib-dynload/operator.so
-file path=usr/lib/python2.6/lib-dynload/ossaudiodev.so
+#file path=usr/lib/python2.6/lib-dynload/ossaudiodev.so
 file path=usr/lib/python2.6/lib-dynload/parser.so
 file path=usr/lib/python2.6/lib-dynload/privileges.so
 file path=usr/lib/python2.6/lib-dynload/pyexpat.so
@@ -691,7 +691,7 @@ file path=usr/lib/python2.6/lib-dynload/resource.so
 file path=usr/lib/python2.6/lib-dynload/select.so
 file path=usr/lib/python2.6/lib-dynload/spwd.so
 file path=usr/lib/python2.6/lib-dynload/strop.so
-file path=usr/lib/python2.6/lib-dynload/sunaudiodev.so
+#file path=usr/lib/python2.6/lib-dynload/sunaudiodev.so
 file path=usr/lib/python2.6/lib-dynload/syslog.so
 file path=usr/lib/python2.6/lib-dynload/termios.so
 file path=usr/lib/python2.6/lib-dynload/time.so
@@ -974,6 +974,3 @@ link path=usr/bin/$(MACH64)/python-config target=python2.6-config \
 #link path=usr/share/man/man1/python.1 target=python2.6.1 \
 #    mediator=python mediator-version=2.6
 
-
-# This optionally brings in the python tk support if tk is installed
-depend type=conditional fmri=library/python-2/tkinter-26 predicate=runtime/tk-8

@@ -3,9 +3,10 @@
 @@ -22,7 +22,7 @@
  struct host_table *ht = NULL;
  
- TSS_RESULT
+-TSS_RESULT
++
 -host_table_init()
-+static host_table_init(void)
++static TSS_RESULT host_table_init(void)
  {
  	ht = calloc(1, sizeof(struct host_table));
  	if (ht == NULL) {

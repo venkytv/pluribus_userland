@@ -18,7 +18,7 @@
 +		return TCSERR(TSS_E_TSP_AUTHFAIL);
 +	}
 +	if (ucred_geteuid(uc) != 0) {
-+		LogError("Unauthorized attempt to modify a system key",
++		LogError("Unauthorized attempt to modify a system key (%s)",
 +		    strerror(errno));
 +		ucred_free(uc);
 +		return TCSERR(TSS_E_TSP_AUTHFAIL);

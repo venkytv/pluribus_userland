@@ -1,5 +1,5 @@
---- src/tcsd/svrside.c	2010-06-09 13:19:00.000000000 -0700
-+++ src/tcsd/svrside.c	2012-04-19 11:27:31.232524632 -0700
+--- src/tcsd/svrside.c.orig	Fri Oct 16 22:42:35 2015
++++ src/tcsd/svrside.c	Fri Oct 16 22:43:36 2015
 @@ -27,6 +27,15 @@
  #include <arpa/inet.h>
  #include <errno.h>
@@ -38,7 +38,7 @@
  
  	result = owner_evict_init();
  	if (result != TSS_SUCCESS) {
-@@ -208,13 +225,169 @@
+@@ -208,15 +225,173 @@
  }
  
  
@@ -56,7 +56,7 @@
 +store_eventlog(char *filename, struct tpm_evtable_ioblk *evlog)
 +{
 +	int fd;
-+	int bytes = 0;
++	uint32_t bytes = 0;
 +
 +	fd = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0600);
 +	if (fd == -1) {
@@ -208,9 +208,13 @@
 -	unsigned client_len;
 +	unsigned client_len, serv_len;
  	char *hostname = NULL;
++#ifndef SOLARIS
  	struct passwd *pwd;
++#endif
  	struct hostent *client_hostent = NULL;
-@@ -245,26 +418,50 @@
+ 	struct option long_options[] = {
+ 		{"help", 0, NULL, 'h'},
+@@ -245,26 +420,50 @@
  	if ((result = tcsd_startup()))
  		return (int)result;
  
@@ -226,13 +230,22 @@
 +			LogError("Failed socket: %s", strerror(errno));
 +			return -1;
 +		}
-+
+ 
+-	memset(&serv_addr, 0, sizeof (serv_addr));
+-	serv_addr.sin_family = AF_INET;
+-	serv_addr.sin_port = htons(tcsd_options.port);
 +		memset(&serv_addr, 0, sizeof (serv_addr));
 +		serv_addr.un.sun_family = AF_UNIX;
 +		strncpy(serv_addr.un.sun_path, TCSD_DEFAULT_SOCKET,
 +			sizeof (serv_addr.un.sun_path));
 +		(void) unlink(TCSD_DEFAULT_SOCKET);
-+
+ 
+-	/* If no remote_ops are defined, restrict connections to localhost
+-	 * only at the socket. */
+-	if (tcsd_options.remote_ops[0] == 0)
+-		serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+-	else
+-		serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 +	} else { /* TCP socket */
 +		sd = socket(AF_INET, SOCK_STREAM, 0);
 +		if (sd < 0) {
@@ -240,17 +253,6 @@
 +			return -1;
 +		}
  
--	memset(&serv_addr, 0, sizeof (serv_addr));
--	serv_addr.sin_family = AF_INET;
--	serv_addr.sin_port = htons(tcsd_options.port);
--
--	/* If no remote_ops are defined, restrict connections to localhost
--	 * only at the socket. */
--	if (tcsd_options.remote_ops[0] == 0)
--		serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
--	else
--		serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
--
 -	c = 1;
 -	setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &c, sizeof(c));
 -	if (bind(sd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) < 0) {
@@ -280,7 +282,7 @@
  		LogError("Failed bind: %s", strerror(errno));
  		return -1;
  	}
-@@ -285,7 +482,6 @@
+@@ -285,7 +484,6 @@
  		LogError("Failed listen: %s", strerror(errno));
  		return -1;
  	}
@@ -288,7 +290,7 @@
  	
  	if (getenv("TCSD_FOREGROUND") == NULL) {
  		if (daemon(0, 0) == -1) {
-@@ -295,6 +491,12 @@
+@@ -295,6 +493,12 @@
  		}
  	}
  
@@ -301,7 +303,7 @@
  	LogInfo("%s: TCSD up and running.", PACKAGE_STRING);
  	do {
  		newsd = accept(sd, (struct sockaddr *) &client_addr, &client_len);
-@@ -314,20 +516,22 @@
+@@ -314,20 +518,22 @@
  		}
  		LogDebug("accepted socket %i", newsd);
  

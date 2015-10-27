@@ -1,6 +1,6 @@
---- Python-2.6.4/configure.in.old	Fri Nov  4 12:03:26 2011
-+++ Python-2.6.4/configure.in	Fri Nov  4 12:04:05 2011
-@@ -919,7 +919,7 @@
+--- Python-2.6.9/configure.orig	Mon Oct 19 00:03:13 2015
++++ Python-2.6.9/configure	Mon Oct 19 00:07:27 2015
+@@ -5179,7 +5179,7 @@
  	;;
  
      *)
@@ -9,11 +9,11 @@
  	;;
      esac
  
-@@ -1110,6 +1110,8 @@
+@@ -5426,6 +5426,8 @@
  	# environment?
          Darwin*)
  	    ;;
-+	SunOS*)
++        SunOS*)
 +	    ;;
          *)
  	    BASECFLAGS="$BASECFLAGS -OPT:Olimit=0"

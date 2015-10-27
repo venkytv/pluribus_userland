@@ -25,7 +25,7 @@
 	set action.hash doc/arm/%<\1> >
 
 set name=pkg.fmri \
-    value=pkg:/service/network/dns/bind@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+    value=pkg:/service/network/dns/bind@$(IPS_COMPONENT_VERSION),5.11-0.134
 set name=pkg.human-version value=$(COMPONENT_VERSION)
 set name=pkg.description \
     value="BIND is open source software that implements the Domain Name System (DNS) protocols for the Internet.  This package contains the DNS server 'named' and tools used to setup and validate configuration."

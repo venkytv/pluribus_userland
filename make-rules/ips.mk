@@ -181,10 +181,19 @@ $(MANIFEST_BASE)-%.generate:	%.p5m canonical-manifests
 # presence of a particular version of a runtime, which will then draw in the
 # runtime-version-specific version of the package we're operating on.  $(1) is
 # the name of the runtime package, and $(2) is the version suffix.
+#
+# NOTE: Twiddled mkgeneric rule for Pluribus environment old Pkg.
+#
 mkgeneric = \
 	echo "<transform set name=pkg.fmri value=(?:pkg:/)?(.+)-\#\#\#@(.*)" \
-		"-> emit depend nodrop=true type=conditional" \
-		"predicate=$(1)-$(2) fmri=%<1>-$(2)@%<2>>" >> $@;
+		"-> emit depend nodrop=true type=require" \
+		"fmri=%<1>-$(2)@%<2>>" >> $@;
+
+#mkgeneric = \
+#	echo "<transform set name=pkg.fmri value=(?:pkg:/)?(.+)-\#\#\#@(.*)" \
+#		"-> emit depend nodrop=true type=conditional" \
+#		"predicate=$(1)-$(2) fmri=%<1>-$(2)@%<2>>" >> $@;
+
 
 # Define and execute a macro that generates a rule to create a manifest for a
 # python module specific to a particular version of the python runtime.
@@ -280,7 +289,8 @@ PKGDEPEND_GENERATE_OPTIONS = -m $(PKG_PROTO_DIRS:%=-d %)
 $(MANIFEST_BASE)-%.depend:	$(MANIFEST_BASE)-%.mangled
 	$(PKGDEPEND) generate $(PKGDEPEND_GENERATE_OPTIONS) $< >$@
 	cat $@ | egrep -v "^depend fmri=__TBD" > $@.notbd
-	echo "depend fmri=consolidation/sfw/sfw-incorporation type=require" >> $@.notbd
+	(rv=$$(echo $@ | egrep "sfw-incorporation" > /dev/null && echo 1 || echo 0); \
+	[ $$rv -eq 0 ] && echo "depend fmri=consolidation/sfw/sfw-incorporation type=require" >> $@.notbd || exit 0)
 	echo "depend fmri=system/library type=require" >> $@.notbd
 	mv $@.notbd $@
 
