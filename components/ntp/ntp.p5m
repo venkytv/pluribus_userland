@@ -308,3 +308,5 @@ legacy pkg=SUNWntpu \
 license ntp.license license="ntp license"
 link path=usr/sbin/xntpdc target=ntpdc
 
+depend type=require fmri=system/library/g++-4-runtime
+depend type=require fmri=system/library/gcc-4-runtime

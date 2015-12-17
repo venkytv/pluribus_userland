@@ -23,18 +23,22 @@
 include ../../make-rules/shared-macros.mk
 
 COMPONENT_NAME=		wget
-COMPONENT_VERSION=	1.14
+COMPONENT_VERSION=	1.17
 COMPONENT_PROJECT_URL=	http://www.gnu.org/software/wget/
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
-COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.xz
+COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
 COMPONENT_ARCHIVE_HASH=	\
-    sha256:1761d7f7c6a2ad6c8d494d239c53f0c17126efb6449ada16dee3a66d87a4147b
+    sha256:3e04ad027c5b6ebd67c616eec13e66fbedb3d4d8cbe19cc29dadde44b92bda55
 COMPONENT_ARCHIVE_URL=	http://ftp.gnu.org/gnu/wget/$(COMPONENT_ARCHIVE)
 COMPONENT_BUGDB=	utility/wget
 
 include ../../make-rules/prep.mk
 include ../../make-rules/configure.mk
 include ../../make-rules/ips.mk
+
+CONFIGURE_ENV += OPENSSL_CFLAGS="-I/usr/include"
+CONFIGURE_ENV.32 += OPENSSL_LIBS="-L/usr/lib -R/usr/lib -lssl -lcrypto"
+CONFIGURE_ENV.64 += OPENSSL_LIBS="-L/usr/lib/$(MACH64) -R/usr/lib/$(MACH64) -lssl -lcrypto"
 
 # Enforce openssl (--with-ssl=openssl) instead of default gnutls
 # (--with-ssl) as wget doesn't work for secure connections with gnutls. 
