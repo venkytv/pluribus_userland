@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "
+all:
+
+install:
+" > Makefile
+
+echo "DONE"
+

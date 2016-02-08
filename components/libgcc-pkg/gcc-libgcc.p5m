@@ -1,0 +1,60 @@
+#
+# This file and its contents are supplied under the terms of the
+# Common Development and Distribution License ("CDDL"), version 1.0.
+# You may only use this file in accordance with the terms of version
+# 1.0 of the CDDL.
+#
+# A full copy of the text of the CDDL should have accompanied this
+# source.  A copy of the CDDL is also available via the Internet at
+# http://www.illumos.org/license/CDDL.
+#
+
+#
+# Copyright 2016 Pluribus Networks.  All rights reserved.
+#
+# Copyright 2013 Andrzej Szeszo.  All rights reserved.
+#
+
+set name=pkg.fmri value=pkg:/developer/gcc/gcc-libgcc@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="GCC C Runtime Library links"
+set name=info.classification value="org.opensolaris.category.2008:Development/C"
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+
+license COPYING.RUNTIME license="GCC runtime license"
+
+depend fmri=pkg:/system/library/gcc-4-runtime@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION) type=require
+depend fmri=pkg:/system/library/g++-4-runtime@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION) type=require
+
+dir  path=usr group=sys
+dir  path=usr/lib group=bin
+dir  path=usr/lib/$(MACH64) group=bin
+link path=usr/lib/$(MACH64)/libgcc_s.so target=../../gcc/4.8/lib/$(MACH64)/libgcc_s.so.1
+link path=usr/lib/$(MACH64)/libgcc_s.so.1 target=../../gcc/4.8/lib/$(MACH64)/libgcc_s.so.1
+link path=usr/lib/$(MACH64)/libgomp.so target=../../gcc/4.8/lib/$(MACH64)/libgomp.so.1.0.0
+link path=usr/lib/$(MACH64)/libgomp.so.1 target=../../gcc/4.8/lib/$(MACH64)/libgomp.so.1.0.0
+link path=usr/lib/$(MACH64)/libgomp.so.1.0.0 target=../../gcc/4.8/lib/$(MACH64)/libgomp.so.1.0.0
+link path=usr/lib/$(MACH64)/libatomic.so target=../../gcc/4.8/lib/$(MACH64)/libatomic.so.1.0.0
+link path=usr/lib/$(MACH64)/libatomic.so.1 target=../../gcc/4.8/lib/$(MACH64)/libatomic.so.1.0.0
+link path=usr/lib/$(MACH64)/libatomic.so.1.0.0 target=../../gcc/4.8/lib/$(MACH64)/libatomic.so.1.0.0
+link path=usr/lib/$(MACH64)/libssp.so target=../../gcc/4.8/lib/$(MACH64)/libssp.so.0.0.0
+link path=usr/lib/$(MACH64)/libssp.so.0 target=../../gcc/4.8/lib/$(MACH64)/libssp.so.0.0.0
+link path=usr/lib/$(MACH64)/libssp.so.0.0.0 target=../../gcc/4.8/lib/$(MACH64)/libssp.so.0.0.0
+link path=usr/lib/$(MACH64)/libstdc++.so target=../../gcc/4.8/lib/$(MACH64)/libstdc++.so.6.0.19
+link path=usr/lib/$(MACH64)/libstdc++.so.6 target=../../gcc/4.8/lib/$(MACH64)/libstdc++.so.6.0.19
+link path=usr/lib/$(MACH64)/libstdc++.so.6.0.19 target=../../gcc/4.8/lib/$(MACH64)/libstdc++.so.6.0.19
+link path=usr/lib/libgcc_s.so target=../gcc/4.8/lib/libgcc_s.so.1
+link path=usr/lib/libgcc_s.so.1 target=../gcc/4.8/lib/libgcc_s.so.1
+link path=usr/lib/libgomp.so target=../gcc/4.8/lib/libgomp.so.1.0.0
+link path=usr/lib/libgomp.so.1 target=../gcc/4.8/lib/libgomp.so.1.0.0
+link path=usr/lib/libgomp.so.1.0.0 target=../gcc/4.8/lib/libgomp.so.1.0.0
+link path=usr/lib/libatomic.so target=../gcc/4.8/lib/libatomic.so.1.0.0
+link path=usr/lib/libatomic.so.1 target=../gcc/4.8/lib/libatomic.so.1.0.0
+link path=usr/lib/libatomic.so.1.0.0 target=../gcc/4.8/lib/libatomic.so.1.0.0
+link path=usr/lib/libssp.so target=../../gcc/4.8/lib/libssp.so.0.0.0
+link path=usr/lib/libssp.so.0 target=../../gcc/4.8/lib/libssp.so.0.0.0
+link path=usr/lib/libssp.so.0.0.0 target=../../gcc/4.8/lib/libssp.so.0.0.0
+link path=usr/lib/libstdc++.so target=../../gcc/4.8/lib/libstdc++.so.6.0.19
+link path=usr/lib/libstdc++.so.6 target=../../gcc/4.8/lib/libstdc++.so.6.0.19
+link path=usr/lib/libstdc++.so.6.0.19 target=../../gcc/4.8/lib/libstdc++.so.6.0.19
