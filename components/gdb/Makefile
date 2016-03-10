@@ -26,17 +26,20 @@
 include ../../make-rules/shared-macros.mk
 
 COMPONENT_NAME=		gdb
-COMPONENT_VERSION=	7.6.2
+COMPONENT_VERSION=	7.10.1
 COMPONENT_REVISION=	1
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
+#COMPONENT_ARCHIVE_HASH=	\
+#    sha256:17f7bcda1b24336aadcb1c5e703c355551e59467e221c6f4353b720dffad73a7
 COMPONENT_ARCHIVE_HASH=	\
-    sha256:17f7bcda1b24336aadcb1c5e703c355551e59467e221c6f4353b720dffad73a7
+     sha256:ff14f8050e6484508c73cbfa63731e57901478490ca1672dc0b5e2b03f6af622
 COMPONENT_ARCHIVE_URL=	http://ftp.gnu.org/gnu/gdb/$(COMPONENT_ARCHIVE)
 COMPONENT_PROJECT_URL =	http://www.gnu.org/software/gdb/
 COMPONENT_BUGDB=	utility/gdb
 
 TPNO=			17258
+CONFIGURE_DEFAULT_DIRS=no
 
 include ../../make-rules/prep.mk
 include ../../make-rules/configure.mk
@@ -68,6 +71,11 @@ CONFIGURE_ENV += CFLAGS="`echo $(CFLAGS)`"
 CONFIGURE_ENV += CPPFLAGS="`echo $(CPPFLAGS)`"
 CONFIGURE_ENV += LDFLAGS="`echo $(LDFLAGS)`"
 
+CONFIGURE_OPTIONS += --mandir=$(CONFIGURE_MANDIR)
+CONFIGURE_OPTIONS += --bindir=$(USRBINDIR$(BITS))
+CONFIGURE_OPTIONS += --libdir=$(CONFIGURE_LIBDIR.$(BITS))
+CONFIGURE_OPTIONS += --sbindir=$(USRSBINDIR$(BITS))
+
 CONFIGURE_OPTIONS += --with-x=no
 CONFIGURE_OPTIONS += --with-curses
 CONFIGURE_OPTIONS += --disable-werror
@@ -77,6 +85,7 @@ CONFIGURE_OPTIONS += --without-auto-load-safe-path
 CONFIGURE_OPTIONS += --with-python=yes
 CONFIGURE_OPTIONS += --with-libexpat-prefix=/usr/lib
 CONFIGURE_OPTIONS += --infodir=$(CONFIGURE_INFODIR)
+CONFIGURE_OPTIONS.32 += --disable-largefile
 
 COMPONENT_BUILD_ENV += $(CONFIGURE_ENV)
 
@@ -84,9 +93,10 @@ COMPONENT_BUILD_ENV += $(CONFIGURE_ENV)
 # register tables which weren't there by default.
 COMPONENT_PRE_CONFIGURE_ACTION = \
   ( cd  $(SOURCE_DIR)/gdb/features ; \
-    $(GMAKE) all ; \
-    cd $(SOURCE_DIR)/readline/ ; \
-    autoconf )
+    $(GMAKE) all )
+
+#    cd $(SOURCE_DIR)/readline/ ; \
+#    autoconf )
 
 COMPONENT_POST_INSTALL_ACTION = \
   ( cd  $(PROTOUSRDIR)/share/gdb/python/gdb ; \

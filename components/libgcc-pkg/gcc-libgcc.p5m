@@ -52,9 +52,9 @@ link path=usr/lib/libgomp.so.1.0.0 target=../gcc/4.8/lib/libgomp.so.1.0.0
 link path=usr/lib/libatomic.so target=../gcc/4.8/lib/libatomic.so.1.0.0
 link path=usr/lib/libatomic.so.1 target=../gcc/4.8/lib/libatomic.so.1.0.0
 link path=usr/lib/libatomic.so.1.0.0 target=../gcc/4.8/lib/libatomic.so.1.0.0
-link path=usr/lib/libssp.so target=../../gcc/4.8/lib/libssp.so.0.0.0
-link path=usr/lib/libssp.so.0 target=../../gcc/4.8/lib/libssp.so.0.0.0
-link path=usr/lib/libssp.so.0.0.0 target=../../gcc/4.8/lib/libssp.so.0.0.0
-link path=usr/lib/libstdc++.so target=../../gcc/4.8/lib/libstdc++.so.6.0.19
-link path=usr/lib/libstdc++.so.6 target=../../gcc/4.8/lib/libstdc++.so.6.0.19
-link path=usr/lib/libstdc++.so.6.0.19 target=../../gcc/4.8/lib/libstdc++.so.6.0.19
+link path=usr/lib/libssp.so target=../gcc/4.8/lib/libssp.so.0.0.0
+link path=usr/lib/libssp.so.0 target=../gcc/4.8/lib/libssp.so.0.0.0
+link path=usr/lib/libssp.so.0.0.0 target=../gcc/4.8/lib/libssp.so.0.0.0
+link path=usr/lib/libstdc++.so target=../gcc/4.8/lib/libstdc++.so.6.0.19
+link path=usr/lib/libstdc++.so.6 target=../gcc/4.8/lib/libstdc++.so.6.0.19
+link path=usr/lib/libstdc++.so.6.0.19 target=../gcc/4.8/lib/libstdc++.so.6.0.19
