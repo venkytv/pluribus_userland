@@ -1,5 +1,5 @@
---- ./gdb-7.10.1/gdb/sol-thread.c.~1~	Thu Feb 19 03:58:07 2015
-+++ ./gdb-7.10.1/gdb/sol-thread.c	Sat Jul 30 08:27:12 2016
+--- gdb-7.10.1/gdb/sol-thread.c.~1~	Thu Feb 19 03:58:07 2015
++++ gdb-7.10.1/gdb/sol-thread.c	Sat Jul 30 08:27:12 2016
 @@ -246,16 +246,19 @@
    /* It's a thread.  Convert to LWP.  */
  
