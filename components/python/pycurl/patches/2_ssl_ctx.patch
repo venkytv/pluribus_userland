@@ -1,0 +1,135 @@
+diff -r 4fa16dac5c73 pycurl.c
+--- src/pycurl.c	Tue Nov 01 09:06:47 2016 -0400
++++ src/pycurl.c	Tue Nov 01 09:07:10 2016 -0400
+@@ -154,6 +154,7 @@
+     PyObject *r_cb;
+     PyObject *pro_cb;
+     PyObject *debug_cb;
++    PyObject *ssl_ctx_cb;
+     PyObject *ioctl_cb;
+     PyObject *opensocket_cb;
+     /* file objects */
+@@ -732,6 +733,7 @@
+     self->r_cb = NULL;
+     self->pro_cb = NULL;
+     self->debug_cb = NULL;
++    self->ssl_ctx_cb = NULL;
+     self->ioctl_cb = NULL;
+     self->opensocket_cb = NULL;
+ 
+@@ -861,6 +863,7 @@
+         ZAP(self->r_cb);
+         ZAP(self->pro_cb);
+         ZAP(self->debug_cb);
++        ZAP(self->ssl_ctx_cb);
+         ZAP(self->ioctl_cb);
+     }
+ 
+@@ -1010,6 +1013,7 @@
+     VISIT(self->r_cb);
+     VISIT(self->pro_cb);
+     VISIT(self->debug_cb);
++    VISIT(self->ssl_ctx_cb);
+     VISIT(self->ioctl_cb);
+ 
+     VISIT(self->readdata_fp);
+@@ -1383,6 +1387,58 @@
+ }
+ 
+ 
++static CURLcode
++ssl_ctx_callback(CURL *curlobj, void *sslctx, void *stream)
++{
++    CurlObject *self;
++    PyThreadState *tmp_state;
++    PyObject *arglist;
++    PyObject *result = NULL;
++    int ret = CURLE_UNKNOWN_OPTION;     /* assume error */
++
++    UNUSED(curlobj);
++
++    /* acquire thread */
++    self = (CurlObject *)stream;
++    tmp_state = get_thread_state(self);
++    if (tmp_state == NULL)
++        return ret;
++    PyEval_AcquireThread(tmp_state);
++
++    /* check args */
++    if (self->ssl_ctx_cb == NULL)
++        goto silent_error;
++
++    /* run callback */
++    arglist = Py_BuildValue("(O)", PyLong_FromVoidPtr(sslctx));
++    if (arglist == NULL)
++        goto verbose_error;
++    result = PyEval_CallObject(self->ssl_ctx_cb, arglist);
++    Py_DECREF(arglist);
++    if (result == NULL)
++        goto verbose_error;
++
++    /* handle result */
++    if (result == Py_None) {
++        ret = CURLIOE_OK;        /* None means success */
++    }
++    else if (PyInt_Check(result)) {
++        ret = (int) PyInt_AsLong(result);
++        if (ret >= CURLIOE_LAST || ret < 0) {
++            PyErr_SetString(ErrorObject, "ssl_ctx callback returned invalid value");
++            goto verbose_error;
++        }
++    }
++
++silent_error:
++    Py_XDECREF(result);
++    PyEval_ReleaseThread(tmp_state);
++    return (curlioerr) ret;
++verbose_error:
++    PyErr_Print();
++    goto silent_error;
++}
++
+ static curlioerr
+ ioctl_callback(CURL *curlobj, int cmd, void *stream)
+ {
+@@ -1535,6 +1591,10 @@
+         opt_index = OPT_INDEX(option);
+         break;
+ 
++    case CURLOPT_SSL_CTX_FUNCTION:
++        SETOPT((void *) 0);
++        break;
++
+     /* info: we explicitly list unsupported options here */
+     case CURLOPT_COOKIEFILE:
+     default:
+@@ -2049,6 +2109,7 @@
+         const curl_read_callback r_cb = read_callback;
+         const curl_progress_callback pro_cb = progress_callback;
+         const curl_debug_callback debug_cb = debug_callback;
++	const curl_ssl_ctx_callback ssl_ctx_cb = ssl_ctx_callback;
+         const curl_ioctl_callback ioctl_cb = ioctl_callback;
+ 	const curl_opensocket_callback opensocket_cb = opensocket_callback;
+ 
+@@ -2094,6 +2155,13 @@
+             curl_easy_setopt(self->handle, CURLOPT_DEBUGFUNCTION, debug_cb);
+             curl_easy_setopt(self->handle, CURLOPT_DEBUGDATA, self);
+             break;
++        case CURLOPT_SSL_CTX_FUNCTION:
++            Py_INCREF(obj);
++            ZAP(self->ssl_ctx_cb);
++            self->ssl_ctx_cb = obj;
++            curl_easy_setopt(self->handle, CURLOPT_SSL_CTX_FUNCTION, ssl_ctx_cb);
++            curl_easy_setopt(self->handle, CURLOPT_SSL_CTX_DATA, self);
++            break;
+         case CURLOPT_IOCTLFUNCTION:
+             Py_INCREF(obj);
+             ZAP(self->ioctl_cb);
+@@ -3725,6 +3793,7 @@
+     insint_c(d, "UNRESTRICTED_AUTH", CURLOPT_UNRESTRICTED_AUTH);
+     insint_c(d, "FTP_USE_EPRT", CURLOPT_FTP_USE_EPRT);
+     insint_c(d, "HTTPAUTH", CURLOPT_HTTPAUTH);
++    insint_c(d, "SSL_CTX_FUNCTION", CURLOPT_SSL_CTX_FUNCTION);
+     insint_c(d, "FTP_CREATE_MISSING_DIRS", CURLOPT_FTP_CREATE_MISSING_DIRS);
+     insint_c(d, "PROXYAUTH", CURLOPT_PROXYAUTH);
+     insint_c(d, "FTP_RESPONSE_TIMEOUT", CURLOPT_FTP_RESPONSE_TIMEOUT);
