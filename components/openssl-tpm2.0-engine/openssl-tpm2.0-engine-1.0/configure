@@ -1,0 +1,74 @@
+#!/bin/sh
+
+set -x
+
+echo $*
+echo $ENGINESDIR
+
+echo "
+CC = $CC
+CPPFLAGS = -DTPM_BITFIELD_LE -Ilibtss2
+CFLAGS = $CFLAGS -Wall -fPIC
+LDFLAGS = -lcrypto
+
+TARGET = libtpm2.0.so
+SRCS = e_tpm2.0.c
+
+OBJS = objs/e_tpm2.0_err.o \$(SRCS:%.c=objs/%.o)
+LIB = objs/\$(TARGET)
+
+all: \$(LIB)
+
+libtss2/objs/libtss2.a:
+	@cd libtss2; pwd; \$(MAKE) objs/libtss2.a
+
+e_tpm2.0_err.c: \$(SRCS)
+	perl ./mkerr.pl -nostatic -conf e_tpm2.0.ec -write \$^
+
+objs:
+	mkdir \$@
+
+\$(OBJS): objs
+
+objs/%.o: %.c
+	\$(CC) \$(CPPFLAGS) \$(CFLAGS) -c \$< -o \$@
+
+objs/\$(TARGET): \$(OBJS) libtss2/objs/libtss2.a
+	\$(CC) -shared \$(CFLAGS) \$^ \$(LDFLAGS) -o \$@
+
+install:
+	mkdir -p \$(DESTDIR)/$ENGINESDIR
+	cp objs/libtpm2.0.so \$(DESTDIR)/$ENGINESDIR/libtpm2.0.so.1
+	ln -s libtpm2.0.so.1 \$(DESTDIR)/$ENGINESDIR/libtpm2.0.so
+
+clean:
+	@cd libtss2; pwd; \$(MAKE) clean
+	rm -f e_tpm2.0_err.h e_tpm2.0_err.c \$(OBJS) \$(TARGET)
+" > Makefile
+
+echo "
+CC = $CC
+CPPFLAGS = -DTPM_POSIX -DTPM_BITFIELD_LE -DTPM_TSS -I.
+CFLAGS = $CFLAGS -Wall -fPIC
+TARGET = libtss2.a
+SRCS = Commands.c CommandAttributeData.c CpriHash.c CpriSym.c Unmarshal.c fail.c tss.c tssauth.c tssccattributes.c tsscrypto.c tssdev.c tssmarshal.c tssprint.c tssproperties.c tsssocket.c tsstransmit.c tssutils.c
+
+OBJS = \$(SRCS:%.c=objs/%.o)
+LIB = objs/\$(TARGET)
+
+all: \$(LIB)
+
+objs:
+	mkdir \$@
+
+\$(OBJS): objs
+
+objs/%.o: %.c
+	\$(CC) \$(CPPFLAGS) \$(CFLAGS) -c \$< -o \$@
+
+\$(LIB): \$(OBJS)
+	ar crv \$@ \$^
+
+clean:
+	rm -f \$(OBJS) \$(LIB)
+" > libtss2/Makefile

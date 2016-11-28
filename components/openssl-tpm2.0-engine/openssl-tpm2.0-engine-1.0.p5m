@@ -1,0 +1,21 @@
+set name=pkg.fmri \
+    value=pkg:/library/security/openssl-tpm2.0-engine@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="OpenSSL TPM2.0 engine"
+dir  path=lib/openssl/engines owner=root group=sys mode=0755
+dir  path=lib/openssl/engines/$(MACH64) owner=root group=sys mode=0755
+file path=lib/openssl/default/engines/libtpm2.0.so.1 owner=root \
+    group=bin mode=0555
+link path=lib/openssl/default/engines/libtpm2.0.so \
+    target=libtpm2.0.so.1
+link path=lib/openssl/engines/libtpm2.0.so.1 \
+    target=../default/engines/libtpm2.0.so.1
+link path=lib/openssl/engines/libtpm2.0.so \
+    target=libtpm2.0.so.1
+file path=lib/openssl/default/engines/$(MACH64)/libtpm2.0.so.1 owner=root \
+    group=bin mode=0555
+link path=lib/openssl/default/engines/$(MACH64)/libtpm2.0.so \
+    target=libtpm2.0.so.1
+link path=lib/openssl/engines/$(MACH64)/libtpm2.0.so.1 \
+    target=../../default/engines/$(MACH64)/libtpm2.0.so.1
+link path=lib/openssl/engines/$(MACH64)/libtpm2.0.so \
+    target=libtpm2.0.so.1
