@@ -159,6 +159,7 @@ static TPM_RC TSS_PO_EvictControl(TSS_CONTEXT *tssContext,
 				  EvictControl_In *in,
 				  void *out,
 				  void *extra);
+#if 0
 static TPM_RC TSS_PO_Load(TSS_CONTEXT *tssContext,
 			  Load_In *in,
 			  Load_Out *out,
@@ -167,6 +168,7 @@ static TPM_RC TSS_PO_LoadExternal(TSS_CONTEXT *tssContext,
 				  LoadExternal_In *in,
 				  LoadExternal_Out *out,
 				  void *extra);
+#endif
 static TPM_RC TSS_PO_HMAC_Start(TSS_CONTEXT *tssContext,
 				HMAC_Start_In *in,
 				HMAC_Start_Out *out,
@@ -191,10 +193,12 @@ static TPM_RC TSS_PO_PolicyPassword(TSS_CONTEXT *tssContext,
 				    PolicyPassword_In *in,
 				    void *out,
 				    void *extra);
+#if 0
 static TPM_RC TSS_PO_CreatePrimary(TSS_CONTEXT *tssContext,
 				   CreatePrimary_In *in,
 				   CreatePrimary_Out *out,
 				   void *extra);
+#endif
 static TPM_RC TSS_PO_NV_ReadPublic(TSS_CONTEXT *tssContext,
 				   NV_ReadPublic_In *in,
 				   NV_ReadPublic_Out *out,
@@ -237,8 +241,13 @@ static const TSS_TABLE tssTable [] = {
     {TPM_CC_StartAuthSession, (TSS_PreProcessFunction_t)TSS_PR_StartAuthSession, NULL, (TSS_PostProcessFunction_t)TSS_PO_StartAuthSession},
     {TPM_CC_PolicyRestart, NULL, NULL, NULL},
     {TPM_CC_Create, NULL, NULL, NULL},
+#if 0
     {TPM_CC_Load, NULL, NULL, (TSS_PostProcessFunction_t)TSS_PO_Load},
     {TPM_CC_LoadExternal, NULL, NULL, (TSS_PostProcessFunction_t)TSS_PO_LoadExternal},
+#else
+    {TPM_CC_Load, NULL, NULL, NULL},
+    {TPM_CC_LoadExternal, NULL, NULL, NULL},
+#endif
     {TPM_CC_ReadPublic, NULL, NULL, NULL},
     {TPM_CC_ActivateCredential, NULL, NULL, NULL},
     {TPM_CC_MakeCredential, NULL, NULL, NULL},
@@ -299,7 +308,11 @@ static const TSS_TABLE tssTable [] = {
     {TPM_CC_PolicyPassword, NULL, NULL, (TSS_PostProcessFunction_t)TSS_PO_PolicyPassword},
     {TPM_CC_PolicyGetDigest, NULL, NULL, NULL},
     {TPM_CC_PolicyNvWritten, NULL, NULL, NULL},
+#if 0
     {TPM_CC_CreatePrimary, NULL, NULL, (TSS_PostProcessFunction_t)TSS_PO_CreatePrimary},
+#else
+    {TPM_CC_CreatePrimary, NULL, NULL, NULL},
+#endif
     {TPM_CC_HierarchyControl, NULL, NULL, NULL},
     {TPM_CC_SetPrimaryPolicy, NULL, NULL, NULL},
     {TPM_CC_ChangePPS, NULL, NULL, NULL},
@@ -3361,6 +3374,7 @@ static TPM_RC TSS_PO_EvictControl(TSS_CONTEXT *tssContext,
 
 /* TSS_PO_Load() saves the Name returned for the loaded object.  It saves the TPM2B+PUBLIC */
 
+#if 0
 static TPM_RC TSS_PO_Load(TSS_CONTEXT *tssContext,
 			  Load_In *in,
 			  Load_Out *out,
@@ -3380,9 +3394,11 @@ static TPM_RC TSS_PO_Load(TSS_CONTEXT *tssContext,
     }
     return rc;
 }
+#endif
 
 /* TSS_PO_LoadExternal() saves the Name returned for the loaded object */
 
+#if 0
 static TPM_RC TSS_PO_LoadExternal(TSS_CONTEXT *tssContext,
 				  LoadExternal_In *in,
 				  LoadExternal_Out *out,
@@ -3402,6 +3418,7 @@ static TPM_RC TSS_PO_LoadExternal(TSS_CONTEXT *tssContext,
     }
     return rc;
 }
+#endif
 
 /* TSS_PO_HashSequenceStart() saves the Name returned for the started sequence object */
 
@@ -3526,6 +3543,7 @@ static TPM_RC TSS_PO_PolicyPassword(TSS_CONTEXT *tssContext,
     return rc;
 }
 
+#if 0
 static TPM_RC TSS_PO_CreatePrimary(TSS_CONTEXT *tssContext,
 				   CreatePrimary_In *in,
 				   CreatePrimary_Out *out,
@@ -3545,6 +3563,7 @@ static TPM_RC TSS_PO_CreatePrimary(TSS_CONTEXT *tssContext,
     }
     return rc;
 }
+#endif
 
 static TPM_RC TSS_PO_NV_ReadPublic(TSS_CONTEXT *tssContext,
 				   NV_ReadPublic_In *in,
