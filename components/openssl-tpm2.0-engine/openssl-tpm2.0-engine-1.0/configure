@@ -1,10 +1,5 @@
 #!/bin/sh
 
-set -x
-
-echo $*
-echo $ENGINESDIR
-
 echo "
 CC = $CC
 CPPFLAGS = -DTPM_BITFIELD_LE -Ilibtss2
