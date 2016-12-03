@@ -40,6 +40,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <errno.h>
 
 #ifdef TPM_POSIX
@@ -353,9 +354,11 @@ TPM_RC TSS_File_DeleteFile(const char *filename)
     int		irc;
     
     if (rc == 0) {
-	irc = remove(filename);
-	if (irc != 0) {
-	    rc = TSS_RC_FILE_REMOVE;
+	if (access(filename, F_OK) == 0) {
+	    irc = remove(filename);
+	    if (irc != 0) {
+		rc = TSS_RC_FILE_REMOVE;
+	    }
 	}
     }
     return rc;
