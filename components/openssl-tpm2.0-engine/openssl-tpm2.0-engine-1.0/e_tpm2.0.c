@@ -683,11 +683,22 @@ tpm2dot0_pmeth_sign(EVP_PKEY_CTX *ctx, unsigned char *sig, size_t *siglen,
 	E_TPM2DOT0_PKEY_CTX	*tctx;
 	RSA			*rsa;
 	E_TPM2DOT0_RSA_CTX	*hptr;
+	int			ret;
 
 	pkey = EVP_PKEY_CTX_get0_pkey(ctx);
 	tctx = EVP_PKEY_CTX_get_data(ctx);
 	rsa = EVP_PKEY_get1_RSA(pkey);
 	hptr = RSA_get_ex_data(rsa, tpm2dot0_hndidx_rsa);
+	if (hptr == NULL) {
+		/*
+		 * non-TPM-based RSA key
+		 */
+		unsigned int len;
+		ret = (RSA_sign(EVP_MD_type(tctx->md), tbs, tbslen,
+		    sig, &len, rsa));
+		*siglen = len;
+		return (ret);
+	}
 
 	if (tpm2dot0_load_ch_key(hptr) != 0) {
 		return (0);
@@ -938,6 +949,22 @@ tpm2dot0_priv_encode(PKCS8_PRIV_KEY_INFO *p8info, const EVP_PKEY *pkey)
 	int			plen;
 
 	hptr = RSA_get_ex_data(pkey->pkey.rsa, tpm2dot0_hndidx_rsa);
+	if (hptr == NULL) {
+		/*
+		 * non-TPM-based RSA key
+		 */
+		plen = i2d_RSAPrivateKey(pkey->pkey.rsa, &p);
+		if (plen <= 0) {
+			return (0);
+		}
+
+		if (!PKCS8_pkey_set0(p8info, OBJ_nid2obj(NID_rsaEncryption), 0,
+		    V_ASN1_NULL, NULL, p, plen)) {
+			return (0);
+		}
+
+		return (1);
+	}
 
 	tki = TPM_KEY_INFO_new();
 	if (!tki) {
