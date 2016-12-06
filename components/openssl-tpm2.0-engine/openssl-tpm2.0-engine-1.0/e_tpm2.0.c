@@ -807,6 +807,8 @@ tpm2dot0_pmeth_decrypt(EVP_PKEY_CTX *ctx, unsigned char *out, size_t *outlen,
 	return (1);
 }
 
+const EVP_PKEY_ASN1_METHOD	*generic_ameth_rsa;
+
 static int
 tpm2dot0_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
 {
@@ -860,9 +862,21 @@ tpm2dot0_pub_cmp(const EVP_PKEY *a, const EVP_PKEY *b)
 }
 
 static int
+tpm2dot0_pub_print(BIO *out, const EVP_PKEY *pkey, int indent, ASN1_PCTX *pctx)
+{
+	return (0);
+}
+
+static int
 tpm2dot0_pkey_size(const EVP_PKEY *pkey)
 {
 	return (RSA_size(pkey->pkey.rsa));
+}
+
+static int
+tpm2dot0_pkey_bits(const EVP_PKEY *pkey)
+{
+	return (BN_num_bits(pkey->pkey.rsa->n));
 }
 
 typedef struct {
@@ -941,7 +955,26 @@ tpm2dot0_priv_decode(EVP_PKEY *pkey, PKCS8_PRIV_KEY_INFO *p8info)
 }
 
 static int
-tpm2dot0_priv_encode(PKCS8_PRIV_KEY_INFO *p8info, const EVP_PKEY *pkey)
+tpm2dot0_priv_decode_rsa(EVP_PKEY *pkey, PKCS8_PRIV_KEY_INFO *p8inf)
+{
+	const unsigned char	*p = NULL;
+	int			plen = 0;
+	RSA			*rsa;
+
+	if (!PKCS8_pkey_get0(NULL, &p, &plen, NULL, p8inf)) {
+		return (0);
+	}
+
+	if (!(rsa = d2i_RSAPrivateKey(NULL, &p, plen))) {
+		return (0);
+	}
+	EVP_PKEY_assign_RSA(pkey, rsa);
+
+	return (1);
+}
+
+static int
+tpm2dot0_priv_encode_rsa(PKCS8_PRIV_KEY_INFO *p8info, const EVP_PKEY *pkey)
 {
 	E_TPM2DOT0_RSA_CTX	*hptr;
 	TPM_KEY_INFO		*tki;
@@ -990,6 +1023,13 @@ tpm2dot0_priv_encode(PKCS8_PRIV_KEY_INFO *p8info, const EVP_PKEY *pkey)
 	}
 
 	OPENSSL_free(p);
+	return (0);
+}
+
+static int
+tpm2dot0_priv_print_rsa(BIO *out, const EVP_PKEY *pkey, int indent,
+    ASN1_PCTX *pctx)
+{
 	return (0);
 }
 
@@ -1089,10 +1129,12 @@ bind_helper(ENGINE *e)
 	EVP_PKEY_meth_set_encrypt(tpm2dot0_pmeth, NULL, tpm2dot0_pmeth_encrypt);
 	EVP_PKEY_meth_set_decrypt(tpm2dot0_pmeth, NULL, tpm2dot0_pmeth_decrypt);
 
+	generic_ameth_rsa = EVP_PKEY_asn1_find(NULL, NID_rsaEncryption);
 	tpm2dot0_ameth_rsa = EVP_PKEY_asn1_new(NID_rsaEncryption, 0, "Private", "Private");
+	EVP_PKEY_asn1_copy(tpm2dot0_ameth_rsa, generic_ameth_rsa);
 	tpm2dot0_ameth_private = EVP_PKEY_asn1_new(NID_Private, 0, "Private", "Private");
-	EVP_PKEY_asn1_set_public(tpm2dot0_ameth_rsa, tpm2dot0_pub_decode, tpm2dot0_pub_encode, tpm2dot0_pub_cmp, NULL, tpm2dot0_pkey_size, NULL);
-	EVP_PKEY_asn1_set_private(tpm2dot0_ameth_rsa, NULL, tpm2dot0_priv_encode, NULL);
+	EVP_PKEY_asn1_set_public(tpm2dot0_ameth_rsa, tpm2dot0_pub_decode, tpm2dot0_pub_encode, tpm2dot0_pub_cmp, tpm2dot0_pub_print, tpm2dot0_pkey_size, tpm2dot0_pkey_bits);
+	EVP_PKEY_asn1_set_private(tpm2dot0_ameth_rsa, tpm2dot0_priv_decode_rsa, tpm2dot0_priv_encode_rsa, tpm2dot0_priv_print_rsa);
 	EVP_PKEY_asn1_set_private(tpm2dot0_ameth_private, tpm2dot0_priv_decode, NULL, NULL);
 	EVP_PKEY_asn1_set_ctrl(tpm2dot0_ameth_rsa, tpm2dot0_pkey_ctrl);
 	EVP_PKEY_asn1_set_free(tpm2dot0_ameth_rsa, tpm2dot0_pkey_free);
