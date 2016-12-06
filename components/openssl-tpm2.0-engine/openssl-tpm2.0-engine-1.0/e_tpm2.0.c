@@ -584,6 +584,9 @@ tpm2dot0_pmeth_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
 	case EVP_PKEY_CTRL_RSA_KEYGEN_BITS:
 		tctx->nbits = p1;
 		return (1);
+	case EVP_PKEY_CTRL_GET_RSA_PADDING:
+		*(int *)p2 = tctx->pad_mode;
+		return (1);
 	default:
 		break;
 	}
