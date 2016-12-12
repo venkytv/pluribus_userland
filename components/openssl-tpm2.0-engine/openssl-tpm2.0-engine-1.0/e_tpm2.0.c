@@ -927,6 +927,7 @@ tpm2dot0_priv_decode(EVP_PKEY *pkey, PKCS8_PRIV_KEY_INFO *p8info)
 	}
 
 	rsa = RSA_new();
+	rsa->engine = pkey->engine;
 	RSA_set_ex_data(rsa, tpm2dot0_hndidx_rsa, hptr);
 
 	rsa->n = BN_new();
