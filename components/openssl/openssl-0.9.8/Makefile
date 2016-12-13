@@ -25,7 +25,7 @@ COMPONENT_ARCHIVE_HASH=	\
 	sha256:d5245a29128984192acc5b1fc01e37429b7a01c53cadcb2645e546718b300edb
     
 #COMPONENT_ARCHIVE_URL=	https://www.openssl.org/source/$(COMPONENT_ARCHIVE)
-COMPONENT_ARCHIVE_URL=	ftp://ftp.openssl.org/source/$(COMPONENT_ARCHIVE)
+COMPONENT_ARCHIVE_URL=	ftp://ftp.openssl.org/source/old/0.9.x/$(COMPONENT_ARCHIVE)
 
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/configure.mk

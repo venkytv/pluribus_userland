@@ -4,7 +4,7 @@ component=$1
 action=$2
 
 WS_TOP=`pwd`
-USERLAND_GIT_REMOTE=`git remote show origin | awk '/URL:/ { print $2 }'`
+USERLAND_GIT_REMOTE=`git remote show origin | grep -v 'Push' | sed -n 's/.*URL: //p'`
 USERLAND_GIT_REV=`git rev-parse HEAD`
 BUILD_VERSION="5.11-0.134"
 
