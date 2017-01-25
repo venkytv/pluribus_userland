@@ -1,0 +1,16 @@
+--- network_io/unix/multicast.c.orig	2017-01-25 04:54:01.122118948 -0800
++++ network_io/unix/multicast.c	2017-01-25 04:52:46.788273734 -0800
+@@ -60,9 +60,11 @@
+     }
+ 
+     for (ifp = ifs; ifp; ifp = ifp->ifa_next) {
+-        if (ifp->ifa_addr != NULL && ifp->ifa_addr->sa_family == AF_INET6) {
++        struct sockaddr *ifa_addr;
++        ifa_addr = (struct sockaddr *)(ifp->ifa_addr);
++        if (ifp->ifa_addr != NULL && ifa_addr->sa_family == AF_INET6) {
+             if (memcmp(&iface->sa.sin6.sin6_addr,
+-                       &ifp->ifa_addr->sa_data[0],
++                       &ifa_addr->sa_data[0],
+                        sizeof(iface->sa.sin6.sin6_addr)) == 0) {
+                 index = if_nametoindex(ifp->ifa_name);
+                 break;

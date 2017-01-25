@@ -26,22 +26,22 @@
 include ../../make-rules/shared-macros.mk
 
 COMPONENT_NAME=		flex
-COMPONENT_VERSION=	2.5.35
+COMPONENT_VERSION=	2.5.39
 COMPONENT_PROJECT_URL=	http://flex.sourceforge.net/
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.bz2
 COMPONENT_ARCHIVE_HASH=	\
-    sha256:0becbd4b2b36b99c67f8c22ab98f7f80c9860aec70f0350a0018f29a88704e7b
-COMPONENT_ARCHIVE_URL=	http://softlayer.dl.sourceforge.net/project/flex/flex/flex-2.5.35/flex-2.5.35.tar.bz2
+    sha256:add2b55f3bc38cb512b48fad7d72f43b11ef244487ff25fc00aabec1e32b617f
+COMPONENT_ARCHIVE_URL=	http://prdownloads.sourceforge.net/flex/flex-2.5.39.tar.bz2
 COMPONENT_BUGDB=	utility/flex
 
-SONAME=libfl.so.1
 LDFLAGS = $(CC_BITS)
 
 include ../../make-rules/prep.mk
 include ../../make-rules/configure.mk
 include ../../make-rules/ips.mk
 
+CONFIGURE_OPTIONS  +=		--enable-shared
 CONFIGURE_OPTIONS  +=		--infodir=$(CONFIGURE_INFODIR)
 CONFIGURE_OPTIONS  +=		M4="/usr/gnu/bin/m4"
 
@@ -49,9 +49,6 @@ COMPONENT_BUILD_ENV +=		SONAME="$(SONAME)"
 COMPONENT_INSTALL_ENV +=	SONAME="$(SONAME)"
 
 COMPONENT_TEST_ENV +=		PATH=/usr/gnu/bin:/usr/bin
-
-COMPONENT_BUILD_TARGETS += $(SONAME)
-COMPONENT_INSTALL_TARGETS += $(SONAME)
 
 include ../../make-rules/shared-targets.mk
 

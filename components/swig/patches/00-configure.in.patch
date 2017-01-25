@@ -1,0 +1,13 @@
+--- swig-2.0.9/configure.in.orig	2017-01-25 02:45:40.548131008 -0800
++++ swig-2.0.9/configure.in	2017-01-25 02:47:36.191932805 -0800
+@@ -34,6 +34,10 @@
+ 
+ AC_COMPILE_WARNINGS # Increase warning levels
+ 
++# Filter out "-ansi" because G++ 4.8 borks at getc() in C++ programs with that.
++# (The flag -ansi is automatically added by ac_compile_warnings.m4)
++CXXFLAGS="`echo $CXXFLAGS | sed 's/-ansi//g'`"
++
+ AC_DEFINE_UNQUOTED(SWIG_CXX, ["$CXX"], [Compiler that built SWIG])
+ AC_DEFINE_UNQUOTED(SWIG_PLATFORM, ["$host"], [Platform that SWIG is built for])
+ 

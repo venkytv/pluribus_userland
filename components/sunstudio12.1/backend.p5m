@@ -281,9 +281,9 @@ file path=opt/sunstudio12.1/prod/lib/$(MACH64)/llib-lsunmath.ln
 file path=opt/sunstudio12.1/prod/lib/$(MACH64)/mcrt1x.o
 file path=opt/sunstudio12.1/prod/lib/$(MACH64)/pagesize.o
 file path=opt/sunstudio12.1/prod/lib/$(MACH64)/prof_lib.map
-file path=opt/sunstudio12.1/prod/lib/$(MACH64)/prof_lib.o
+file path=opt/sunstudio12.1/prod/lib/$(MACH64)/prof_lib.o pkg.depend.bypass-generate=.*
 file path=opt/sunstudio12.1/prod/lib/$(MACH64)/prof_tsd.map
-file path=opt/sunstudio12.1/prod/lib/$(MACH64)/prof_tsd.o
+file path=opt/sunstudio12.1/prod/lib/$(MACH64)/prof_tsd.o pkg.depend.bypass-generate=.*
 file path=opt/sunstudio12.1/prod/lib/$(MACH64)/values-xa.o
 file path=opt/sunstudio12.1/prod/lib/$(MACH64)/values-xc.o
 file path=opt/sunstudio12.1/prod/lib/$(MACH64)/values-xi.o
@@ -355,9 +355,9 @@ file path=opt/sunstudio12.1/prod/lib/postopt/$(MACH64)/binprof_obj_2.o
 file path=opt/sunstudio12.1/prod/lib/postopt/binprof_obj_2.o
 file path=opt/sunstudio12.1/prod/lib/prof_func.o
 file path=opt/sunstudio12.1/prod/lib/prof_lib.map
-file path=opt/sunstudio12.1/prod/lib/prof_lib.o
+file path=opt/sunstudio12.1/prod/lib/prof_lib.o pkg.depend.bypass-generate=.*
 file path=opt/sunstudio12.1/prod/lib/prof_tsd.map
-file path=opt/sunstudio12.1/prod/lib/prof_tsd.o
+file path=opt/sunstudio12.1/prod/lib/prof_tsd.o pkg.depend.bypass-generate=.*
 dir  path=opt/sunstudio12.1/prod/lib/sse2
 file path=opt/sunstudio12.1/prod/lib/sse2/libmopt.a
 dir  path=opt/sunstudio12.1/prod/lib/sse2/libp

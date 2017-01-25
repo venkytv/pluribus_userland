@@ -39,7 +39,7 @@ include ../../make-rules/ips.mk
 PARCH =		$(MACH:i386=i386-pc)
 GNU_ARCH =	$(PARCH:sparc=sparc-sun)-solaris$(SOLARIS_VERSION)
 
-PKG_MACROS +=	GNU_ARCH="$(GNU_ARCH)"
+PKG_MACROS +=	-D GNU_ARCH="$(GNU_ARCH)"
 
 CFLAGS += -std=c99 $(CPP_XPG6MODE)
 CFLAGS += $(CPP_LARGEFILES) $(CPP_POSIX)

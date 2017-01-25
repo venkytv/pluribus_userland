@@ -289,10 +289,12 @@ PKGDEPEND_GENERATE_OPTIONS = -m $(PKG_PROTO_DIRS:%=-d %)
 $(MANIFEST_BASE)-%.depend:	$(MANIFEST_BASE)-%.mangled
 	$(PKGDEPEND) generate $(PKGDEPEND_GENERATE_OPTIONS) $< >$@
 	cat $@ | egrep -v "^depend fmri=__TBD" > $@.notbd
+	rv=$$(egrep 'name=pkg.obsolete value=true' $@ > /dev/null && echo 1 || echo 0); \
+	if [ $$rv -eq 0 ]; then \
 	(rv=$$(echo $@ | egrep "sfw-incorporation" > /dev/null && echo 1 || echo 0); \
-	[ $$rv -eq 0 ] && echo "depend fmri=consolidation/sfw/sfw-incorporation type=require" >> $@.notbd || exit 0)
-	echo "depend fmri=system/library type=require" >> $@.notbd
-	mv $@.notbd $@
+	[ $$rv -eq 0 ] && echo "depend fmri=consolidation/sfw/sfw-incorporation type=require" >> $@.notbd || exit 0); \
+	echo "depend fmri=system/library type=require" >> $@.notbd; \
+	mv $@.notbd $@; fi
 
 # These files should contain a list of packages that the component is known to
 # depend on.  Using resolve.deps is not required, but significantly speeds up
