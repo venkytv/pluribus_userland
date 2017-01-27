@@ -46,13 +46,13 @@ LDFLAGS +=	$(LD_Z_DEFS) $(LD_Z_TEXT) -lpthread
 
 CONFIGURE_OPTIONS += --disable-static
 CONFIGURE_OPTIONS += --with-pic
-CONFIGURE_OPTIONS += --with-python=$(PYTHON.$(BITS))
+CONFIGURE_OPTIONS += --with-python=$(PYTHON.2.6.$(BITS))
 CONFIGURE_OPTIONS += --without-crypto
 CONFIGURE_OPTIONS += --with-html-dir=/usr/share/lib/xslt/doc
 CONFIGURE_OPTIONS += --with-html-subdir=html
 CONFIGURE_OPTIONS += CFLAGS="$(CFLAGS)"
 CONFIGURE_OPTIONS += LDFLAGS="$(LDFLAGS)"
-CONFIGURE_OPTIONS += PYTHON_VENDOR_PACKAGES=$(PYTHON_VENDOR_PACKAGES)
+CONFIGURE_OPTIONS += PYTHON_VENDOR_PACKAGES=$(PYTHON.2.6.VENDOR_PACKAGES)
 
 COMPONENT_PREP_ACTION = \
 	(cd $(@D) ; cp ../mapfile.xslt libxslt/libxslt.syms ; \

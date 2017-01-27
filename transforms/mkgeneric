@@ -42,6 +42,8 @@
 <transform file dir link hardlink license user group driver legacy signature -> drop>
 <transform depend -> default nodrop false>
 <transform depend nodrop=false -> drop>
+<transform set name=pkg.fmri value=(?:pkg:/)?(.+)-###PYV###@(.*) -> \
+	edit value -###PYV### "">
 <transform set name=pkg.fmri value=(?:pkg:/)?(.+)-###@(.*) -> \
 	edit value -### "">
 <transform depend nodrop=true -> delete nodrop true>

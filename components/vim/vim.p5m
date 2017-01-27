@@ -32,8 +32,6 @@ set name=com.oracle.info.description value="the Vi IMproved text editor"
 set name=info.classification \
     value=org.opensolaris.category.2008:Development/Editors \
     value="org.opensolaris.category.2008:System/Text Tools"
-set name=info.repository-url value=$(COMPONENT_HG_URL)
-set name=info.repository-changeset value=$(COMPONENT_HG_REV)
 set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
 set name=info.upstream value="vim-dev@vim.org"
 set name=org.opensolaris.arc-caseid \

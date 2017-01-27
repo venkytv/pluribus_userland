@@ -85,7 +85,7 @@ include $(WS_MAKE_RULES)/ips-buildinfo.mk
 COMPILER =		gcc
 LINKER =		gcc
 BITS =			32
-PYTHON_VERSION =	2.6
+PYTHON_VERSION =	2.7
 PYTHON_VERSIONS =	2.6 2.7
 
 BASS_O_MATIC =	$(WS_TOOLS)/bass-o-matic
@@ -340,16 +340,15 @@ JAVA_HOME = $(JAVA7_HOME)
 
 # This is the default BUILD version of perl
 # Not necessarily the system's default version, i.e. /usr/bin/perl
-PERL_VERSION =  5.10.0
+PERL_VERSION =  5.22
 #PERL_VERSION =  5.16
 
-PERL_VERSIONS = 5.10.0
+PERL_VERSIONS = 5.22
 #PERL_VERSIONS = 5.10.0 5.12 5.16
 #PERL_VERSIONS = 5.16
 
-PERL.5.10.0 =     /usr/perl5/5.10.0/bin/perl
-PERL.5.12 =     /usr/perl5/5.12/bin/perl
-PERL.5.16 =	/usr/perl5/5.16/bin/perl
+#PERL.5.16 =	/usr/perl5/5.16/bin/perl
+PERL.5.22 =	/usr/perl5/5.22/bin/perl
 
 PERL =          $(PERL.$(PERL_VERSION))
 

@@ -29,14 +29,11 @@ PATH=/usr/bin:/usr/gnu/bin
 
 COMPONENT_NAME=		vim
 COMPONENT_VERSION=	7.4
-IPS_COMPONENT_VERSION=	$(shell echo $(COMPONENT_HG_REV) | sed -e 's/-/./g' -e 's/v//')
-COMPONENT_SRC=		vim-359743c1f59a
+COMPONENT_SRC=		vim74
 COMPONENT_PROJECT_URL=	http://www.vim.org/
-COMPONENT_ARCHIVE=	vim-$(COMPONENT_HG_REV).zip
-COMPONENT_ARCHIVE_URL=	http://vim.googlecode.com/archive/$(COMPONENT_HG_REV).zip
+COMPONENT_ARCHIVE=	vim-$(COMPONENT_VERSION).tar.bz2
+COMPONENT_ARCHIVE_URL=	ftp://ftp.vim.org/pub/vim/unix/$(COMPONENT_ARCHIVE)
 #COMPONENT_ARCHIVE_HASH=	sha256:0a12dd12c7c13c54357b425bb36a936cb341e935977d880049a5e31c74b8030e
-COMPONENT_HG_URL=	https://vim.googlecode.com/hg
-COMPONENT_HG_REV=	v7-4
 
 COMPONENT_BUGDB=	utility/vim
 
@@ -46,10 +43,10 @@ include ../../make-rules/ips.mk
 
 PATCH_LEVEL =	0
 
-COMPONENT_POST_UNPACK_ACTION += ( chmod +x $(@D)/configure  $(@D)/src/auto/configure $(@D)/src/configure $(@D)/src/mkinstalldirs ; \
-				  find $(@D) -name \*.sh  -exec chmod +x '{}' ';' )
+#COMPONENT_POST_UNPACK_ACTION += ( chmod +x $(@D)/configure  $(@D)/src/auto/configure $(@D)/src/configure $(@D)/src/mkinstalldirs ; \
+#				  find $(@D) -name \*.sh  -exec chmod +x '{}' ';' )
 
-PKG_MACROS +=	VIMVER=vim74
+PKG_MACROS +=	-D VIMVER=vim74
 
 ASLR_MODE =	$(ASLR_ENABLE)
 

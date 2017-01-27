@@ -32,7 +32,7 @@ set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
 set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
 file path=usr/lib/python2.6/vendor-packages/64/libxml2mod.so
-file path=usr/lib/python2.6/vendor-packages/drv_libxml2.py
+file path=usr/lib/python2.6/vendor-packages/drv_libxml2.py 
 file path=usr/lib/python2.6/vendor-packages/libxml2.py
 file path=usr/lib/python2.6/vendor-packages/libxml2mod.so
 

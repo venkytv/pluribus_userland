@@ -86,6 +86,7 @@ depend fmri=__TBD pkg.debug.depend.file=python2.6 \
        pkg.debug.depend.path=usr/bin type=require
 
 # force a dependency on the setuptools package
-depend fmri=library/python-2/setuptools@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION) \
-    type=require
+# TODO: Conditional predicates unsupported in our Pkg. So disabling this
+#depend fmri=library/python-2/setuptools@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION) \
+#    type=require
 
