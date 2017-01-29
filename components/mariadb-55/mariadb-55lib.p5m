@@ -79,6 +79,7 @@ file path=usr/mariadb/5.5/include/private/atomic/x86-gcc.h
 file path=usr/mariadb/5.5/include/private/authors.h
 file path=usr/mariadb/5.5/include/private/base64.h
 file path=usr/mariadb/5.5/include/private/client_settings.h
+file path=usr/mariadb/5.5/include/private/config.h
 file path=usr/mariadb/5.5/include/private/contributors.h
 file path=usr/mariadb/5.5/include/private/create_options.h
 file path=usr/mariadb/5.5/include/private/custom_conf.h
@@ -147,6 +148,7 @@ file path=usr/mariadb/5.5/include/private/my_bitmap.h
 file path=usr/mariadb/5.5/include/private/my_check_opt.h
 file path=usr/mariadb/5.5/include/private/my_compare.h
 file path=usr/mariadb/5.5/include/private/my_context.h
+file path=usr/mariadb/5.5/include/private/my_cpu.h
 file path=usr/mariadb/5.5/include/private/my_decimal.h
 file path=usr/mariadb/5.5/include/private/my_libwrap.h
 file path=usr/mariadb/5.5/include/private/my_md5.h
@@ -175,7 +177,7 @@ file path=usr/mariadb/5.5/include/private/partition_element.h
 file path=usr/mariadb/5.5/include/private/partition_info.h
 file path=usr/mariadb/5.5/include/private/password.h
 file path=usr/mariadb/5.5/include/private/probes_mysql.h
-file path=usr/mariadb/5.5/include/private/probes_mysql_nodtrace.h
+file path=usr/mariadb/5.5/include/private/probes_mysql_dtrace.h
 file path=usr/mariadb/5.5/include/private/procedure.h
 file path=usr/mariadb/5.5/include/private/protocol.h
 file path=usr/mariadb/5.5/include/private/queues.h
@@ -311,16 +313,16 @@ file path=usr/mariadb/5.5/include/sslopt-longopts.h
 file path=usr/mariadb/5.5/include/sslopt-vars.h
 file path=usr/mariadb/5.5/include/typelib.h
 dir  path=usr/mariadb/5.5/lib
-dir  path=usr/mariadb/5.5/lib/amd64
-link path=usr/mariadb/5.5/lib/amd64/libmysqlclient.so \
+dir  path=usr/mariadb/5.5/lib/$(MACH64)
+link path=usr/mariadb/5.5/lib/$(MACH64)/libmysqlclient.so \
     target=libmysqlclient.so.18
-link path=usr/mariadb/5.5/lib/amd64/libmysqlclient.so.18 \
+link path=usr/mariadb/5.5/lib/$(MACH64)/libmysqlclient.so.18 \
     target=libmysqlclient.so.18.0.0
-file path=usr/mariadb/5.5/lib/amd64/libmysqlclient.so.18.0.0 mode=0555
-link path=usr/mariadb/5.5/lib/amd64/libmysqlclient_r.so target=libmysqlclient.so
-link path=usr/mariadb/5.5/lib/amd64/libmysqlclient_r.so.18 \
+file path=usr/mariadb/5.5/lib/$(MACH64)/libmysqlclient.so.18.0.0 mode=0555
+link path=usr/mariadb/5.5/lib/$(MACH64)/libmysqlclient_r.so target=libmysqlclient.so
+link path=usr/mariadb/5.5/lib/$(MACH64)/libmysqlclient_r.so.18 \
     target=libmysqlclient.so
-link path=usr/mariadb/5.5/lib/amd64/libmysqlclient_r.so.18.0.0 \
+link path=usr/mariadb/5.5/lib/$(MACH64)/libmysqlclient_r.so.18.0.0 \
     target=libmysqlclient.so
 link path=usr/mariadb/5.5/lib/libmysqlclient.so target=libmysqlclient.so.18
 link path=usr/mariadb/5.5/lib/libmysqlclient.so.18 \

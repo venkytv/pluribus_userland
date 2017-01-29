@@ -1,6 +1,19 @@
---- libtecla/Makefile.in	Sun Oct 31 12:30:57 2004
-+++ libtecla/Makefile.in	Tue Jan 24 11:11:13 2012
-@@ -187,24 +187,24 @@
+--- libtecla/Makefile.in.~1~	2004-10-31 12:30:57.000000000 -0800
++++ libtecla/Makefile.in	2017-01-28 04:26:47.265542652 -0800
+@@ -165,10 +165,10 @@
+ default: $(TARGETS)
+ 
+ normal:
+-	@$(MAKE) -f $(srcdir)/Makefile.rules TARGETS="$(TARGET_LIBS)" SUFFIX="" CFLAGS="$(CFLAGS)" CC="$(CC)" OBJDIR=normal_obj LINK_SHARED='@LINK_SHARED@' SHARED_EXT='@SHARED_EXT@' SHARED_ALT='@SHARED_ALT@' LIBS='$(LIBS)' srcdir='$(srcdir)' LIBDIR='$(LIBDIR)' LN_S='@LN_S@' DEMOS="$(DEMOS)" PROGRAMS='$(PROGRAMS)' RANLIB='$(RANLIB)' LDFLAGS=$(LDFLAGS) CPPFLAGS=$(CPPFLAGS)
++	@$(MAKE) -f $(srcdir)/Makefile.rules TARGETS="$(TARGET_LIBS)" SUFFIX="" CFLAGS="$(CFLAGS)" CC="$(CC)" OBJDIR=normal_obj LINK_SHARED='@LINK_SHARED@' SHARED_EXT='@SHARED_EXT@' SHARED_ALT='@SHARED_ALT@' LIBS='$(LIBS)' srcdir='$(srcdir)' LIBDIR='$(LIBDIR)' LN_S='@LN_S@' DEMOS="$(DEMOS)" PROGRAMS='$(PROGRAMS)' RANLIB='$(RANLIB)' LDFLAGS='$(LDFLAGS)' CPPFLAGS='$(CPPFLAGS)'
+ 
+ reentrant:
+-	@$(MAKE) -f $(srcdir)/Makefile.rules TARGETS="$(TARGET_LIBS)" SUFFIX="_r" CFLAGS="$(CFLAGS) $(DEFINES_R)" CC="$(CC)" OBJDIR=reentrant_obj LINK_SHARED='@LINK_SHARED@' SHARED_EXT='@SHARED_EXT@' SHARED_ALT='@SHARED_ALT@' LIBS='$(LIBS)' srcdir='$(srcdir)' LIBDIR='$(LIBDIR)' LN_S='@LN_S@' DEMOS="$(DEMOS)" PROGRAMS='$(PROGRAMS_R)' RANLIB='$(RANLIB)' LDFLAGS=$(LDFLAGS) CPPFLAGS=$(CPPFLAGS)
++	@$(MAKE) -f $(srcdir)/Makefile.rules TARGETS="$(TARGET_LIBS)" SUFFIX="_r" CFLAGS="$(CFLAGS) $(DEFINES_R)" CC="$(CC)" OBJDIR=reentrant_obj LINK_SHARED='@LINK_SHARED@' SHARED_EXT='@SHARED_EXT@' SHARED_ALT='@SHARED_ALT@' LIBS='$(LIBS)' srcdir='$(srcdir)' LIBDIR='$(LIBDIR)' LN_S='@LN_S@' DEMOS="$(DEMOS)" PROGRAMS='$(PROGRAMS_R)' RANLIB='$(RANLIB)' LDFLAGS='$(LDFLAGS)' CPPFLAGS='$(CPPFLAGS)'
+ 
+ demos: normal
+ 
+@@ -187,41 +187,41 @@
                 autom*.cache
  	cp $(srcdir)/Makefile.stub Makefile
  
@@ -29,9 +42,6 @@
 +	       (cd $(DESTDIR)$(LIBDIR); rm -f $$lnk; @LN_S@ $$src $$lnk); \
 +	       echo "(cd $(DESTDIR)$(LIBDIR); rm -f $$lnk; @LN_S@ $$src $$lnk)"; \
  	     done ; \
- 	   fi ; \
- 	done
-@@ -209,19 +209,19 @@
  	   fi ; \
  	done
  
@@ -83,7 +93,7 @@
  	  done ; \
  	fi
  
-@@ -253,14 +253,14 @@
+@@ -253,20 +253,20 @@
  	if test "@MAKE_MAN_PAGES@"_ = "yes"_; then \
  	  for template in man/file/*.in; do \
  	    page=`basename "$$template" .in`; \
@@ -101,7 +111,6 @@
  	done
  
  install: install_lib install_inc install_man install_bin
-@@ -267,6 +267,6 @@
  
  # Make any missing installation directories.
  

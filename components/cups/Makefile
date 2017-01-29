@@ -25,24 +25,19 @@
 include ../../make-rules/shared-macros.mk
 
 COMPONENT_NAME=		cups
-COMPONENT_VERSION=	1.4.8
-COMPONENT_REVISION=	2
+COMPONENT_VERSION=	1.7.5
+COMPONENT_REVISION=	1
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_PROJECT_URL=	http://www.cups.org/
 COMPONENT_ARCHIVE=	$(COMPONENT_SRC)-source.tar.bz2
 COMPONENT_ARCHIVE_HASH=	\
-    sha256:6bd27e1213c139ed0bbadc5c29f97cf1e8f7f8f5b0bb29b227ecaff32aafa9a6
+    sha256:18cb4c6847dbaaaa05c8b35af787f19dd5c7686970b46548e72c711c6f26bd02
 COMPONENT_ARCHIVE_URL=	https://www.cups.org/software/$(COMPONENT_VERSION)/$(COMPONENT_ARCHIVE)
 COMPONENT_BUGDB=	utility/cups
 
-include ../../make-rules/prep.mk
-include ../../make-rules/configure.mk
-include ../../make-rules/ips.mk
-
-#CXX +=	$(studio_NORUNPATH)
-
-# We build both 32-bit and 64-bit binaries at $(BUILD_32)
-CC_BITS=
+include $(WS_MAKE_RULES)/prep.mk
+include $(WS_MAKE_RULES)/configure.mk
+include $(WS_MAKE_RULES)/ips.mk
 
 # don't use LD_Z_IGNORE: causes linker problems
 LD_Z_IGNORE=
@@ -63,14 +58,11 @@ CONFIGURE_OPTIONS +=	--with-php=no
 CONFIGURE_OPTIONS +=	--disable-static
 CONFIGURE_OPTIONS +=	--disable-gnutls
 CONFIGURE_OPTIONS +=	--disable-libusb
-CONFIGURE_OPTIONS +=	--enable-labeling
 CONFIGURE_OPTIONS +=	--enable-openssl
 CONFIGURE_OPTIONS +=	--enable-dbus
 CONFIGURE_OPTIONS +=	--enable-threads
-CONFIGURE_OPTIONS +=	--enable-64bit
+CONFIGURE_OPTIONS += 	--with-archflags="$(CC_BITS)"
 
-CONFIGURE_OPTIONS += 	ARCH64FLAGS=-m64
-CONFIGURE_OPTIONS += 	DSO64FLAGS="$(LDLIBS) -shared"
 CONFIGURE_OPTIONS += 	"ac_cv_search_getifaddrs=no"
 CONFIGURE_OPTIONS += 	"ac_cv_func_statfs=no"
 
@@ -83,20 +75,31 @@ COMPONENT_PRE_CONFIGURE_ACTION = \
  find $(@D) -name '*.in' | sed -e 's/.in$$//' | xargs $(RM) ; \
  ( cd $(SOURCE_DIR) ; autoconf -f )
 
-# install the default config file
-COMPONENT_POST_INSTALL_ACTION = \
-	$(TOUCH) $(PROTOETCDIR)/cups/command.types ; \
-	$(MV) $(PROTOUSRLIBDIR)/64 $(PROTOUSRLIBDIR)/$(MACH64)
-
 # common targets
-build:		$(BUILD_32)
 
-include ../../make-rules/shared-targets.mk
+$(INSTALL_32):	$(INSTALL_64)
 
-install:	$(INSTALL_32)
+build:		$(BUILD_32_and_64)
+
+install:	$(INSTALL_32_and_64)
 
 test:		$(NO_TESTS)
 
-BUILD_PKG_DEPENDENCIES =	$(BUILD_TOOLS)
-
-include ../../make-rules/depend.mk
+REQUIRED_PACKAGES += SUNWcs
+REQUIRED_PACKAGES += image/library/libjpeg6
+REQUIRED_PACKAGES += image/library/libjpeg6-ijg
+REQUIRED_PACKAGES += image/library/libpng16
+REQUIRED_PACKAGES += image/library/libtiff
+REQUIRED_PACKAGES += library/print/cups-libs
+REQUIRED_PACKAGES += library/security/openssl
+REQUIRED_PACKAGES += library/zlib
+REQUIRED_PACKAGES += runtime/perl-522
+REQUIRED_PACKAGES += service/network/dns/mdns
+REQUIRED_PACKAGES += service/network/slp
+REQUIRED_PACKAGES += service/security/kerberos-5
+REQUIRED_PACKAGES += system/library
+REQUIRED_PACKAGES += system/library/g++-4-runtime
+REQUIRED_PACKAGES += system/library/gcc-4-runtime
+REQUIRED_PACKAGES += system/library/libdbus
+REQUIRED_PACKAGES += system/library/math
+REQUIRED_PACKAGES += system/library/security/gss

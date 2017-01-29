@@ -7,7 +7,8 @@ install: install-bin install-dtd install-dsl install-img install-misc
 
 install-bin:
 	mkdir -p $(BINDIR)
-	install bin/collateindex.pl $(BINDIR)
+	cp bin/collateindex.pl $(BINDIR)
+	chmod a+x $(BINDIR)/collateindex.pl
 
 install-dtd:
 	mkdir -p $(DESTDIR)/dtds/decls

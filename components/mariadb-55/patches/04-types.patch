@@ -1,0 +1,10 @@
+--- mariadb-5.5.54/storage/sphinx/snippets_udf.cc.orig	2017-01-28 09:27:33.400393936 -0800
++++ mariadb-5.5.54/storage/sphinx/snippets_udf.cc	2017-01-28 09:28:23.772073716 -0800
+@@ -19,6 +19,7 @@
+ #include <assert.h>
+ 
+ #ifndef __WIN__
++#include <sys/types.h>
+ #include <sys/un.h>
+ #include <netdb.h>
+ #else

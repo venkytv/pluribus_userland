@@ -21,9 +21,8 @@ COMPONENT_SUMMARY= FileBench Commands, Workloads, Scripts, and Config Files
 COMPONENT_SRC= $(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE= $(COMPONENT_SRC).tar.gz
 COMPONENT_ARCHIVE_HASH= \
-  sha256:a1d1516083a1d46bccf6246caf709e800e93eccf17572583343e77726b720678
-COMPONENT_ARCHIVE_URL= \
-  http://sourceforge.net/projects/filebench/files/filebench/$(COMPONENT_NAME)-$(COMPONENT_VERSION)/$(COMPONENT_ARCHIVE)/download
+  sha256:77ae91b83c828ded1219550aec74fbbd6975dce02cb5ab13c3b99ac2154e5c2e
+COMPONENT_ARCHIVE_URL= https://github.com/filebench/filebench/archive/$(COMPONENT_VERSION).tar.gz
 COMPONENT_PROJECT_URL = http://sourceforge.net/apps/mediawiki/filebench/index.php?title=Main_Page
 
 COMPONENT_LICENSE_FILE=	LICENSE
