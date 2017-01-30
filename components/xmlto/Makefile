@@ -36,6 +36,7 @@ include $(WS_TOP)/make-rules/ips.mk
 #CONFIGURE_OPTIONS +=  --sysconfdir=/etc
 
 CONFIGURE_ENV += GETOPT=/usr/gnu/bin/getopt
+CONFIGURE_ENV += TAIL=/usr/gnu/bin/tail
 
 build: $(BUILD_32)
 

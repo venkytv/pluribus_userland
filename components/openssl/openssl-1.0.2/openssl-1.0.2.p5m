@@ -2225,5 +2225,3 @@ file path=usr/share/man/man7openssl/des_modes.7openssl
 legacy pkg=SUNWopensslr desc="OpenSSL Libraries (Root)" \
     name="OpenSSL Libraries (Root)"
 license openssl-1.0.2.license license="OpenSSL, SSLeay"
-
-depend type=require fmri=developer/illumos-gcc

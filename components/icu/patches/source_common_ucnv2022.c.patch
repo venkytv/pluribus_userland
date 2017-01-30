@@ -1,21 +1,5 @@
---- icu/source/common/ucnv2022.c.orig	Thu Sep  9 01:18:15 2010
-+++ icu/source/common/ucnv2022.c	Mon Dec  6 15:47:18 2010
-@@ -167,8 +167,13 @@
-  */
- enum { MAX_JA_VERSION=4 };
- static const uint16_t jpCharsetMasks[MAX_JA_VERSION+1]={
-+    /*
-+     * Sun modification
-+     * We support JISX212 at ISO-2022-JP too.
-     CSM(ASCII)|CSM(JISX201)|CSM(JISX208)|CSM(HWKANA_7BIT),
-+     */
-     CSM(ASCII)|CSM(JISX201)|CSM(JISX208)|CSM(HWKANA_7BIT)|CSM(JISX212),
-+    CSM(ASCII)|CSM(JISX201)|CSM(JISX208)|CSM(HWKANA_7BIT)|CSM(JISX212),
-     CSM(ASCII)|CSM(JISX201)|CSM(JISX208)|CSM(HWKANA_7BIT)|CSM(JISX212)|CSM(GB2312)|CSM(KSC5601)|CSM(ISO8859_1)|CSM(ISO8859_7),
-     CSM(ASCII)|CSM(JISX201)|CSM(JISX208)|CSM(HWKANA_7BIT)|CSM(JISX212)|CSM(GB2312)|CSM(KSC5601)|CSM(ISO8859_1)|CSM(ISO8859_7),
-     CSM(ASCII)|CSM(JISX201)|CSM(JISX208)|CSM(HWKANA_7BIT)|CSM(JISX212)|CSM(GB2312)|CSM(KSC5601)|CSM(ISO8859_1)|CSM(ISO8859_7)
---- icu/source/common/ucnv2022.c.orig	2009-05-22 15:45:08.437653452 +0800
-+++ icu/source/common/ucnv2022.c	2009-05-22 15:46:31.620400264 +0800
+--- icu/source/common/ucnv2022.cpp.orig	2009-05-22 15:45:08.437653452 +0800
++++ icu/source/common/ucnv2022.cpp	2009-05-22 15:46:31.620400264 +0800
 @@ -1675,7 +1685,10 @@
                      choices[choiceCount++] = (int8_t)HWKANA_7BIT;
                  }

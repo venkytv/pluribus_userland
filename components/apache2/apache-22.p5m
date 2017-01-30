@@ -38,7 +38,7 @@ set name=org.opensolaris.arc-caseid \
     value=LSARC/2009/565
 set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
-depend type=require-any fmri=runtime/perl-510 fmri=runtime/perl-516
+depend type=require fmri=runtime/perl-522
 
 license LICENSE license="Apache v2.0"
 

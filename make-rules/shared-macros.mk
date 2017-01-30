@@ -336,7 +336,7 @@ PYTHON_DATA= $(PYTHON_LIB)
 
 JAVA7_HOME =	/usr/jdk/instances/jdk1.7.0
 JAVA6_HOME =	/usr/jdk/instances/jdk1.6.0
-JAVA_HOME = $(JAVA7_HOME)
+JAVA_HOME = $(JAVA6_HOME)
 
 # This is the default BUILD version of perl
 # Not necessarily the system's default version, i.e. /usr/bin/perl
