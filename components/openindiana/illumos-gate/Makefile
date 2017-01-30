@@ -82,6 +82,7 @@ $(SOURCE_DIR)/.patched:	$(SOURCE_DIR)/.downloaded $(PATCHES)
 prep::	$(SOURCE_DIR)/.patched
 
 $(BUILD_DIR)/$(MACH)/.built: $(SOURCE_DIR)/.patched
+	mkdir -p $(SOURCE_DIR)/log
 	cd $(SOURCE_DIR) && \
 	  cat usr/src/tools/env/illumos.sh | \
 	  (sed \
