@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Pluribus Networks Inc.
+ * Copyright 2017 Pluribus Networks Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,95 @@ tpm2dot0_startup(void)
 }
 
 static int
+tpm2dot0_get_capability(GetCapability_In *in, GetCapability_Out *out)
+{
+	TPM_RC		rc;
+	TSS_CONTEXT	*tss_ctx = NULL;
+
+	rc = TSS_Create(&tss_ctx);
+	if (rc != 0) {
+		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_GET_CAPABILTY,
+		    TPM2DOT0_R_TSS_CREATE_ERROR);
+		return (-1);
+	}
+
+	rc = TSS_Execute(tss_ctx,
+	    (RESPONSE_PARAMETERS *)out,
+	    (COMMAND_PARAMETERS *)in,
+	    NULL, TPM_CC_GetCapability,
+	    TPM_RH_NULL, NULL, 0);
+
+	rc = TSS_Delete(tss_ctx);
+	if (rc != 0) {
+		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_GET_CAPABILTY,
+		    TPM2DOT0_R_TSS_DELETE_ERROR);
+		return (-1);
+	}
+
+	return (0);
+}
+
+static int
+tpm2dot0_flush_context(TPMI_DH_CONTEXT handle)
+{
+	TPM_RC		rc;
+	TSS_CONTEXT	*tss_ctx = NULL;
+	FlushContext_In	in = { 0 };
+
+	rc = TSS_Create(&tss_ctx);
+	if (rc != 0) {
+		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_CONTEXT,
+		    TPM2DOT0_R_TSS_CREATE_ERROR);
+		return (-1);
+	}
+
+	in.flushHandle = handle;
+	rc = TSS_Execute(tss_ctx,
+	    NULL, (COMMAND_PARAMETERS *)&in, NULL,
+	    TPM_CC_FlushContext, TPM_RH_NULL, NULL, 0);
+	if (rc != 0) {
+		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_CONTEXT,
+		    TPM2DOT0_R_TPM__CC__FLUSHCONTEXT_ERROR);
+		return (-1);
+	}
+
+	rc = TSS_Delete(tss_ctx);
+	if (rc != 0) {
+		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_CONTEXT,
+		    TPM2DOT0_R_TSS_DELETE_ERROR);
+		return (-1);
+	}
+
+	return (0);
+}
+
+static int
+tpm2dot0_flush_all_handles(void)
+{
+	GetCapability_In	in = { 0 };
+	GetCapability_Out	out = { 0 };
+	uint32_t		count;
+	TPML_HANDLE		*handles;
+
+	in.capability = TPM_CAP_HANDLES;
+	in.property = HR_TRANSIENT;
+	in.propertyCount = sizeof (TPMS_CAPABILITY_DATA) / sizeof (TPM_HANDLE);
+
+	if (tpm2dot0_get_capability(&in, &out) != 0) {
+		return (-1);
+	}
+
+	handles = (TPML_HANDLE *)&out.capabilityData.data;
+	for (count = 0; count < handles->count; count++) {
+		if (tpm2dot0_flush_context(handles->handle[count]) != 0) {
+			return (-1);
+		}
+	}
+
+	return (0);
+}
+
+static int
 tpm2dot0_create_pri_ek(void)
 {
 	TPM_RC			rc;
@@ -160,35 +249,7 @@ tpm2dot0_create_pri_ek(void)
 static int
 tpm2dot0_flush_pri_ek(void)
 {
-	TPM_RC			rc;
-	TSS_CONTEXT		*tss_ctx = NULL;
-	FlushContext_In		in = { 0 };
-
-	rc = TSS_Create(&tss_ctx);
-	if (rc != 0) {
-		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_PRI_EK,
-		    TPM2DOT0_R_TSS_CREATE_ERROR);
-		return (-1);
-	}
-
-	in.flushHandle = tpm2dot_gctx->pri_key_obj_hnd;
-	rc = TSS_Execute(tss_ctx,
-	    NULL, (COMMAND_PARAMETERS *)&in, NULL,
-	    TPM_CC_FlushContext, TPM_RH_NULL, NULL, 0);
-	if (rc != 0) {
-		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_PRI_EK,
-		    TPM2DOT0_R_TPM__CC__FLUSHCONTEXT_ERROR);
-		return (-1);
-	}
-
-	rc = TSS_Delete(tss_ctx);
-	if (rc != 0) {
-		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_PRI_EK,
-		    TPM2DOT0_R_TSS_DELETE_ERROR);
-		return (-1);
-	}
-
-	return (0);
+	return (tpm2dot0_flush_context(tpm2dot_gctx->pri_key_obj_hnd));
 }
 
 static int
@@ -427,35 +488,7 @@ tpm2dot0_ch_key_sign(E_TPM2DOT0_PKEY_CTX *tctx, E_TPM2DOT0_RSA_CTX *hptr,
 static int
 tpm2dot0_flush_ch_key(E_TPM2DOT0_RSA_CTX *hptr)
 {
-	TPM_RC		rc;
-	TSS_CONTEXT	*tss_ctx = NULL;
-	FlushContext_In	in = { 0 };
-
-	rc = TSS_Create(&tss_ctx);
-	if (rc != 0) {
-		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_CH_KEY,
-		    TPM2DOT0_R_TSS_CREATE_ERROR);
-		return (-1);
-	}
-
-	in.flushHandle = hptr->ch_key_obj_hnd;
-	rc = TSS_Execute(tss_ctx,
-	    NULL, (COMMAND_PARAMETERS *)&in, NULL,
-	    TPM_CC_FlushContext, TPM_RH_NULL, NULL, 0);
-	if (rc != 0) {
-		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_CH_KEY,
-		    TPM2DOT0_R_TPM__CC__FLUSHCONTEXT_ERROR);
-		return (-1);
-	}
-
-	rc = TSS_Delete(tss_ctx);
-	if (rc != 0) {
-		TPM2DOT0err(TPM2DOT0_F_TPM2DOT0_FLUSH_CH_KEY,
-		    TPM2DOT0_R_TSS_DELETE_ERROR);
-		return (-1);
-	}
-
-	return (0);
+	return (tpm2dot0_flush_context(hptr->ch_key_obj_hnd));
 }
 
 static int
@@ -475,6 +508,10 @@ tpm2dot0_engine_init(ENGINE *e)
 	}
 
 	if (tpm2dot0_startup() != 0) {
+		return (0);
+	}
+
+	if (tpm2dot0_flush_all_handles() != 0) {
 		return (0);
 	}
 
