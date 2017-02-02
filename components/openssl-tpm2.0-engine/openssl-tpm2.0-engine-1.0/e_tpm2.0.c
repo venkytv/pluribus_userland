@@ -507,15 +507,15 @@ tpm2dot0_engine_init(ENGINE *e)
 		tpm2dot0_hndidx_rsa = RSA_get_ex_new_index(0, "TPM2.0 RSA key handle", NULL, NULL, NULL);
 	}
 
-	if (tpm2dot0_startup() != 0) {
-		return (0);
-	}
-
-	if (tpm2dot0_flush_all_handles() != 0) {
-		return (0);
-	}
-
 	if (tpm2dot_gctx == NULL) {
+		if (tpm2dot0_startup() != 0) {
+			return (0);
+		}
+
+		if (tpm2dot0_flush_all_handles() != 0) {
+			return (0);
+		}
+
 		tpm2dot_gctx = OPENSSL_malloc(sizeof (E_TPM2DOT0_GL_CTX));
 
 		if (tpm2dot0_create_pri_ek() != 0) {
