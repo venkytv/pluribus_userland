@@ -529,6 +529,10 @@ tpm2dot0_engine_init(ENGINE *e)
 static int
 tpm2dot0_engine_finish(ENGINE *e)
 {
+	if (tpm2dot_gctx == NULL) {
+		return (1);
+	}
+
 	if (tpm2dot0_flush_pri_ek() != 0) {
 		return (0);
 	}
