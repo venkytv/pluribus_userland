@@ -688,7 +688,7 @@ tpm2dot0_pmeth_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
 		return (0);
 	}
 
-	rsa = RSA_new();
+	rsa = RSA_new_method(pkey->engine);
 	RSA_set_ex_data(rsa, tpm2dot0_hndidx_rsa, hptr);
 
 	rsa->n = BN_new();
@@ -967,8 +967,7 @@ tpm2dot0_priv_decode(EVP_PKEY *pkey, PKCS8_PRIV_KEY_INFO *p8info)
 		return (0);
 	}
 
-	rsa = RSA_new();
-	rsa->engine = pkey->engine;
+	rsa = RSA_new_method(pkey->engine);
 	RSA_set_ex_data(rsa, tpm2dot0_hndidx_rsa, hptr);
 
 	rsa->n = BN_new();
