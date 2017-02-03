@@ -1161,6 +1161,79 @@ tpm2dot0_engine_pkey_asn1_meths(ENGINE *e, EVP_PKEY_ASN1_METHOD **ameth,
 	return (0);
 }
 
+const RSA_METHOD	*generic_rsa_method;
+
+static int
+tpm2dot0_rsa_pub_decrypt(int flen, const unsigned char *from,
+    unsigned char *to, RSA *rsa, int padding)
+{
+	return (generic_rsa_method->rsa_pub_dec(flen, from, to, rsa, padding));
+}
+
+static int
+tpm2dot0_rsa_priv_decrypt(int flen, const unsigned char *from,
+    unsigned char *to, RSA *rsa, int padding)
+{
+	E_TPM2DOT0_RSA_CTX	*hptr;
+	size_t			tlen;
+
+	if (padding != RSA_PKCS1_PADDING) {
+		return (-1);
+	}
+
+	hptr = RSA_get_ex_data(rsa, tpm2dot0_hndidx_rsa);
+
+	if (tpm2dot0_load_ch_key(hptr) != 0) {
+		return (-1);
+	}
+
+	if (tpm2dot0_ch_key_decrypt(hptr, to, &tlen, from, flen) != 0) {
+		return (-1);
+	}
+
+	if (tpm2dot0_flush_ch_key(hptr) != 0) {
+		return (-1);
+	}
+
+	return (tlen);
+}
+
+static int
+tpm2dot0_bn_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
+    const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx)
+{
+	return (generic_rsa_method->bn_mod_exp(r, a, p, m, ctx, m_ctx));
+}
+
+static int
+tpm2dot0_rsa_init(RSA *rsa)
+{
+	return (generic_rsa_method->init(rsa));
+}
+
+static int
+tpm2dot0_rsa_finish(RSA *rsa)
+{
+	return (generic_rsa_method->finish(rsa));
+}
+
+static RSA_METHOD	tpm2dot0_rsa_method = {
+	"TPM2.0 RSA method",
+	NULL,			/* rsa_pub_encrypt */
+	tpm2dot0_rsa_pub_decrypt,
+	NULL,			/* rsa_priv_encrypt */
+	tpm2dot0_rsa_priv_decrypt,
+	NULL,			/* rsa_mod_exp */
+	tpm2dot0_bn_mod_exp,
+	tpm2dot0_rsa_init,
+	tpm2dot0_rsa_finish,
+	RSA_FLAG_EXT_PKEY,
+	NULL,			/* app_data */
+	NULL,			/* rsa_sign */
+	NULL,			/* rsa_verify */
+	NULL			/* rsa_keygen */
+};
+
 static int
 bind_helper(ENGINE *e)
 {
@@ -1195,6 +1268,11 @@ bind_helper(ENGINE *e)
 	    !ENGINE_set_pkey_asn1_meths(e, tpm2dot0_engine_pkey_asn1_meths) ||
 	    !ENGINE_set_load_privkey_function(e,
 	    tpm2dot0_engine_load_privkey)) {
+		return (0);
+	}
+
+	generic_rsa_method = RSA_get_default_method();
+	if (!ENGINE_set_RSA(e, &tpm2dot0_rsa_method)) {
 		return (0);
 	}
 
