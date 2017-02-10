@@ -1098,10 +1098,10 @@ tpm2dot0_pkey_free(EVP_PKEY *pkey)
 
 	if (pkey->pkey.rsa) {
 		hptr = RSA_get_ex_data(pkey->pkey.rsa, tpm2dot0_hndidx_rsa);
+		RSA_free(pkey->pkey.rsa);
 		if (!hptr) {
 			return;
 		}
-		RSA_free(pkey->pkey.rsa);
 		OPENSSL_free(hptr);
 	}
 }
