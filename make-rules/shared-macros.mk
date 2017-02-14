@@ -671,8 +671,12 @@ LD_BITS =      $($(LINKER).ld.$(BITS))
 # Point to Gcc's lib dir to pick up the correct libgcc_s and not depend
 # on the system default one.
 #
+ifneq ($(GCC_LIB32_RPATH), "omit")
 LD_GCC_ROOT.32 = -R$(GCC_ROOT)/lib -L$(GCC_ROOT)/lib
+endif
+ifneq ($(GCC_LIB64_RPATH), "omit")
 LD_GCC_ROOT.64 = -R$(GCC_ROOT)/lib/$(MACH64) -L$(GCC_ROOT)/lib/$(MACH64)
+endif
 LDFLAGS =      $(LD_BITS) $(LD_GCC_ROOT.$(BITS))
 
 # Reduce the symbol table size, effectively conflicting with -g.  We should

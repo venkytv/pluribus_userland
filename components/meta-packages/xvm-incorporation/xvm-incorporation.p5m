@@ -1,0 +1,6 @@
+set name=pkg.fmri value=pkg://$(CONSOLIDATION).pluribusnetworks.com/consolidation/xvm/xvm-incorporation@0.5.11,5.11-0.135
+set name=pkg.description value="This incorporation constrains packages from the xvm consolidation." variant.arch=i386
+set name=pkg.summary value="xvm consolidation incorporation" variant.arch=i386
+set name=pkg.depend.install-hold value=core-os.xvm variant.arch=i386
+set name=org.opensolaris.consolidation value=xvm variant.arch=i386
+set name=description value="xvm consolidation incorporation" variant.arch=i386

@@ -17,6 +17,7 @@ include ../../../make-rules/shared-macros.mk
 
 COMPONENT_NAME=		illumos-gate
 COMPONENT_SRC=		$(COMPONENT_NAME)
+PUB_SUFFIX=		.pluribusnetworks.com
 
 GIT=git
 GIT_REPO=git://github.com/illumos/illumos-gate.git
@@ -29,10 +30,18 @@ DEBUG=no
 
 ifeq ($(DEBUG),yes)
 NIGHTLY_OPTIONS=-nCDmprt
+#NIGHTLY_OPTIONS=-niCDpr +t
 else
 NIGHTLY_OPTIONS=-nCmprt
+#NIGHTLY_OPTIONS=-niCpr +t
 endif
-ONNV_BUILDNUM=$(BRANCHID)
+
+NVOS_MINOR= 3.1
+NVOS_MINOR_VERS= 30100
+
+ONNV_BUILDNUM=12330
+PKGVERS_BRANCH=$(NVOS_MINOR_VERS)$(ONNV_BUILDNUM)
+PKG_BUILD_VERSION=$(PKG_SOLARIS_VERSION)-$(PKGVERS_BRANCH)
 
 COMPONENT_REVISION=$(shell cd $(COMPONENT_SRC); git rev-list HEAD --count)
 
@@ -87,9 +96,10 @@ $(BUILD_DIR)/$(MACH)/.built: $(SOURCE_DIR)/.patched
 	  cat usr/src/tools/env/illumos.sh | \
 	  (sed \
 	    -e 's|^export NIGHTLY_OPTIONS=.*|export NIGHTLY_OPTIONS=\"$(NIGHTLY_OPTIONS)\"|' \
-	    -e 's|^export VERSION=.*|export VERSION=\"$$(git log -1 --format=illumos-%h)\"|' \
+	    -e 's|^export VERSION=.*|export VERSION=\"pn-nvOS-$(NVOS_MINOR)-$(PKGVERS_BRANCH)\"|' \
 	    -e 's|^export CODEMGR_WS=.*|export CODEMGR_WS=\"$$PWD\"|' \
 	    -e 's|^export ON_CLOSED_BINS=.*|export ON_CLOSED_BINS=\"/opt/onbld/closed\"|' \
+	    -e 's|^#export ONBLD_TOOLS|export ONBLD_TOOLS|' \
 	    -e 's|^export MULTI_PROTO=.*|export MULTI_PROTO=\"$(MULTI_PROTO)\"|'; \
 	  echo export PERL_VERSION=\"5.22\"; \
 	  echo export PERL_PKGVERS=\"-522\"; \
@@ -97,7 +107,7 @@ $(BUILD_DIR)/$(MACH)/.built: $(SOURCE_DIR)/.patched
 	  echo export __GNUC=\"\"; \
 	  echo export ONLY_LINT_DEFS=-I\$$SPRO_ROOT/sunstudio12.1/prod/include/lint; \
 	  echo export ONNV_BUILDNUM=$(ONNV_BUILDNUM); \
-	  echo export PKGVERS_BRANCH=$(ONNV_BUILDNUM)) > \
+	  echo export PKGVERS_BRANCH=$(PKGVERS_BRANCH)) > \
 	  illumos.sh && \
 	  time $(ENV) -i /opt/onbld/bin/nightly illumos.sh
 	@[ -d $(BUILD_DIR)/$(MACH) ] || $(MKDIR) $(BUILD_DIR)/$(MACH)
@@ -132,10 +142,10 @@ $(BUILD_DIR)/$(MACH)/.overlay: $(BUILD_DIR)/$(MACH)/.built
 	$(TOUCH) $@
 
 $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
-	echo "<transform set name=pkg.fmri -> edit value pkg://[^/]+/ pkg://$(PUBLISHER)/>" > \
+	echo "<transform set name=pkg.fmri -> edit value pkg://[^/]+/ pkg://$(PUBLISHER)$(PUB_SUFFIX)/>" > \
 	  $(BUILD_DIR)/$(MACH)/publish.transforms
 
-	echo "<transform set name=pkg.fmri -> edit value ,.+: ,$(BUILD_VERSION):>" >> \
+	echo "<transform set name=pkg.fmri -> edit value ,.+: ,$(PKG_BUILD_VERSION):>" >> \
 	  $(BUILD_DIR)/$(MACH)/publish.transforms
 
 	echo "<transform set name=pkg.fmri -> emit set name=userland.info.git-remote value=$(USERLAND_GIT_REMOTE)>" >> \
@@ -549,11 +559,12 @@ $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
 	echo "<transform depend fmri=pkg:/system/storage/parted@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/zones/brand/lx@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 
-	# Needed for MTA replacement
-	echo "<transform depend type=require fmri=pkg:/service/network/smtp/sendmail@.* -> emit depend type=require fmri=pkg:/system/mta>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
-	echo "<transform depend type=require fmri=pkg:/service/network/smtp/sendmail@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
-	echo "<transform depend type=require fmri=service/network/smtp/sendmail -> emit depend type=require fmri=pkg:/system/mta>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
-	echo "<transform depend type=require fmri=service/network/smtp/sendmail -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	# TODO: Needed for MTA replacement
+	# No MTA replacement at present
+	#echo "<transform depend type=require fmri=pkg:/service/network/smtp/sendmail@.* -> emit depend type=require fmri=pkg:/system/mta>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	#echo "<transform depend type=require fmri=pkg:/service/network/smtp/sendmail@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	#echo "<transform depend type=require fmri=service/network/smtp/sendmail -> emit depend type=require fmri=pkg:/system/mta>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	#echo "<transform depend type=require fmri=service/network/smtp/sendmail -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 
 	# Loader branding
 	echo "<transform set name=pkg.fmri value=pkg://[^/]*/system/boot/loader@.* -> emit file path=boot/loader.conf group=sys mode=0644 owner=root preserve=true>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
@@ -583,26 +594,29 @@ ifeq ($(DEBUG),yes)
 		-s variant.debug.illumos=false,$(ON_REPO.NON_DEBUG)
 
 	pkgrepo -s $(@D)/pkgrepo-merged.dir rebuild
-	pkgrecv -s $(@D)/pkgrepo-merged.dir -d $(@D)/pkgrecv.dir --raw \
-	  $$(pkgrecv -s $(@D)/pkgrepo-merged.dir --newest | sed -f packages.ignore)
+	pkgrecv -s $(@D)/pkgrepo-merged.dir -d $(@D)/pkgrecv.dir  \
+	  $$(pkgrecv -s $(@D)/pkgrepo-merged.dir -n | sed -f packages.ignore)
 else
-	pkgrepo -s $(ON_REPO.NON_DEBUG) rebuild
-	pkgrecv -s $(ON_REPO.NON_DEBUG) -d $(@D)/pkgrecv.dir --raw \
-	  $$(pkgrecv -s $(ON_REPO.NON_DEBUG) --newest | sed -f packages.ignore)
+	pkgrepo -s file://$(ON_REPO.NON_DEBUG) rebuild
+	pkgrecv -s file://$(ON_REPO.NON_DEBUG) -d $(@D)/pkgrecv.dir \
+	  $$(pkgrecv -s file://$(ON_REPO.NON_DEBUG)  -n | sed -f packages.ignore)
 endif
 
 	for pkg in $$(echo $(@D)/pkgrecv.dir/*/*); do \
 	  pkgmogrify -O $$pkg/manifest $$pkg/manifest \
 	  $(BUILD_DIR)/$(MACH)/publish.transforms; \
-	  pkgsend -s $(WS_REPO) publish --fmri-in-manifest \
+	  $(PYTHON) $(COMPONENT_DIR)/depend_dups.py $$pkg/manifest; \
+	  if [ -f $$pkg/manifest.depend ]; then $(PYTHON) $(COMPONENT_DIR)/depend_dups.py $$pkg/manifest.depend; fi; \
+	  pkgsend -s file://$(WS_REPO) publish --fmri-in-manifest --no-index --no-catalog \
 	  -d $(BUILD_DIR)/$(MACH)/overlay -d $$pkg $$pkg/manifest; \
 	done
+	pkgrepo -s file://$(WS_REPO) rebuild
 
 	$(TOUCH) $@
 
 .NOTPARALLEL:
 
-publish: update $(BUILD_DIR)/$(MACH)/.published
+publish: $(BUILD_DIR)/$(MACH)/.published
 
 clean::
 	$(RM) -r $(CLEAN_PATHS)

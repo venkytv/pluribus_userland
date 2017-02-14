@@ -20,7 +20,8 @@
 #
 # Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
 #
-COMPONENT_BUILD_ENV.32= " LD_RUN_PATH=/opt/gcc/4.4.4/lib:/lib:/usr/lib "
+COMPONENT_BUILD_ENV.32= " LD_RUN_PATH=/lib:/usr/lib "
+GCC_LIB64_RPATH = "omit"
 include ../../../make-rules/shared-macros.mk
 
 COMPONENT_NAME =	openssl

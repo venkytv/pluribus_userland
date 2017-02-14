@@ -1,0 +1,6 @@
+set name=pkg.fmri value=pkg://$(CONSOLIDATION).pluribusnetworks.com/consolidation/sic_team/sic_team-incorporation@0.5.11,5.11-0.135
+set name=org.opensolaris.consolidation value=sic_team
+set name=description value="sic_team consolidation incorporation"
+set name=pkg.depend.install-hold value=core-os.sic_team
+set name=pkg.summary value="sic_team consolidation incorporation"
+set name=pkg.description value="This incorporation constrains packages from the sic_team consolidation."

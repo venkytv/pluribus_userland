@@ -1,0 +1,6 @@
+set name=pkg.fmri value=pkg://$(CONSOLIDATION).pluribusnetworks.com/consolidation/ub_javavm/ub_javavm-incorporation@0.5.11,5.11-0.135
+set name=pkg.depend.install-hold value=core-os.ub_javavm
+set name=pkg.summary value="ub_javavm consolidation incorporation"
+set name=org.opensolaris.consolidation value=ub_javavm
+set name=pkg.description value="This incorporation constrains packages from the obsolete ub_javavm consolidation."
+set name=description value="ub_javavm consolidation incorporation"

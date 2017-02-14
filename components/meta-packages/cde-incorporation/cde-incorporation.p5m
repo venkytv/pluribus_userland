@@ -10,10 +10,10 @@
 #
 
 #
-# Copyright 2014 Andrzej Szeszo.  All rights reserved.
+# Copyright 2013 Alexander Pyhalov.  All rights reserved.
 #
 
-set name=pkg.fmri value=pkg://$(CONSOLIDATION).pluribusnetworks.com/consolidation/sfw/sfw-incorporation@0.5.11,5.11-0.135
-set name=pkg.description value="This incorporation constrains packages from the sfw consolidation."
-set name=pkg.summary value="sfw consolidation incorporation"
+set name=pkg.fmri value=pkg://$(CONSOLIDATION).pluribusnetworks.com/consolidation/cde/cde-incorporation@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.description value="Empty placeholder for obsolete CDE packages"
+set name=pkg.summary value="CDE consolidation incorporation"
 set name=org.opensolaris.consolidation value=$(CONSOLIDATION)

@@ -55,7 +55,7 @@ CONFIGURE_OPTIONS  +=		--disable-static
 CONFIGURE_OPTIONS  +=		PERL="$(PERL)"
 
 
-COMPONENT_PREP_ACTION = (cd $(@D) ; env AUTOMAKE=/usr/bin/automake-1.11  ./bootstrap)
+COMPONENT_PREP_ACTION = (cd $(@D) ; env AUTOMAKE=/usr/bin/automake  ./bootstrap)
 
 # Remove the hard-wired compiler locations in the LTCC and two CC lines
 # in the two versions of the libtool script.
