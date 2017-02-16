@@ -14,6 +14,7 @@
 #
 
 include ../../../make-rules/shared-macros.mk
+include version-macros.mk
 
 COMPONENT_NAME=		illumos-gate
 COMPONENT_SRC=		$(COMPONENT_NAME)
@@ -29,19 +30,12 @@ FETCH=$(WS_TOOLS)/userland-fetch
 DEBUG=no
 
 ifeq ($(DEBUG),yes)
-NIGHTLY_OPTIONS=-nCDmprt
-#NIGHTLY_OPTIONS=-niCDpr +t
+#NIGHTLY_OPTIONS=-nCDmprt
+NIGHTLY_OPTIONS=-niCDpr +t
 else
-NIGHTLY_OPTIONS=-nCmprt
-#NIGHTLY_OPTIONS=-niCpr +t
+#NIGHTLY_OPTIONS=-nCmprt
+NIGHTLY_OPTIONS=-niCpr +t
 endif
-
-NVOS_MINOR= 3.1
-NVOS_MINOR_VERS= 30100
-
-ONNV_BUILDNUM=12330
-PKGVERS_BRANCH=$(NVOS_MINOR_VERS)$(ONNV_BUILDNUM)
-PKG_BUILD_VERSION=$(PKG_SOLARIS_VERSION)-$(PKGVERS_BRANCH)
 
 COMPONENT_REVISION=$(shell cd $(COMPONENT_SRC); git rev-list HEAD --count)
 
@@ -565,6 +559,11 @@ $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
 	#echo "<transform depend type=require fmri=pkg:/service/network/smtp/sendmail@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	#echo "<transform depend type=require fmri=service/network/smtp/sendmail -> emit depend type=require fmri=pkg:/system/mta>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	#echo "<transform depend type=require fmri=service/network/smtp/sendmail -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+
+	#
+	# Force perl-584 out of the way
+	#
+	echo "<transform depend type=require -> edit fmri pkg:/runtime/perl-584@.* pkg:/runtime/perl-522>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 
 	# Loader branding
 	echo "<transform set name=pkg.fmri value=pkg://[^/]*/system/boot/loader@.* -> emit file path=boot/loader.conf group=sys mode=0644 owner=root preserve=true>" >> $(BUILD_DIR)/$(MACH)/publish.transforms

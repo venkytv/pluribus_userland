@@ -1,0 +1,13 @@
+--- dhcp-4.3.4/common/socket.c.orig	2017-02-14 02:24:51.215385302 -0800
++++ dhcp-4.3.4/common/socket.c	2017-02-14 02:25:58.544088019 -0800
+@@ -56,6 +56,10 @@
+ # endif
+ #endif
+ 
++#ifndef SIOCGLIFHWADDR
++#define	SIOCGLIFHWADDR	_IOWR('i', 192, struct lifreq)
++#endif
++
+ #if defined(DHCPv6)
+ /*
+  * XXX: this is gross.  we need to go back and overhaul the API for socket

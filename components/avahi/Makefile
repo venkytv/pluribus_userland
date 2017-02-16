@@ -31,9 +31,12 @@ include ../../make-rules/configure.mk
 include ../../make-rules/ips.mk
 
 COMPONENT_PREP_ACTION += (cd $(@D) &&\
-	        aclocal -I common &&\
-		automake &&\
+	        aclocal-1.11 -I common &&\
+		automake-1.11 &&\
 		autoconf)
+
+COMPONENT_PRE_CONFIGURE_ACTION = (cd $(SOURCE_DIR) && \
+		$(GSED) -i 's/-D_XOPEN_SOURCE=500//' configure)
 
 LDFLAGS += -ldns_sd
 
@@ -42,6 +45,8 @@ CONFIGURE_OPTIONS+= --with-avahi-group=other
 CONFIGURE_OPTIONS+= --sysconfdir=/etc
 CONFIGURE_OPTIONS+= --localstatedir=/var
 CONFIGURE_OPTIONS+= --with-distro=none
+CONFIGURE_OPTIONS+= --disable-pygtk
+CONFIGURE_OPTIONS+= --disable-gtk
 CONFIGURE_OPTIONS+= --disable-gtk3
 CONFIGURE_OPTIONS+= --disable-qt3
 CONFIGURE_OPTIONS+= --disable-qt4
@@ -64,6 +69,13 @@ CONFIGURE_ENV += PYTHON="$(PYTHON)"
 # CFLAGS are not passed to compiler when g-ir-scanner is used
 COMPONENT_BUILD_ENV += CFLAGS="$(CFLAGS)"
 COMPONENT_BUILD_ENV += CC="$(CC)"
+COMPONENT_BUILD_ENV += XGETTEXT=/usr/gnu/bin/xgettext
+COMPONENT_BUILD_ENV += MSGFMT=/usr/gnu/bin/msgfmt
+
+COMPONENT_INSTALL_ENV += CFLAGS="$(CFLAGS)"
+COMPONENT_INSTALL_ENV += CC="$(CC)"
+COMPONENT_INSTALL_ENV += XGETTEXT=/usr/gnu/bin/xgettext
+COMPONENT_INSTALL_ENV += MSGFMT=/usr/gnu/bin/msgfmt
 
 build: $(BUILD_32_and_64)
 

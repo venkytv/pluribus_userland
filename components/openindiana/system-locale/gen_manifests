@@ -1,0 +1,56 @@
+WS_REPO=../../../i386/repo
+
+pkg contents -m system/locale | \
+	egrep 'set name=pkg.fmri|set name=pkg.summary|set name=variant.opensolaris.zone|set name=description|set name=pkg.description|set name=info.classification' | \
+	sed '/^set name=pkg.fmri/ s/134:.*$/134/' | \
+	sed '/^set name=pkg.fmri/ s/\/pluribusnetworks.com\//\/$(CONSOLIDATION).pluribusnetworks.com\//' > locale.p5m
+echo "set name=org.opensolaris.consolidation value=l10n" >> locale.p5m
+echo "set name=pkg.obsolete value=true" >> locale.p5m
+
+pkg contents -m system/install/locale | \
+	egrep 'set name=pkg.fmri|set name=pkg.summary|set name=variant.opensolaris.zone|set name=description|set name=pkg.description|set name=info.classification' | \
+	sed '/^set name=pkg.fmri/ s/134:.*$/134/' | \
+	sed '/^set name=pkg.fmri/ s/\/pluribusnetworks.com\//\/$(CONSOLIDATION).pluribusnetworks.com\//' > install-locale.p5m
+echo "set name=org.opensolaris.consolidation value=l10n" >> install-locale.p5m
+echo "set name=pkg.obsolete value=true" >> install-locale.p5m
+
+#cat <<_EOT > all-locales.p5m
+#set name=pkg.fmri value=pkg://\$(CONSOLIDATION).pluribusnetworks.com/all-locales@\$(NVOS_MINOR),\$(PKG_BUILD_VERSION)
+#set name=pkg.description value="language support common components"
+#set name=description value="language support common components"
+#set name=variant.opensolaris.zone value=global value=nonglobal
+#set name=pkg.summary value="language support common components"
+#set name=info.classification value=org.opensolaris.category.2008:System/Localizations
+#set name=org.opensolaris.consolidation value=osnet
+#_EOT
+
+pkg list -H system/locale/* | cut -f1 -d" " | while read pk
+do
+	echo "Processing $pk ..."
+	pk_file=`echo $pk | sed 's#/#-#g'`
+	pk_file=${pk_file}.p5m
+	new_pk=`echo $pk | sed 's#system/##'`
+	pk_path=`echo $new_pk | sed 's#/#%2F#g'`
+	pkg contents -m ${pk} | \
+		egrep 'set name=pkg.fmri|set name=pkg.summary|set name=org.opensolaris.consolidation' | \
+		sed '/^set name=pkg.fmri/ s/134:.*$/134/' | \
+		sed '/^set name=pkg.fmri/ s/\/pluribusnetworks.com\//\/$(CONSOLIDATION).pluribusnetworks.com\//' > $pk_file
+	if [ -d ${WS_REPO}/pkg/${pk_path} ]
+	then
+		echo "set name=pkg.renamed value=true" >> $pk_file
+		echo "depend fmri=${new_pk} type=require" >> $pk_file
+		echo "	Renamed to: $new_pk"
+	else
+		new_pk=`echo $new_pk | sed 's/_.*$//'`
+		pk_path=`echo $new_pk | sed 's#/#%2F#g'`
+		if [ -d ${WS_REPO}/pkg/${pk_path} ]
+		then
+			echo "set name=pkg.renamed value=true" >> $pk_file
+			echo "depend fmri=${new_pk} type=require" >> $pk_file
+			echo "	Renamed to: $new_pk"
+		else
+			echo "	Obsoleted"
+		fi
+	fi
+done
+

@@ -1,0 +1,3 @@
+set name=pkg.fmri value=pkg://$(CONSOLIDATION).pluribusnetworks.com/system/locale/ky@0.5.11,5.11-0.134
+set name=pkg.summary value="Kirghiz language support"
+set name=org.opensolaris.consolidation value=l10n

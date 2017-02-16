@@ -1,0 +1,8 @@
+set name=pkg.fmri value=pkg://$(CONSOLIDATION).pluribusnetworks.com/system/install/locale@0.5.11,5.11-0.134
+set name=description value="Localization for system install libraries and commands"
+set name=variant.opensolaris.zone value=global value=nonglobal
+set name=info.classification value=org.opensolaris.category.2008:System/Localizations
+set name=pkg.summary value="Localization for system install libraries and commands"
+set name=pkg.description value="Localization for core software libraries and commands used for system installation"
+set name=org.opensolaris.consolidation value=l10n
+set name=pkg.obsolete value=true

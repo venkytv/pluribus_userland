@@ -30,7 +30,7 @@ for ln in m:
 				dep_fmris.append(fmri)
 				fmri_dict[fmri] = ent
 			else:
-				print "Pruning duplicates:\n\t%s\n\t%s" % (mfname, fmri_dict[fmri], ent)
+				print "Pruning duplicates:\n\t%s\n\t%s" % (fmri_dict[fmri], ent)
 				if len(ent) > len(fmri_dict[fmri]):
 					fmri_dict[fmri] = ent
 					found_dups = True
