@@ -28,7 +28,8 @@ PKGLIST="$@"
 
 if [ ! -d $PREFIX.pkgrecv ]; then
     mkdir $PREFIX.pkgrecv
-    pkgrecv -s $SRCREPO -d $PREFIX.pkgrecv --raw $PKGLIST
+    echo "pkgrecv -s $SRCREPO -d $PREFIX.pkgrecv $PKGLIST"
+    pkgrecv -s $SRCREPO -d $PREFIX.pkgrecv $PKGLIST
 fi
 
 dir() {

@@ -30,11 +30,11 @@ FETCH=$(WS_TOOLS)/userland-fetch
 DEBUG=no
 
 ifeq ($(DEBUG),yes)
-#NIGHTLY_OPTIONS=-nCDmprt
-NIGHTLY_OPTIONS=-niCDpr +t
+NIGHTLY_OPTIONS=-nCDmprt
+#NIGHTLY_OPTIONS=-niCDpr +t
 else
-#NIGHTLY_OPTIONS=-nCmprt
-NIGHTLY_OPTIONS=-niCpr +t
+NIGHTLY_OPTIONS=-nCmprt
+#NIGHTLY_OPTIONS=-niCpr +t
 endif
 
 COMPONENT_REVISION=$(shell cd $(COMPONENT_SRC); git rev-list HEAD --count)
@@ -97,6 +97,8 @@ $(BUILD_DIR)/$(MACH)/.built: $(SOURCE_DIR)/.patched
 	    -e 's|^export MULTI_PROTO=.*|export MULTI_PROTO=\"$(MULTI_PROTO)\"|'; \
 	  echo export PERL_VERSION=\"5.22\"; \
 	  echo export PERL_PKGVERS=\"-522\"; \
+	  echo export PYTHON_VERSION=\"2.6\"; \
+	  echo export PYTHON_PKGVERS=\"-26\"; \
 	  echo export CW_NO_SHADOW=1; \
 	  echo export __GNUC=\"\"; \
 	  echo export ONLY_LINT_DEFS=-I\$$SPRO_ROOT/sunstudio12.1/prod/include/lint; \

@@ -53,6 +53,7 @@ CONFIGURE_OPTIONS += --disable-poppler-qt
 CONFIGURE_OPTIONS += --disable-poppler-qt4
 CONFIGURE_OPTIONS += --enable-zlib
 CONFIGURE_OPTIONS += --enable-xpdf-headers
+CONFIGURE_OPTIONS += --enable-libcurl
 
 COMPONENT_BUILD_ENV += CC="$(CC)"
 COMPONENT_BUILD_ENV += CXX="$(CXX)"

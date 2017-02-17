@@ -55,7 +55,6 @@ CONFIGURE_OPTIONS +=	--enable-dynamic
 CONFIGURE_OPTIONS +=	--disable-compile-inits
 CONFIGURE_OPTIONS +=	--disable-freetype
 CONFIGURE_OPTIONS +=	--with-fontpath=/usr/share/ghostscript/$(COMPONENT_VERSION)/Resource:/usr/share/ghostscript/$(COMPONENT_VERSION)/Resource/Font:/usr/share/ghostscript/fonts:/usr/openwin/lib/X11/fonts/Type1:/usr/openwin/lib/X11/fonts/TrueType:/usr/openwin/lib/X11/fonts/Type3:/usr/X11/lib/X11/fonts/Type1:/usr/X11/lib/fonts/TrueType:/usr/X11/lib/X11/fonts/Type3:/usr/X11/lib/X11/fonts/Resource:/usr/X11/lib/X11/Resource/Font
-CONFIGURE_OPTIONS +=	--with-x=no
 CONFIGURE_OPTIONS +=	--disable-gtk
 
 # configure options to generate 64 bit binaries
@@ -63,6 +62,7 @@ $(BUILD_DIR)/$(MACH64)/.configured: CONFIGURE_OPTIONS += CC="$(CC) -m64"
 $(BUILD_DIR)/$(MACH64)/ijs/.configured: CONFIGURE_OPTIONS += CC="$(CC) -m64"
 
 # config env
+CONFIGURE_ENV += CPPFLAGS="-I/usr/include/libpng12 $(CPPFLAGS)"
 CONFIGURE_ENV += LDFLAGS_SO="-shared "
 CONFIGURE_ENV += CUPSCONFIG=/usr/bin/cups-config
 
@@ -75,7 +75,8 @@ VARIANTS = $(GS_VARIANT) $(IJS_VARIANT) $(GS_VARIANT_64) $(IJS_VARIANT_64)
 
 # autoconf - Generate configuration scripts
 COMPONENT_PREP_ACTION = \
-	 (cd $(@D); $(RM) -r libpng zlib jpeg ; autoconf)
+	 (cd $(@D); $(RM) -r libpng zlib jpeg ; autoconf; \
+	  $(GSED) -i "s/lpng/lpng12/g" configure jbig2dec/configure)
 
 $(GS_VARIANT)/.configured: COMPONENT_PRE_CONFIGURE_ACTION = \
 	($(CLONEY) $(SOURCE_DIR) $(@D))

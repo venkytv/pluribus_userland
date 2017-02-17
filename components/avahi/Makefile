@@ -80,3 +80,19 @@ COMPONENT_INSTALL_ENV += MSGFMT=/usr/gnu/bin/msgfmt
 build: $(BUILD_32_and_64)
 
 install: $(INSTALL_32_and_64)
+
+REQUIRED_PACKAGES += SUNWcs
+#REQUIRED_PACKAGES += library/desktop/gtk2
+REQUIRED_PACKAGES += library/expat
+REQUIRED_PACKAGES += library/glib2
+REQUIRED_PACKAGES += library/libdaemon
+REQUIRED_PACKAGES += library/python-2/python-twisted-27
+REQUIRED_PACKAGES += library/python/pygobject-27
+#REQUIRED_PACKAGES += library/python/pygtk2-27
+REQUIRED_PACKAGES += library/python/python-dbus-27
+REQUIRED_PACKAGES += runtime/python-27
+REQUIRED_PACKAGES += service/network/dns/mdns
+REQUIRED_PACKAGES += system/library
+REQUIRED_PACKAGES += system/library/dbus
+REQUIRED_PACKAGES += system/library/g++-4-runtime
+REQUIRED_PACKAGES += system/library/libdbus

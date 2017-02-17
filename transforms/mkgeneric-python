@@ -1,2 +1,2 @@
-<transform set name=pkg.fmri value=(?:pkg:/)?(.+)-###@(.*) -> emit depend nodrop=true type=require fmri=%<1>-27@%<2>>
 <transform set name=pkg.fmri value=(?:pkg:/)?(.+)-###@(.*) -> emit depend nodrop=true type=require fmri=%<1>-26@%<2>>
+<transform set name=pkg.fmri value=(?:pkg:/)?(.+)-###@(.*) -> emit depend nodrop=true type=require fmri=%<1>-27@%<2>>

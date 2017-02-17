@@ -98,8 +98,8 @@ file path=usr/include/avahi-gobject/ga-service-resolver.h
 #file path=usr/include/avahi-ui/avahi-ui.h
 file path=usr/lib/$(MACH64)/avahi/service-types.db.dir
 file path=usr/lib/$(MACH64)/avahi/service-types.db.pag
-#file path=usr/lib/$(MACH64)/girepository-1.0/Avahi-0.6.typelib
-#file path=usr/lib/$(MACH64)/girepository-1.0/AvahiCore-0.6.typelib
+file path=usr/lib/$(MACH64)/girepository-1.0/Avahi-0.6.typelib
+file path=usr/lib/$(MACH64)/girepository-1.0/AvahiCore-0.6.typelib
 file path=usr/lib/$(MACH64)/libavahi-client.a
 file path=usr/lib/$(MACH64)/libavahi-client.la
 link path=usr/lib/$(MACH64)/libavahi-client.so target=libavahi-client.so.3.2.9
@@ -138,8 +138,8 @@ file path=usr/lib/$(MACH64)/pkgconfig/avahi-gobject.pc
 #file path=usr/lib/$(MACH64)/pkgconfig/avahi-ui.pc
 file path=usr/lib/avahi/service-types.db.dir
 file path=usr/lib/avahi/service-types.db.pag
-#file path=usr/lib/girepository-1.0/Avahi-0.6.typelib
-#file path=usr/lib/girepository-1.0/AvahiCore-0.6.typelib
+file path=usr/lib/girepository-1.0/Avahi-0.6.typelib
+file path=usr/lib/girepository-1.0/AvahiCore-0.6.typelib
 link path=usr/lib/libavahi-client.so target=libavahi-client.so.3.2.9
 link path=usr/lib/libavahi-client.so.3 target=libavahi-client.so.3.2.9
 file path=usr/lib/libavahi-client.so.3.2.9
@@ -181,8 +181,8 @@ file path=usr/share/dbus-1/interfaces/org.freedesktop.Avahi.Server.xml
 file path=usr/share/dbus-1/interfaces/org.freedesktop.Avahi.ServiceBrowser.xml
 file path=usr/share/dbus-1/interfaces/org.freedesktop.Avahi.ServiceResolver.xml
 file path=usr/share/dbus-1/interfaces/org.freedesktop.Avahi.ServiceTypeBrowser.xml
-#file path=usr/share/gir-1.0/Avahi-0.6.gir
-#file path=usr/share/gir-1.0/AvahiCore-0.6.gir
+file path=usr/share/gir-1.0/Avahi-0.6.gir
+file path=usr/share/gir-1.0/AvahiCore-0.6.gir
 file path=usr/share/locale/bg/LC_MESSAGES/avahi.mo
 file path=usr/share/locale/ca/LC_MESSAGES/avahi.mo
 file path=usr/share/locale/cs/LC_MESSAGES/avahi.mo
