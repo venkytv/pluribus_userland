@@ -18,36 +18,36 @@
 #
 # CDDL HEADER END
 #
-# Copyright (c) 2011, 2012, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
 #
 include ../../../make-rules/shared-macros.mk
 
-PATH=/usr/bin:/usr/gnu/bin:/usr/sbin
+#
+# Note this perl is 32-bit only.
+#
 
-COMPONENT_NAME=		pycups
-COMPONENT_VERSION=	1.9.73
-COMPONENT_PROJECT_URL=	http://cyberelk.net/tim/software/pycups/
-COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
-COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.bz2
-COMPONENT_ARCHIVE_HASH=	\
-    sha256:c381be011889ca6f728598578c89c8ac9f7ab1e95b614474df9f2fa831ae5335
-COMPONENT_ARCHIVE_URL=	http://cyberelk.net/tim/data/pycups/$(COMPONENT_ARCHIVE)
-COMPONENT_BUGDB=	python-mod/pycups
+# I want to override PERL_VERSION and PERL_ARCH because when building
+# a new version of perl it probably isn't installed so shared-macros.mk
+# can't call it.
+
+COMPONENT_NAME=         perl
+COMPONENT_VERSION=      5.8.5
+COMPONENT_SUMMARY=      Obsolete Perl 5.84
+PERL_VERSION=           5.8.4
+COMPONENT_PROJECT_URL=  http://www.perl.org/
+COMPONENT_CLASSIFICATION=       Development/Perl
+COMPONENT_SRC=          $(COMPONENT_NAME)-$(COMPONENT_VERSION)
 
 include $(WS_TOP)/make-rules/prep.mk
-include $(WS_TOP)/make-rules/setup.py.mk
 include $(WS_TOP)/make-rules/ips.mk
 
-# pycups requires VERSION to be defined. Originally set in the package Makefile
-CFLAGS += -DVERSION=\\\"$(COMPONENT_VERSION)\\\"
 
-# common targets
-build:		$(BUILD_32_and_64)
+build:
 
-install:	$(INSTALL_32_and_64)
+install:
 
-test:		$(NO_TESTS)
+test:
 
-BUILD_PKG_DEPENDENCIES =	$(BUILD_TOOLS)
+clean::
+	$(RM) -r $(BUILD_DIR)
 
-include $(WS_TOP)/make-rules/depend.mk

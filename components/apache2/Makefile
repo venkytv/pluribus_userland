@@ -23,21 +23,22 @@
 include ../../make-rules/shared-macros.mk
 
 COMPONENT_NAME=		apache2
-COMPONENT_VERSION=	2.2.29
+COMPONENT_VERSION=	2.2.31
+COMPONENT_REVISION=	1
 COMPONENT_PROJECT_URL=	http://httpd.apache.org/
 COMPONENT_SRC_NAME=	httpd
 COMPONENT_SRC=		$(COMPONENT_SRC_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
 COMPONENT_ARCHIVE_HASH=	\
-   sha256:cec2878884b758b0d159a1385b2667a2ae0ca21b0bc7bcc8a9a41b5cfa5452ff
+   sha256:77afdd50ca2624f7d78832b1e92f34e4df293328ec59fd0e3f6cdedf67ac0c7f
 COMPONENT_ARCHIVE_URL=	http://archive.apache.org/dist/httpd/$(COMPONENT_ARCHIVE)
 COMPONENT_BUGDB=	utility/apache
 
 CONFIGURE_DEFAULT_DIRS=no
 
-include ../../make-rules/prep.mk
-include ../../make-rules/configure.mk
-include ../../make-rules/ips.mk
+include $(WS_TOP)/make-rules/prep.mk
+include $(WS_TOP)/make-rules/configure.mk
+include $(WS_TOP)/make-rules/ips.mk
 
 PATCH_LEVEL=0
 
@@ -121,4 +122,4 @@ test: $(NO_TESTS)
 
 BUILD_PKG_DEPENDENCIES =	$(BUILD_TOOLS)
 
-include ../../make-rules/depend.mk
+include $(WS_TOP)/make-rules/depend.mk
