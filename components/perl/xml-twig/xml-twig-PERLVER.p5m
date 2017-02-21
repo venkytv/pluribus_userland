@@ -1,0 +1,61 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+#
+
+<transform file path=usr.*/man/.+ -> default mangler.man.stability volatile>
+
+set name=pkg.fmri value=pkg:/library/perl-5/xml-twig-$(PLV)@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary \
+    value="XML::Twig - A perl module for processing huge XML documents in tree mode."
+set name=pkg.description value="The XML::Twig Tree interface to XML documents allowing processing chunk by chunk of huge documents."
+set name=info.classification \
+    value="org.opensolaris.category.2008:Development/Perl"
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+
+license xml-twig.license license='Artistic'
+
+depend fmri=library/perl-5/xml-parser type=require
+
+file path=usr/perl5/$(PERLVER)/man/man3/XML::Twig.3
+file path=usr/perl5/$(PERLVER)/man/man1/xml_split.1
+file path=usr/perl5/$(PERLVER)/man/man1/xml_merge.1
+file path=usr/perl5/$(PERLVER)/man/man1/xml_spellcheck.1
+file path=usr/perl5/$(PERLVER)/man/man1/xml_pp.1
+file path=usr/perl5/$(PERLVER)/man/man1/xml_grep.1
+file path=usr/perl5/$(PERLVER)/bin/xml_split
+file path=usr/perl5/$(PERLVER)/bin/xml_merge
+file path=usr/perl5/$(PERLVER)/bin/xml_spellcheck
+file path=usr/perl5/$(PERLVER)/bin/xml_grep
+file path=usr/perl5/$(PERLVER)/bin/xml_pp
+file path=usr/perl5/vendor_perl/$(PERLVER)/XML/Twig.pm
+file path=usr/perl5/vendor_perl/$(PERLVER)/XML/Twig/XPath.pm
+file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH32)/auto/XML/Twig/.packlist
+file path=usr/perl5/$(MACH64)/$(PERLVER)/bin/xml_split
+file path=usr/perl5/$(MACH64)/$(PERLVER)/bin/xml_merge
+file path=usr/perl5/$(MACH64)/$(PERLVER)/bin/xml_spellcheck
+file path=usr/perl5/$(MACH64)/$(PERLVER)/bin/xml_grep
+file path=usr/perl5/$(MACH64)/$(PERLVER)/bin/xml_pp
+file path=usr/perl5/$(MACH64)/vendor_perl/$(PERLVER)/XML/Twig.pm
+file path=usr/perl5/$(MACH64)/vendor_perl/$(PERLVER)/XML/Twig/XPath.pm
+file path=usr/perl5/$(MACH64)/vendor_perl/$(PERLVER)/$(PERL_ARCH64)/auto/XML/Twig/.packlist

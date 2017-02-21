@@ -1,0 +1,47 @@
+#
+# This file and its contents are supplied under the terms of the
+# Common Development and Distribution License ("CDDL"), version 1.0.
+# You may only use this file in accordance with the terms of version
+# 1.0 of the CDDL.
+#
+# A full copy of the text of the CDDL should have accompanied this
+# source.  A copy of the CDDL is also available via the Internet at
+# http://www.illumos.org/license/CDDL.
+#
+
+#
+# Copyright 2013 Alexander Pyhalov.  All rights reserved.
+#
+
+set name=pkg.fmri value=pkg:/metapackages/perl-modules-core@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="$(COMPONENT_SUMMARY)"
+set name=description value="$(COMPONENT_SUMMARY)"
+set name=info.classification value="org.opensolaris.category.2008:Meta Packages/Group Packages"
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+
+depend fmri=library/perl-5/Expect type=require
+depend fmri=library/perl-5/authen-pam type=require
+depend fmri=library/perl-5/bundle-expect type=require
+depend fmri=library/perl-5/encode-locale type=require
+depend fmri=library/perl-5/file-listing type=require
+depend fmri=library/perl-5/html-parser type=require
+depend fmri=library/perl-5/http-cookies type=require
+depend fmri=library/perl-5/http-daemon type=require
+depend fmri=library/perl-5/http-date type=require
+depend fmri=library/perl-5/http-message type=require
+depend fmri=library/perl-5/http-negotiate type=require
+depend fmri=library/perl-5/io-html type=require
+depend fmri=library/perl-5/io-tty type=require
+depend fmri=library/perl-5/libwww-perl type=require
+depend fmri=library/perl-5/log-log4perl type=require
+depend fmri=library/perl-5/lwp-mediatypes type=require
+depend fmri=library/perl-5/net-http type=require
+depend fmri=library/perl-5/net-netmask type=require
+depend fmri=library/perl-5/net-ssh-expect type=require
+depend fmri=library/perl-5/number-range type=require
+depend fmri=library/perl-5/switch type=require
+depend fmri=library/perl-5/uri type=require
+depend fmri=library/perl-5/www-robotrules type=require
+depend fmri=library/perl-5/xml-parser type=require
+depend fmri=library/perl-5/xml-simple type=require
+depend fmri=library/perl-5/xml-twig type=require

@@ -227,7 +227,8 @@ $(MANIFEST_BASE)-%.p5m: %-PYVER.p5m $(WS_TOP)/transforms/mkgeneric-python
 define perl-manifest-rule
 $(MANIFEST_BASE)-%-$(shell echo $(1) | tr -d .).p5m: %-PERLVER.p5m
 	$(PKGMOGRIFY) -D PERLVER=$(1) -D PLV=$(shell echo $(1) | tr -d .) \
-		-D PERL_ARCH=$(call PERL_ARCH_FUNC,$(PERL.$(1))) $$< > $$@
+		-D PERL_ARCH32=$(call PERL_ARCH_FUNC,$(PERL.32)) \
+		-D PERL_ARCH64=$(call PERL_ARCH_FUNC,$(PERL.64)) $$< > $$@
 endef
 $(foreach ver,$(PERL_VERSIONS),$(eval $(call perl-manifest-rule,$(ver))))
 

@@ -25,7 +25,10 @@ license $(COMPONENT_LICENSE_FILE) license='$(COMPONENT_LICENSE)'
 depend fmri=pkg:/$(COMPONENT_FMRI)@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION) type=require
 
 dir  path=usr/perl5/site_perl/5.22/$(P_ARCH)-solaris-64int
+dir  path=usr/perl5/$(MACH64)/site_perl/5.22/$(P_ARCH)-solaris-64
 
 file path=usr/perl5/5.22/lib/$(P_ARCH)-solaris-64int/DB_File.pm
 file path=usr/perl5/5.22/lib/$(P_ARCH)-solaris-64int/auto/DB_File/DB_File.so
+file path=usr/perl5/$(MACH64)/5.22/lib/$(P_ARCH)-solaris-64/DB_File.pm
+file path=usr/perl5/$(MACH64)/5.22/lib/$(P_ARCH)-solaris-64/auto/DB_File/DB_File.so
 file path=usr/perl5/5.22/man/man3/DB_File.3

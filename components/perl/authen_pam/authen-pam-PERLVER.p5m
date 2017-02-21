@@ -33,7 +33,11 @@ license authen-pam.license license='Artistic'
 
 file path=usr/perl5/$(PERLVER)/man/man3/Authen::PAM.3
 file path=usr/perl5/$(PERLVER)/man/man3/Authen::PAM::FAQ.3
-file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH)/auto/Authen/PAM/.packlist
-file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH)/auto/Authen/PAM/PAM.so
-file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH)/Authen/PAM.pm
-file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH)/Authen/PAM/FAQ.pod
+file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH32)/auto/Authen/PAM/.packlist
+file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH32)/auto/Authen/PAM/PAM.so
+file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH32)/Authen/PAM.pm
+file path=usr/perl5/vendor_perl/$(PERLVER)/$(PERL_ARCH32)/Authen/PAM/FAQ.pod
+file path=usr/perl5/$(MACH64)/vendor_perl/$(PERLVER)/$(PERL_ARCH64)/auto/Authen/PAM/.packlist
+file path=usr/perl5/$(MACH64)/vendor_perl/$(PERLVER)/$(PERL_ARCH64)/auto/Authen/PAM/PAM.so
+file path=usr/perl5/$(MACH64)/vendor_perl/$(PERLVER)/$(PERL_ARCH64)/Authen/PAM.pm
+file path=usr/perl5/$(MACH64)/vendor_perl/$(PERLVER)/$(PERL_ARCH64)/Authen/PAM/FAQ.pod

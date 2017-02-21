@@ -22,10 +22,6 @@
 #
 include ../../../make-rules/shared-macros.mk
 
-#
-# Note this perl is 32-bit only.
-#
-
 # I want to override PERL_VERSION and PERL_ARCH because when building
 # a new version of perl it probably isn't installed so shared-macros.mk
 # can't call it.
@@ -57,7 +53,7 @@ COMPONENT_BUILD_ARGS =
 CONFIGURE_SCRIPT = $(SOURCE_DIR)/Configure
 CONFIGURE_ENV += MAKE=$(GMAKE)
 
-CONFIGURE_OPTIONS = \
+CONFIGURE_OPTIONS.32 = \
 			-de \
 			-Dmksymlinks \
 			-Ulocincpth= \
@@ -65,7 +61,7 @@ CONFIGURE_OPTIONS = \
                         -Dbin=/usr/perl5/$(PERL_VERSION)/bin \
 			-Dcc="$(CC) $(CC_BITS)" \
 			-Dccflags="-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64" \
-			-Dcf_email="oi-dev@openindiana.org" \
+			-Dcf_email="moinak.ghosh@pluribusnetworks.com" \
 			-Dcf_by="perl-bugs" \
 			-Dlibperl=libperl.so \
 			-Dmyhostname="localhost" \
@@ -80,6 +76,29 @@ CONFIGURE_OPTIONS = \
 			-Dusedtrace \
 			-Uuselargefiles 
 
+CONFIGURE_OPTIONS.64 = \
+			-de \
+			-Dmksymlinks \
+			-Ulocincpth= \
+			-Uloclibpth= \
+                        -Dbin=/usr/perl5/$(MACH64)/$(PERL_VERSION)/bin \
+			-Dcc="$(CC) $(CC_BITS)" \
+			-Dcf_email="moinak.ghosh@pluribusnetworks.com" \
+			-Dcf_by="perl-bugs" \
+			-Dlibperl=libperl.so \
+			-Dmyhostname="localhost" \
+			-Dprefix=/usr/perl5/$(MACH64)/$(PERL_VERSION) \
+                        -Dprivlib=/usr/perl5/$(MACH64)/$(PERL_VERSION)/lib \
+			-Dsitelib=/usr/perl5/$(MACH64)/site_perl/$(PERL_VERSION) \
+			-Dsiteprefix=/usr/perl5/$(MACH64)/$(PERL_VERSION) \
+			-Dvendorlib=/usr/perl5/$(MACH64)/vendor_perl/$(PERL_VERSION) \
+			-Dvendorprefix=/usr/perl5/$(MACH64)/$(PERL_VERSION) \
+			-Duse64bitint \
+			-Duseshrplib \
+			-Dusedtrace \
+			-Uuselargefiles 
+
+CONFIGURE_OPTIONS = $(CONFIGURE_OPTIONS.$(BITS))
 COMPONENT_INSTALL_ENV	+=	DESTDIR="$(PROTO_DIR)"
 
 #
@@ -103,11 +122,11 @@ COMPONENT_TEST_TRANSFORMS += \
 	'-e "/^Elapsed/d"'
 
 
-build:		$(BUILD_32)
+build:		$(BUILD_32_and_64)
 
-install:	$(INSTALL_32)
+install:	$(INSTALL_32_and_64)
 
-test:		$(TEST_32)
+test:		$(TEST_32_and_64)
 
 REQUIRED_PACKAGES += database/berkeleydb-5
 REQUIRED_PACKAGES += library/database/gdbm
