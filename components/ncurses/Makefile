@@ -47,14 +47,20 @@ COMPONENT_PRE_CONFIGURE_ACTION = \
 CONFIGURE_PREFIX =	/usr/gnu
 
 # force XPG6 standard
+# XPG5 is needed to pull in btowc() and a bunch of related
+# functions.
 CXXFLAGS += -D_XPG6
+CXXFLAGS += -D_XPG5
+CPPFLAGS += -D_XPG6
 LDFLAGS += -D_XPG6
+CFLAGS += -std=c99 -D_POSIX_C_SOURCE=200112L
 
 CONFIGURE_OPTIONS +=	--with-shared
 CONFIGURE_OPTIONS +=	--with-normal
 CONFIGURE_OPTIONS +=	--enable-rpath
 CONFIGURE_OPTIONS +=	--enable-widec
 CONFIGURE_OPTIONS +=	--includedir=$(USRINCDIR)/ncurses
+CONFIGURE_ENV += CPPFLAGS="$(CPPFLAGS)"
 
 # XXX: Ugly hack copied directly from the desktop SUNWncurses.spec file:
 # The sun-color terminfo included in ncurses does not work;

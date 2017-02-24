@@ -47,7 +47,7 @@ file path=usr/lib/python$(PYVER)/vendor-packages/ply/ctokens.py
 file path=usr/lib/python$(PYVER)/vendor-packages/ply/lex.py
 file path=usr/lib/python$(PYVER)/vendor-packages/ply/yacc.py
 #
-license COPYING license=LGPLv2.1
+license ply.copyright license=LGPLv2.1
 
 # force a dependency on the Python runtime
 depend type=require fmri=__TBD pkg.debug.depend.file=python$(PYVER) \

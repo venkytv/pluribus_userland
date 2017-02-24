@@ -1,0 +1,31 @@
+set name=pkg.fmri value=pkg:/system/zones/brand/ipkg@0.5.11,5.11-0.144
+set name=pkg.description value="$(COMPONENT_SUMMARY)"
+set name=description value="$(COMPONENT_SUMMARY)"
+set name=info.classification value=$(COMPONENT_CLASSIFICATION)
+set name=pkg.summary value="$(COMPONENT_SUMMARY)"
+
+depend fmri=service/management/sysding type=require
+
+dir group=bin mode=0755 owner=root path=.
+dir group=bin mode=0755 owner=root path=etc/brand
+dir group=bin mode=0755 owner=root path=etc/brand/ipkg
+dir group=bin mode=0755 owner=root path=etc/zones
+dir group=bin mode=0755 owner=root path=usr/lib/brand
+dir group=bin mode=0755 owner=root path=usr/lib/brand/ipkg
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/fmri_compare
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/image_install
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/p2v
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/pkgcreatezone
+file group=bin mode=0644 owner=root path=usr/lib/brand/ipkg/pkgrm.lst
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/poststate
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/prestate
+file group=bin mode=0644 owner=root path=usr/lib/brand/ipkg/smf_disable.lst
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/support
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/uninstall
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/clone
+file group=bin mode=0644 owner=root path=etc/brand/ipkg/pkgrm.conf
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/attach
+file group=bin mode=0644 owner=root path=etc/brand/ipkg/smf_disable.conf
+file group=bin mode=0644 owner=root path=usr/lib/brand/ipkg/common.ksh
+file group=bin mode=0644 owner=root path=etc/zones/SUNWipkg.xml
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/detach

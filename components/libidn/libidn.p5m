@@ -22,6 +22,8 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
 license libidn.license license='$(COMPONENT_LICENSE)'
 
+depend fmri=library/gnu-libiconv type=require
+
 file path=usr/bin/$(MACH64)/idn
 file path=usr/bin/idn
 file path=usr/include/idn/idn-free.h

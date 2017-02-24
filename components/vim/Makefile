@@ -53,7 +53,11 @@ ASLR_MODE =	$(ASLR_ENABLE)
 X_VARIANT =	$(BUILD_DIR)/$(MACH32)-gvim
 NOX_VARIANT =	$(BUILD_DIR)/$(MACH32)-vim
 
-VARIANTS =	$(X_VARIANT) $(NOX_VARIANT)
+#
+# Only NOX variant for now. We will enable GUI later.
+#
+#VARIANTS =	$(X_VARIANT) $(NOX_VARIANT)
+VARIANTS =	$(NOX_VARIANT)
 
 BUILD_32 = 	$(VARIANTS:%=%/.built)
 

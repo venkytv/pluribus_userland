@@ -24,19 +24,18 @@ include ../../../make-rules/shared-macros.mk
 
 PATH=/usr/bin:/usr/sbin
 
-PYTHON_VERSIONS=	2.6
 COMPONENT_NAME=		pyOpenSSL
 COMPONENT_VERSION=	0.13
-COMPONENT_REVISION=	1
+COMPONENT_REVISION=	3
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
 COMPONENT_ARCHIVE_HASH=	\
     sha256:21e12b03abaa0e04ecc8cd9c251598f71bae11c9f385304234e4ea5618c6163b
-#    sha256:a99db8e59c120138ad8a72eecedcc24b4510d2eed3ce48213b7e32f22cc4ee6e
 COMPONENT_ARCHIVE_URL=  $(call pypi_url)
 COMPONENT_PROJECT_URL=  https://launchpad.net/pyopenssl
 COMPONENT_BUGDB=	python-mod/pyopenssl
-CFLAGS +=		-fPIC
+
+PYTHON_VERSIONS=	2.6 2.7
 
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/setup.py.mk
@@ -58,6 +57,7 @@ install:	$(INSTALL_32_and_64)
 
 test:		$(TEST_32_and_64)
 
-BUILD_PKG_DEPENDENCIES =	$(BUILD_TOOLS)
-
-include $(WS_TOP)/make-rules/depend.mk
+REQUIRED_PACKAGES += library/security/openssl
+REQUIRED_PACKAGES += runtime/python-27
+REQUIRED_PACKAGES += runtime/python-26
+REQUIRED_PACKAGES += system/library

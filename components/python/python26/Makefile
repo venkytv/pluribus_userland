@@ -54,6 +54,7 @@ COMPONENT_POST_CONFIGURE_ACTION = \
 	(cd $(@D) ; \
 	 perl -pi -e 's/(^\#define _POSIX_C_SOURCE.*)/\/* $$1 *\//' pyconfig.h ; \
 	 perl -pi -e 's/^(\#define _XOPEN_SOURCE.*)/\/* $$1 *\//' pyconfig.h ; \
+	 perl -pi -e 's/^(\#define HAVE_ATTRIBUTE_FORMAT_PARSETUPLE.*)/\/* $$1 *\//' pyconfig.h ; \
 	 perl -pi -e 's/^(\#define _XOPEN_SOURCE_EXTENDED.*)/\/* $$1 *\//' \
 			pyconfig.h)
 
