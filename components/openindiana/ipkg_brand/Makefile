@@ -22,14 +22,6 @@
 #
 include ../../../make-rules/shared-macros.mk
 
-#
-# Note this perl is 32-bit only.
-#
-
-# I want to override PERL_VERSION and PERL_ARCH because when building
-# a new version of perl it probably isn't installed so shared-macros.mk
-# can't call it.
-
 COMPONENT_NAME=         ipkg
 COMPONENT_VERSION=      0.5.11
 COMPONENT_SUMMARY=      Create native zones using IPS packages

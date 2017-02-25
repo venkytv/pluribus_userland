@@ -1,5 +1,5 @@
---- a/src/tcs/rpc/tcstp/rpc_ps.c.orig	2011-03-23 11:01:54.707428173 -0700
-+++ b/src/tcs/rpc/tcstp/rpc_ps.c	2011-03-23 11:27:00.753845441 -0700
+--- src/tcs/rpc/tcstp/rpc_ps.c.orig	2011-03-23 11:01:54.707428173 -0700
++++ src/tcs/rpc/tcstp/rpc_ps.c	2011-03-23 11:27:00.753845441 -0700
 @@ -26,6 +26,29 @@
  #include "tcs_utils.h"
  #include "rpc_tcstp_tcs.h"

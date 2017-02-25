@@ -21,38 +21,54 @@
 # Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
 #
 
-# Perl 5.12 and older are 32-bit only.
-# Perl 5.16 and newer are 64-bit only.
-
 COMMON_PERL_ENV +=	MAKE=$(GMAKE)
 COMMON_PERL_ENV +=	PATH=$(dir $(CC)):$(SPRO_VROOT)/bin:$(PATH)
 COMMON_PERL_ENV +=	LANG=""
 COMMON_PERL_ENV +=	CC="$(CC)"
 COMMON_PERL_ENV +=	CFLAGS="$(PERL_OPTIMIZE)"
+TARGET_ILLUMOS = $(shell [ -f /boot/loader.conf ] && echo true || echo false)
 
 # Yes.  Perl is just scripts, for now, but we need architecture
 # directories so that it populates all architecture prototype
 # directories.
+ifeq ($(TARGET_ILLUMOS),true)
+$(BUILD_DIR)/$(MACH32)-5.22/.configured:	PERL_VERSION=5.22
+$(BUILD_DIR)/$(MACH32)-5.22/.configured:	BITS=32
+$(BUILD_DIR)/$(MACH64)-5.22/.configured:	PERL_VERSION=5.22
+$(BUILD_DIR)/$(MACH64)-5.22/.configured:	BITS=64
 
-$(BUILD_DIR)/$(MACH32)-5.16/.configured:	PERL_VERSION=5.16
-$(BUILD_DIR)/$(MACH32)-5.16/.configured:	BITS=32
-$(BUILD_DIR)/$(MACH32)-5.10.0/.configured:	PERL_VERSION=5.10.0
-$(BUILD_DIR)/$(MACH32)-5.10.0/.configured:	BITS=32
-$(BUILD_DIR)/$(MACH64)-5.16/.configured:	PERL_VERSION=5.16
-$(BUILD_DIR)/$(MACH64)-5.16/.configured:	BITS=64
+else
+$(BUILD_DIR)/$(MACH32)-5.16/.configured:       PERL_VERSION=5.16
+$(BUILD_DIR)/$(MACH32)-5.16/.configured:       BITS=32
+$(BUILD_DIR)/$(MACH32)-5.10.0/.configured:     PERL_VERSION=5.10.0
+$(BUILD_DIR)/$(MACH32)-5.10.0/.configured:     BITS=32
+$(BUILD_DIR)/$(MACH64)-5.16/.configured:       PERL_VERSION=5.16
+$(BUILD_DIR)/$(MACH64)-5.16/.configured:       BITS=64
+endif
 
 PERL_32_BUILD_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH32)-$(ver)/.built )
 PERL_32_INSTALL_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH32)-$(ver)/.installed )
 PERL_32_TEST_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH32)-$(ver)/.tested )
 
+ifeq ($(TARGET_ILLUMOS),true
+PERL_64_BUILD_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH64)-$(ver)/.built )
+PERL_64_INSTALL_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH64)-$(ver)/.installed )
+PERL_64_TEST_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH64)-$(ver)/.tested )
+endif
+
 BUILD_32 =	$(PERL_32_BUILD_FILES)
-BUILD_64 =	$(BUILD_DIR)/$(MACH64)-5.16/.built
-
 INSTALL_32 =	$(PERL_32_INSTALL_FILES)
-INSTALL_64 =	$(BUILD_DIR)/$(MACH64)-5.16/.installed
-
 TEST_32 =	$(PERL_32_TEST_FILES)
-TEST_64 =	$(BUILD_DIR)/$(MACH64)-5.16/.tested
+
+ifeq ($(TARGET_ILLUMOS),true
+BUILD_64 =	$(PERL_64_BUILD_FILES)
+INSTALL_64 =	$(PERL_64_INSTALL_FILES)
+TEST_64 =	$(PERL_64_TEST_FILES)
+else
+BUILD_64 =     $(BUILD_DIR)/$(MACH64)-5.16/.built
+INSTALL_64 =   $(BUILD_DIR)/$(MACH64)-5.16/.installed
+TEST_64 =      $(BUILD_DIR)/$(MACH64)-5.16/.tested
+endif
 
 COMPONENT_CONFIGURE_ENV +=	$(COMMON_PERL_ENV)
 COMPONENT_CONFIGURE_ENV +=	PERL="$(PERL)"
@@ -61,7 +77,7 @@ $(BUILD_DIR)/%/.configured:	$(SOURCE_DIR)/.prep
 	$(CLONEY) $(SOURCE_DIR) $(@D)
 	$(COMPONENT_PRE_CONFIGURE_ACTION)
 	(cd $(@D) ; $(COMPONENT_CONFIGURE_ENV) $(PERL) $(PERL_FLAGS) \
-				Makefile.PL $(PERL_STUDIO_OVERWRITE) $(CONFIGURE_OPTIONS))
+				Makefile.PL $(PERL_MAKE_OPTIONS) $(PERL_STUDIO_OVERWRITE) $(CONFIGURE_OPTIONS))
 	$(COMPONENT_POST_CONFIGURE_ACTION)
 	$(TOUCH) $@
 

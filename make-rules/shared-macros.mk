@@ -79,13 +79,18 @@ OS_VERSION :=		$(shell uname -r)
 SOLARIS_VERSION =	$(OS_VERSION:5.%=2.%)
 # Target OS version
 PKG_SOLARIS_VERSION ?= 5.11
+TARGET_ILLUMOS = $(shell [ -f /boot/loader.conf ] && echo true || echo false)
 
 include $(WS_MAKE_RULES)/ips-buildinfo.mk
 
 COMPILER =		gcc
 LINKER =		gcc
 BITS =			32
+ifeq ($(TARGET_ILLUMOS),true)
 PYTHON_VERSION =	2.7
+else
+PYTHON_VERSION =       2.6
+endif
 PYTHON_VERSIONS =	2.6 2.7
 
 BASS_O_MATIC =	$(WS_TOOLS)/bass-o-matic
@@ -341,27 +346,42 @@ JAVA_HOME = $(JAVA6_HOME)
 
 # This is the default BUILD version of perl
 # Not necessarily the system's default version, i.e. /usr/bin/perl
+ifeq ($(TARGET_ILLUMOS),true)
 PERL_VERSION =  5.22
-#PERL_VERSION =  5.16
-
 PERL_VERSIONS = 5.22
-#PERL_VERSIONS = 5.10.0 5.12 5.16
-#PERL_VERSIONS = 5.16
 
-#PERL.5.16 =	/usr/perl5/5.16/bin/perl
-PERL.5.22 =	/usr/perl5/5.22/bin/perl
+PERL.5.22.32 =	/usr/perl5/5.22/bin/perl
+PERL.5.22.64 =	/usr/perl5/$(MACH64)/5.22/bin/perl
+
+PERL.32 =	$(PERL.$(PERL_VERSION).32)
+PERL.64 =	$(PERL.$(PERL_VERSION).64)
+PERL =          $(PERL.$(PERL_VERSION).$(BITS))
+
+PERL_ARCH.32 :=	$(shell $(PERL.32) -e 'use Config; print $$Config{archname}')
+PERL_ARCH.64 :=	$(shell $(PERL.64) -e 'use Config; print $$Config{archname}')
+PERL_ARCH_FUNC =	$(shell $(1) -e 'use Config; print $$Config{archname}')
+
+else
+PERL_VERSION =  5.10.0
+PERL_VERSIONS = 5.10.0
+
+PERL.5.10.0 =     /usr/perl5/5.10.0/bin/perl
+PERL.5.12 =     /usr/perl5/5.12/bin/perl
+PERL.5.16 =    /usr/perl5/5.16/bin/perl
 
 PERL =          $(PERL.$(PERL_VERSION))
+PERL_ARCH :=   $(shell $(PERL) -e 'use Config; print $$Config{archname}')
+PERL_ARCH_FUNC=        $(shell $(1) -e 'use Config; print $$Config{archname}')
+endif
 
-PERL_ARCH :=	$(shell $(PERL) -e 'use Config; print $$Config{archname}')
-PERL_ARCH_FUNC=	$(shell $(1) -e 'use Config; print $$Config{archname}')
 # Optimally we should ask perl which C compiler was used but it doesn't
 # result in a full path name.  Only "c" is being recorded
 # inside perl builds while we actually need a full path to
 # the studio compiler.
 #PERL_CC :=	$(shell $(PERL) -e 'use Config; print $$Config{cc}')
 
-PKG_MACROS +=   -D PERL_ARCH=$(PERL_ARCH)
+PKG_MACROS +=   -D PERL_ARCH32=$(PERL_ARCH.32)
+PKG_MACROS +=   -D PERL_ARCH64=$(PERL_ARCH.64)
 PKG_MACROS +=   -D PERL_VERSION=$(PERL_VERSION)
 
 PG_VERSION ?=   9.3

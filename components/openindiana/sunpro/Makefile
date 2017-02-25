@@ -1,4 +1,3 @@
-#!/sbin/sh
 #
 # CDDL HEADER START
 #
@@ -19,42 +18,33 @@
 #
 # CDDL HEADER END
 #
-# Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
 #
+include ../../../make-rules/shared-macros.mk
 
-. /lib/svc/share/smf_include.sh
+COMPONENT_NAME=         sunpro
+COMPONENT_VERSION=      0.5.11
+COMPONENT_SUMMARY=      Sun Workshop Compilers Bundled libC
+COMPONENT_PROJECT_URL=  http://www.illumos.org/
+COMPONENT_CLASSIFICATION=       System/Core
+COMPONENT_SRC=          $(COMPONENT_NAME)-$(COMPONENT_VERSION)
 
-# SMF_FMRI is the name of the target service. This allows multiple instances 
-# to use the same script.
+include $(WS_TOP)/make-rules/prep.mk
+include $(WS_TOP)/make-rules/ips.mk
 
-if [ -z "$SMF_FMRI" ]; then
-	echo "SMF framework variables are not initialized."
-	exit $SMF_EXIT_ERR
-fi
+download::
+	cp root.tar.bz2 $(COMPONENT_NAME)-$(COMPONENT_VERSION).tar.bz2
 
-tcsd_start() 	{
-	echo /usr/lib/64/tcsd 
-	/usr/lib/64/tcsd >/dev/null 2>&1 &
-}
-	
-tcsd_stop()	{
-	/usr/bin/pkill -x tcsd >/dev/null 2>&1
-}
+build:
+	mkdir -p $(COMPONENT_SRC)
+	(cd $(COMPONENT_SRC); bunzip2 -c ../root.tar.bz2 | tar xpf -)
 
-case "$1" in
-'start')
-	tcsd_start 
-	;;
+install:
+	mkdir -p build/prototype/$(MACH)
+	cp -rp $(COMPONENT_SRC)/root/* build/prototype/$(MACH)
 
-'stop')
-	tcsd_stop
-	;;
+test:
 
+clean::
+	$(RM) -r $(BUILD_DIR)
 
-*)
-	echo "Usage: $0 {start|stop}"
-	exit 1
-	;;
-
-esac
-exit $SMF_EXIT_OK
