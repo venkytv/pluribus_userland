@@ -495,7 +495,10 @@ pkglist="$pkglist
         pkg:///compress/gzip
         pkg:///compress/zip
         pkg:///compress/unzip
-        pkg:///package/pkg"
+        pkg:///package/pkg
+	pkg:///developer/gcc/gcc-libgcc
+	pkg:///library/libxml2
+	pkg:///library/zlib"
 
 #
 # These are required for 'pkg' commands in the zone
@@ -570,7 +573,7 @@ pkglist="$pkglist $extra_packages"
 # Do the install; we just refreshed on image-create, so skip that.  We
 # also skip indexing here, as that is also what the LiveCD does.
 #
-LC_ALL=C $PKG install -v --no-index --no-refresh $pkglist || pkg_err_check "$f_pkg"
+LC_ALL=C $PKG install --no-index --no-refresh $pkglist || pkg_err_check "$f_pkg"
 
 printf "\n$m_mannote\n"
 
@@ -621,6 +624,7 @@ chroot $ZONEROOT /lib/svc/method/sshd -c
 umount $ZONEROOT/devices
 umount $ZONEROOT/dev
 touch $ZONEROOT/etc/.UNCONFIGURED
+touch $ZONEROOT/reconfigure
 
 #
 # Labeled zones need to be able to modify /etc/gconf files, when gnome
