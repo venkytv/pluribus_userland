@@ -3,7 +3,6 @@ set name=pkg.summary value="$(COMPONENT_SUMMARY)"
 set name=pkg.description value="$(COMPONENT_SUMMARY)"
 set name=description value="$(COMPONENT_SUMMARY)"
 set name=info.classification value=org.opensolaris.category.2008:Development/C++
-set name=variant.arch value=i386
 set name=variant.opensolaris.zone value=global value=nonglobal
 dir group=bin mode=0755 owner=root path=usr/include
 file usr/include/demangle.h group=bin mode=0644 owner=root path=usr/include/demangle.h

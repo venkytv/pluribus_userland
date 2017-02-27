@@ -51,8 +51,8 @@ CONFIGURE_OPTIONS += --libexecdir=$(USRLIBDIR)/hal
 # used by hal-cups-utils maintainer
 COMPONENT_PREP_ACTION = ( \
 	cd $(@D); \
-	ACLOCAL=$(ACLOCAL) AUTOMAKE=$(AUTOMAKE) autoreconf; \
 	cd $(SOURCE_DIR); \
+	ACLOCAL=$(ACLOCAL) AUTOMAKE=$(AUTOMAKE) autoreconf; \
 	$(PERL) -pi -e 's,^\#!.*?python,\#!$(USED_PYTHON), if $$.==1' systemv/hal_lpadmin ; \
 ) 
 

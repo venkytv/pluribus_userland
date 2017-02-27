@@ -1,0 +1,621 @@
+#!/usr/bin/ksh
+# attempt to replace OI hipsters sysidtool and provide for other SunOS systems a more simple way to create hands-off zone configs
+# written 2015-12-04, Olaf Bohlen <olbohlen@eenfach.de>
+# this was inspired by a comment of Dan McDonald how OmniTI does this job with a /.initialboot script
+
+
+# CDDL HEADER START
+
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+
+# CDDL HEADER END
+
+
+# function list
+# FIXME: to be done: setup_ns_ldap
+# FIXME: setup_ipmp for OI hipster
+###
+
+runcheck() {
+    [ -f /etc/.UNCONFIGURED ] && return
+    # prevent that we will be called twice 
+    if [ x$(svcprop -p config/finished ${SMF_FMRI}) == xtrue ]; then
+	# we are already done
+	exit 0
+    fi
+}
+
+finish() {
+    rm -f /etc/.UNCONFIGURED
+    svccfg -s ${SMF_FMRI} "setprop config/finished=true"
+    svccfg -s ${SMF_FMRI} "refresh"
+    log_msg INFO "sysding finished"
+
+    # ensure our sysding.conf is 400, as one or more password hashes might be in there
+    [ -f /etc/sysding.conf ] && chmod 400 /etc/sysding.conf
+}
+
+log_msg() {
+    # log messages to a file for later review, also write to stdout
+    typeset my_tstamp
+    typeset my_logfile
+    typeset my_level
+    typeset my_msg
+
+    my_level="$1"
+    my_msg="$2"
+
+    my_tstamp=$(date "+%b %e %H:%M:%S")
+    my_logfile=/var/log/sysding.log
+
+    printf "%s %s %s: %s\n" "${my_tstamp}" "$(uname -n)" "${my_level}" "${my_msg}" | tee -a "${my_logfile}"
+}
+
+get_user_password() {                                                                                               # get user password hash
+   typeset def_username
+   
+   def_username=$1
+   
+   if [ "x${def_username}" == "x" ]; then
+        log_msg ERROR "missing username, returning empty hash"
+        printf ""
+   fi
+
+   hash=$(grep "^${def_username}:" /etc/shadow | cut -d : -f 2)
+   printf "%s" ${hash}
+}
+
+setup_nfs4domain() {
+    # if needed set nfsv4 domain - if not run, the domain is left blank which means the DNS domain name is used
+    typeset def_domain
+
+    def_domain=$1
+
+    svccfg -s svc:/network/nfs/mapid:default "setprop nfs-props/nfsmapid_domain = astring: ${def_domain}"
+    svccfg -s svc:/network/nfs/mapid:default refresh
+}
+
+setup_user_account() {
+    # create a specified user account
+    typeset def_username
+    typeset def_uid
+    typeset def_gid
+    typeset def_gecos
+    typeset def_home
+    typeset def_shell
+
+    def_username="$1"
+    def_uid="$2"
+    def_gid="$3"
+    def_gecos="$4"
+    def_home="$5"
+    def_shell="$6"
+    
+    rt=0
+
+    # the username is the primary lookup key, so we check it here.
+    # we do not check for uid, because multiple usernames for one uid are fine
+    if grep "^${def_username}:" >/dev/null 2>&1; then
+	log_msg ERROR "username ${def_username} already exists"
+	return 1
+    fi
+    
+    printf "%s:x:%s:%s:%s:%s:%s\n" "${def_username}" ${def_uid} ${def_gid} "${def_gecos}" "${def_home}" "${def_shell}" >>/etc/passwd
+    rt=$?
+    if [ ${rt} -gt 0 ]; then
+	log_msg ERROR "failed writing user record for ${def_username} to /etc/passwd..."
+	return ${rt}
+    fi
+    printf "%s:NP:::::::\n" "${def_username}" >>/etc/shadow
+    rt=$?
+    if [ ${rt} -gt 0 ]; then
+	log_msg ERROR "failed writing shadow entry for user ${def_username}, please check /etc/passwd and /etc/shadow!"
+    fi
+    return ${rt}
+}
+
+setup_user_password() {
+    # set specified users password to specified hash
+    typeset def_username
+    typeset def_pwhash
+    typeset cmd_out
+    typeset rt
+
+    def_username=$1
+
+    def_pwhash=$2
+
+    if [ "x${def_pwhash}" == "x" ]; then
+	log_msg ERROR "missing password hash, cannot set password for ${def_username}"
+	return 1
+    fi
+
+    cmd_out=$(printf ",s,^${def_username}:[^:.]*:,${def_username}:${def_pwhash}:,g\nw\nq\n" | ed /etc/shadow 2>&1)
+    rt=$?
+    log_msg DEBUG "rt of ed is ${rt}"
+
+    # FIXME, ed seems to exit with non-zero all the time?
+
+    if [ ${rt} -gt 0 ]; then
+	log_msg ERROR "modify of ${def_username}s password failed: ${cmd_out}"
+    fi
+
+    if [ "${def_username}" = "root" ]; then
+        ROOT_PASSWORD_SET=yes
+    fi
+    return ${rt}
+}
+
+setup_ipmp() {
+    # set up ipmp on already configured NICs (setup_interface needs to be run first for lower links)
+    typeset def_ipmp
+    typeset def_nica
+    typeset def_nicb
+    typeset cmd_out
+    typeset rt
+
+    def_ipmp=$1
+    def_nica=$2
+    def_nicb=$3
+
+    rt=0
+
+    cmd_out=$( ipadm create-ipmp -i ${def_nica},${def_nicb} ${def_ipmp} 2>&1 )
+    if [ $? -gt 0 ]; then
+	log_msg ERROR "creating IPMP failed with: ${cmd_out}"
+	rt=1
+    fi
+    cmd_out=""
+    
+    return ${rt}
+
+}
+
+setup_interface() {
+    # set up a network interface (may be called more than one time)
+    typeset def_nic
+    typeset def_obj # suffix like /v4
+    typeset def_addr # address with prefix/cidr netmask
+    typeset cmd_out
+    typeset rt
+    
+    def_nic=$1
+    def_obj=$2
+    def_addr=$3
+
+    rt=0
+
+    # short "primary nic" hack. if def_nic is set to PRIMARY, look up first link
+    if [ x${def_nic} == xPRIMARY ]; then
+	def_nic=$( dladm show-link -p -o link | head -1 )
+    fi
+
+    # check if NIC is valid
+    if ! dladm show-link -p -o link ${def_nic} 2>&1 >/dev/null; then
+	log_msg ERROR "specified link ${def_nic} does not exist"
+	return 1
+    fi
+    
+    ipadm create-if ${def_nic}
+
+    # https://github.com/olbohlen/sysding/issues/2
+    # check if def_addr is IPv6 and prepare a addrconf interface first.
+    echo ${def_addr} | egrep ":" >/dev/null 2>&1
+    if [ $? -gt 0 ]; then
+	# it has at least one colon, it is a IPv6 addr
+	# so we create a addrconf object with the users specified object name plus
+	# the "link" suffix, for link-local-address
+	ipadm create-addr -T addrconf ${def_nic}/${def_obj}link
+    fi
+    
+    # is def_addr specified as dhcp, then configure it that way :)
+    if [ "x${def_addr}" == "xdhcp" ]; then
+	cmd_out=$( ipadm create-addr -T dhcp ${def_nic}/${def_obj} 2>&1 )
+	if [ $? -gt 0 ]; then 
+	    log_msg ERROR "failed to set up dhcp: ${cmd_out}"
+	    rt=1
+	fi
+	cmd_out=""
+    else
+	cmd_out=$( ipadm create-addr -T static -a local=${def_addr} ${def_nic}/${def_obj} 2>&1 )
+	if [ $? -gt 0 ]; then 
+	    log_msg ERROR "failed to set up dhcp: ${cmd_out}"
+	    rt=1
+	fi
+	cmd_out=""
+    fi
+    
+    return ${rt}
+}
+
+setup_route() {
+   # set up route (may be called more than one time)
+   typeset def_tgt
+   typeset def_dst
+   typeset rt
+   typeset ipvers
+  
+   def_tgt=$1
+   def_dst=$2
+
+   rt=0
+
+   # https://github.com/olbohlen/sysding/issues/1
+   # check if def_addr is IPv6 and force the -inet6 flag for route(1M)
+   echo ${def_dst} | egrep ":" >/dev/null 2>&1
+   if [ $? -gt 0 ]; then
+       # it has at least one colon, it is a IPv6 addr
+       ipvers="-inet6"
+   fi
+
+   
+   cmd_out=$( route -p add ${ipvers} ${def_tgt} ${def_dst} 2>&1 )
+   if [ $? -gt 0 ]; then
+       log_msg ERROR "failed to set up route: ${cmd_out}"
+       rt=1
+   fi
+
+   return ${rt}
+}
+
+setup_aggregate() {
+    # set up aggregate interface (may be called as many times as you need aggregate interfaces)
+    typeset def_link
+    typeset def_lacp
+    typeset def_policy
+    typeset def_links
+    typeset links_arg
+
+    rt=0
+
+    def_link="$1"
+    def_lacp="$2"
+    def_policy="$3"
+    shift 3
+    def_links="$@"
+    links_arg=""
+
+
+    # check for valid LACP mode
+    if [ x${def_lcap} != xactive -a x${def_lcap} != xpassive -a x${def_lcap} != xoff ]; then
+        log_msg ERROR "invalid LACP mode given: ${def_lacp}"
+        return 1
+    fi
+
+    # check for valid policy
+    if ! echo ${def_policy} | egrep -q '^(L[2-4],?)+$'; then
+        log_msg ERROR "invalid policy given: ${def_policy}"
+        return 1
+    fi
+
+    # check for valid def_links arg
+    if [ -z "${def_links}" ]; then
+        log_msg ERROR "no links given"
+        return 1
+    fi
+
+    # check if aggregate already exists
+    if dladm show-aggr ${def_link} >/dev/null 2>&1; then
+        log_msg ERROR "aggregate interface ${def_link} already exists"
+        return 1
+    fi
+
+    # check if each link exists
+    typeset _link
+    for _link in ${def_links}; do
+        if ! dladm show-link ${_link} >/dev/null 2>&1; then
+            log_msg ERROR "link ${_link} does not exist"
+            return 1
+        fi
+
+        links_arg="${links_arg} -d ${_link}"
+    done
+
+    # create aggregate interface
+    cmd_out=$( dladm create-aggr -L ${def_lacp} -P ${def_policy} ${links_arg} ${def_link} 2>&1 )
+    if [ $? -gt 0 ]; then
+        log_msg ERROR "failed to create aggregate link: ${cmd_out}"
+        rt=1
+    fi
+
+    return ${rt}
+}
+
+setup_vlan() {
+    # set up VLAN interface (may be called as many times as you need VLAN interfaces)
+    typeset def_link
+    typeset def_vlan
+    typeset def_dev
+
+    rt=0
+
+    def_link="$1"
+    def_vlan="$2"
+    def_dev="$3"
+
+    # check for numerical VLAN id
+    if ! echo ${def_vlan} | egrep -q '^[0-9]+$'; then
+        log_msg ERROR "VLAN id is not numerical: ${def_vlan}"
+        return 1
+    fi
+
+    # check if device exists
+    if ! dladm show-link ${def_dev} >/dev/null 2>&1; then
+        log_msg ERROR "specified device ${def_dev} does not exist"
+        return 1
+    fi
+
+    # check if vlan already exists
+    if dladm show-vlan ${def_link} >/dev/null 2>&1; then
+        log_msg ERROR "specified VLAN link ${def_link} already exists"
+        return 1
+    fi
+
+    # create VLAN interface
+    cmd_out=$( dladm create-vlan -v ${def_vlan} -l ${def_dev} ${def_link} 2>&1 )
+    if [ $? -gt 0 ]; then
+        log_msg ERROR "failed to create VLAN link: ${cmd_out}"
+        rt=1
+    fi
+
+    return ${rt}
+}
+
+setup_ns_dns() {
+    # set up nameservice switch for DNS
+    typeset def_domain
+    typeset def_search
+    typeset def_nsaddr
+    typeset tmpval
+    typeset svc_search
+    typeset rt
+        
+    rt=0
+
+    def_domain="$1"
+    def_search="$2"
+    def_nsaddr="$3"
+
+    # if we need the svc_search string, we need the search domains in double quotes
+    svc_search=$( echo ${def_search} | sed -e 's/ /" "/g' )
+
+    # check for nscfg, if found we use svccfg for configuration - else we edit flat files in /etc
+
+    if [ -x /usr/sbin/nscfg ]; then
+	# configure with svccfg (on Solaris 11.x)
+	svccfg -s network/dns/client <<EOF
+setprop config/search = astring: ("${svc_search}")
+setprop config/nameserver = net_address: (${def_nsaddr})
+select network/dns/client:default
+refresh
+quit
+EOF
+	svccfg -s system/name-service/switch <<EOF
+setprop config/host = astring: "files dns"
+select system/name-service/switch:default
+refresh
+quit
+EOF
+	nscfg export svc:/network/dns/client:default
+	svcadm enable svc:/network/dns/client
+
+	svcadm enable svc:/network/name-service/switch
+    else
+	# Recreate empty resolv.conf
+	rm -f /etc/resolv.conf
+	touch /etc/resolv.conf
+	if [ -n "${def_domain}" ] ; then
+		printf "domain ${def_domain}\n" >> /etc/resolv.conf
+	fi
+	if [ -n "${def_search}" ]; then
+		printf "search ${def_search}\n" >> /etc/resolv.conf
+	fi
+	
+	for tmpval in ${def_nsaddr}; do
+	    printf "nameserver %s\n" ${tmpval} >>/etc/resolv.conf
+	done
+	cp /etc/nsswitch.dns /etc/nsswitch.conf
+	svcadm restart svc:/system/name-service-cache
+
+	# Without this dns/client can stuck in offline state on first boot
+	svcadm disable svc:/network/dns/client
+	svcadm enable svc:/network/dns/client
+    fi
+    
+    return ${rt}
+
+}
+
+setup_timezone() {
+    # set up zones timezone
+    typeset def_tz
+    typeset def_rtc
+    typeset rt
+
+    def_tz="$1"
+    rt=0
+
+    if ! [ -f /usr/share/lib/zoneinfo/${def_tz} ]; then
+	# specfied timezone is invalid, reverting to UTC
+	log_error "specified timezone ${def_tz} not installed or invalid, reverting to UTC"
+	def_tz="UTC"
+	rt=42
+
+    fi
+
+    printf ",g,^TZ=,d\na\nTZ=%s\n.\nw\nq\n" "${def_tz}" | ed /etc/default/init
+
+    if [ -n "${def_rtc}" -a -f /usr/share/lib/zoneinfo/${def_rtc} ]; then
+        /usr/sbin/rtc -z "${def_rtc}"
+    fi
+
+    REBOOT_NEEDED=yes
+
+    return ${rt}
+}
+
+setup_locale() {
+    # set up zones default locale
+    typeset def_locale
+    typeset rt
+
+    def_locale="$1"
+    rt=0
+
+    if ! locale -a | egrep "^${def_locale}$$" 2>&1 >/dev/null ; then
+	# selected locale is not installed - fall back to C and log error
+	log_error "specified locale ${def_locale} not installed, reverting to C"
+	def_local="C"
+	rt=42
+    fi
+    
+    printf ",g,^LANG=,d\na\nLANG=%s\n.\nw\nq\n" "${def_locale}" | ed /etc/default/init
+
+    REBOOT_NEEDED=yes
+
+    return ${rt}
+}
+
+setup_zpool() {
+    # setup a zpool on specified disks
+    typeset def_devspec
+    typeset rt
+
+    def_devspec="$*"
+
+    cmd_out=$( zpool create ${def_devspec} 2>&1 )
+    if [ $? -gt 0 ]; then
+	log_msg ERROR "failed to set up zpool: ${cmd_out}"
+	rt=1
+    fi
+    
+    return ${rt}
+}
+
+setup_zfs() {
+    # setup a zfs
+    typeset def_opts
+    typeset rt
+
+    def_opts="$*"
+    
+    cmd_out=$( zfs create ${def_opts} 2>&1 )
+    if [ $? -gt 0 ]; then
+	log_msg ERROR "failed to set up zfs: ${cmd_out}"
+	rt=1
+    fi
+    
+    return ${rt}
+}
+
+## main ##
+
+# include SMF 
+. /lib/svc/share/smf_include.sh
+
+# global variables
+REBOOT_NEEDED=no
+ROOT_PASSWORD_SET=no
+
+# local variables
+typeset rebootargs
+typeset status
+
+rebootargs=""
+status=0
+
+# first check if we have been called in the past
+runcheck
+
+if [ -f /etc/sysidcfg ]
+then
+    # Handle semi old-style sysidcfg configs. List of shell variables are set.
+    # then we call the appropriate functions
+    . /etc/sysidcfg
+
+    if [ "x$terminal" != "x" ]
+    then
+        cp /etc/profile /tmp/profile
+        cat /tmp/profile | gsed "/export LOGNAME PATH/a TERM=$terminal" > /etc/profile
+        rm /tmp/profile
+    fi
+    if [ "x$system_locale" != "x" ]
+    then
+        setup_locale $system_locale
+    fi
+    if [ "x$name_service" != "x" ]
+    then
+        # DNS only
+        if [ "$name_service" != "NONE" ]
+        then
+            # Colon separated domain:search:addr
+            domain=`echo "$name_service" | cut -f1 -d":"`
+            search=`echo "$name_service" | cut -f2 -d":"`
+            addr=`echo "$name_service" | cut -f3 -d":"`
+            setup_ns_dns $domain $search $addr
+        fi
+    fi
+    if [ "x$timezone" != "x" ]
+    then
+        setup_timezone $timezone
+    fi
+    if [ "x$root_password" != "x" ]
+    then
+        setup_user_password root $root_password
+    fi
+    if [ "x$nfs4_domain" != "x" ]
+    then
+        setup_nfs4domain $nfs4_domain
+    fi
+fi
+
+#
+# Now process /etc/sysding.conf. So, if both sysidcfg.conf and sysding.conf are present
+# then latter takes precedence.
+#
+if [ -f /etc/sysding.conf ]
+then
+    # source the "config" file, which is actually a script calling functions defined here.
+    . /etc/sysding.conf
+fi
+
+# disable service and set a lock in a smf property
+finish
+
+# when configuring zone, set root password to empty if it was not set,
+# so that zlogin could proceed
+if [ "$(zonename)" != "global" -a "${ROOT_PASSWORD_SET}" = "no" -a -z "$(get_user_password root)" ]; then
+    setup_user_password  "root" "NP"
+fi
+
+# reboot to apply changes to /etc/default/init -- except we are in a Solaris miniroot (install cd)
+# the SVR4 pkg SUNWsibi is only installed there, so check for it
+# we also check if we need "-- net" as bootargs (network mounted / for example)
+
+if [ -f /.cache ]; then
+    rebootargs=" -- net "
+fi
+
+if mount -p | grep ":.* / " 2>&1 >/dev/null; then
+    rebootargs=" -- net "
+fi
+
+pkginfo -q SUNWsibi
+status=$?
+if [ "${status}" = "1" -a "${REBOOT_NEEDED}" = "yes" ]; then
+    log_msg INFO "rebooting because /etc/default/init changed"
+    reboot -l ${rebootargs}
+fi

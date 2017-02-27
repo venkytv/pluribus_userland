@@ -1,0 +1,263 @@
+'\" te
+.\" Copyright (c) 2015 Olaf Bohlen
+.\" The contents of this file are subject to the terms of the Common Development and Distribution License (the "License").  You may not use this file except in compliance with the License.
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE or http://www.opensolaris.org/os/licensing.  See the License for the specific language governing permissions and limitations under the License.
+.\" When distributing Covered Code, include this CDDL HEADER in each file and include the License file at usr/src/OPENSOLARIS.LICENSE.  If applicable, add the following below this CDDL HEADER, with the fields enclosed by brackets "[]" replaced with your own identifying information: Portions Copyright [yyyy] [name of copyright owner]
+
+.TH SYSDING 1M "10 Dec 2015" "" "System Administration Commands"
+.SH NAME
+sysding \- system configuration, replaces sysidtool
+.SH SYNOPSIS
+.LP
+.nf
+\fB/lib/svc/method/sysding\fR
+.fi
+
+.SH DESCRIPTION
+.sp
+.LP
+\fBsysding\fR will be executed during initial systemboot by the \fBsmf\fR(5) service 
+\fBsvc:/system/sysding:system\fR.
+It will read (actually source) a file called \fB/etc/sysding.conf\fR and configure the system.
+The following methods are supported currently:
+.sp
+.LP
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_timezone "TZ"\fR\fR
+.ad
+.sp .6
+.RS 4n
+sets systems timezone to the specified argument ("TZ")
+If the specified timezone is invalid, it will be set to "UTC".
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_locale "locale"\fR\fR
+.ad
+.sp .6
+.RS 4n
+sets systems locale to the specified argument ("locale")
+If the specified locale is invalid, it will be set to "C".
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_nfs4domain "domain.dom"\fR\fR
+.ad
+.sp .6
+.RS 4n
+sets the NFSv4 Domain to "domain.dom"
+If this function is not called, the NFS4 Domain will be set dynamically. (via DNS domain)
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_user_account "username" <uid> <gid> "gecos" "/home" "/bin/shell"\fR\fR
+.ad
+.sp .6
+.RS 4n
+This function creates a user account, all parameters are mandatory.
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_user_password "username" "hash"\fR\fR
+.ad
+.sp .6
+.RS 4n
+sets users "username" password-hash to the specified one in "hash"
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_interface "nic" "addr-object suffix" "addr"\fR\fR
+.ad
+.sp .6
+.RS 4n
+configures the specified NIC "nic" for IP. "nic" may be the alias "PRIMARY" which refers to the first NIC found by dladm. If "addr" is the special value "dhcp" it will configure a dhcp-address.
+The "addr-object suffix" is the suffix given after the nic-name in the address-object (see \fRipadm\fB(1M)).
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_route "target" "router"\fR\fR
+.ad
+.sp .6
+.RS 4n
+creates a persistant route for "target" via "router"
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_aggregate "aggregate_name" "lacp_mode" "policy" "link" ["link2" ...]\fR\fR
+.ad
+.sp .6
+.RS 4n
+create aggregate device over given links with given LACP mode and hashing policy
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_vlan "vlan_name" "vlan_id" "link"\fR\fR
+.ad
+.sp .6
+.RS 4n
+create VLAN device on given link with given VLAN ID
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_ipmp "ipmp interface name" "nic1" "nic2"\fR\fR
+.ad
+.sp .6
+.RS 4n
+configures a ipmp interfaces with the lower-interfaces "nic1" and "nic2"
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_ns_dns "domain.dom" "search.dom..." "dnsserv-addr..."\fR\fR
+.ad
+.sp .6
+.RS 4n
+configures DNS as primary name-service within the "domain.dom" domain. You may specify 
+one or more search domains in double-quotes like "domain.dom search1.dom enterprize.biz" and
+you may specify one or more name-server addresses like "172.20.0.53 172.21.0.53".
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_zpool "poolname" "device spec"\fR\fR
+.ad
+.sp .6
+.RS 4n
+create a zpool "poolname" using the "device spec". "device spec" are valid
+parameters to zpool create, for example "mirror c0t0d0 c0t1d0".
+.RE
+
+.sp
+.ne 2
+.na
+\fB\fBsetup_zfs "filesystem"\fR\fR
+.ad
+.sp .6
+.RS 4n
+creates a ZFS filesystem, which is specified as "filesystem". You can also specify all valid parameters to "zfs create", i.e.: "-V 20G rpool/vol1" or "-o mountpoint=legacy rpool/stuff"
+.RE
+
+.SH EXAMPLES
+.LP
+\fBExample 1 \fR shipped sample config
+.sp
+.LP
+The following is the shipped sample config:
+
+.sp
+.in +2
+.nf
+#!/usr/bin/ksh
+
+setup_timezone CET
+setup_locale en_US.UTF-8
+# set roots password to "openindiana"
+setup_user_password root '$5$CLl7tjdz$aAan/ZZKy74Lytf4/RQ.hdsrCVYAJKlgVSlDQWosC5B'
+# setup_interface accepts nic names or the "PRIMARY" alias for the first NIC
+setup_interface PRIMARY v4 dhcp
+setup_ns_dns "domain.dom" "search.dom search2.dom" "172.20.0.53 172.21.0.53 172.22.0.53"
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 2 \fR full featured config
+.sp
+.LP
+This config sets up a static IP on the primary NIC within the sample.dom domain:
+
+.sp
+.in +2
+.nf
+#!/usr/bin/ksh
+
+setup_timezone CET
+setup_locale en_US.UTF-8
+# set roots password to "openindiana"
+setup_user_password root '$5$CLl7tjdz$aAan/ZZKy74Lytf4/RQ.hdsrCVYAJKlgVSlDQWosC5B'
+# setup_interface accepts nic names or the "PRIMARY" alias for the first NIC
+setup_interface PRIMARY v4 172.16.42.23/23
+setup_ns_dns "sample.dom" "sample.dom enterprise.dom" "172.20.0.53 172.21.0.53 172.22.0.53"
+setup_nfs4domain "sample.dom"
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 3 \fR full featured config with customization
+.sp
+.LP
+This config is a variant of Example 2 with more NICs and shell-code:
+
+.sp
+.in +2
+.nf
+#!/usr/bin/ksh
+
+setup_timezone CET
+setup_locale en_US.UTF-8
+# set roots password to "openindiana"
+setup_user_password root '$5$CLl7tjdz$aAan/ZZKy74Lytf4/RQ.hdsrCVYAJKlgVSlDQWosC5B'
+# setup_interface accepts nic names or the "PRIMARY" alias for the first NIC
+setup_interface igbe0 v4 172.16.42.23/23
+setup_interface igbe1 v4 192.168.1.42/26
+setup_ns_dns "sample.dom" "sample.dom enterprise.dom" "172.20.0.53 172.21.0.53 172.22.0.53"
+setup_nfs4domain "sample.dom"
+# we can use all possibilities of the ksh here
+echo "Welcome to foobar-Enterprises!" >>/etc/motd
+
+.fi
+.in -2
+.sp
+
+.SH FILES
+.sp
+.ne 2
+.na
+\fB\fB/etc/sysding.conf\fR\fR
+.ad
+.sp .6
+.RS 4n
+Configuration file
+.RE
+
+.SH SEE ALSO
+.sp
+.LP
+\fBinit\fR(4), \fBlocale\fR(1), \fBpasswd\fR(4), \fBshadow\fR(4), \fRipadm\fB(1M),
+\fBresolv.conf\fR(4), \fBsmf\fR(5), \fBsvccfg\fR(1M), \fBksh\fR(1)
+
+.SH NOTES
+.sp
+.LP
+The config file \fB/etc/sysding.conf\fR stays with 0400 permissions, so it can be
+reviewed after installation and used for other installations (like non-global zones).
+
+.SH BUGS
+.sp
+.LP
+\fBsetup_ipmp\fR does not work on illumos based OS, since it depends on 
+\fBipadm create-ipmp\fR which is currently not implemented.

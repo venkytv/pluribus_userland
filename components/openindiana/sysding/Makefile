@@ -28,35 +28,13 @@ COMPONENT_REVISION=$(shell cd $(COMPONENT_SRC); git rev-list HEAD --count)
 
 COMPONENT_SUMMARY=	Simple tool for initial system configuration
 
-GIT=git
-GIT_REPO=https://github.com/OpenIndiana/sysding
-GIT_BRANCH=oi
-GIT_CHANGESET=HEAD
-
-PATH=/usr/gnu/bin:/usr/bin
-
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/justmake.mk
-
-# The ugly hack with update-publish target is necessary to update
-# source from git repository on each "gmake publish".
-# publish: target should appear before inclusion of ips.mk
-publish: update-publish
 
 include $(WS_TOP)/make-rules/ips.mk
 
 $(SOURCE_DIR)/.downloaded: $(ARCHIVES:%=$(USERLAND_ARCHIVES)%)
-	@[ -d $(SOURCE_DIR) ] || \
-	$(GIT) clone -b $(GIT_BRANCH) $(GIT_REPO) $(SOURCE_DIR)
-	@cd $(SOURCE_DIR) ; $(GIT) checkout $(GIT_BRANCH) ; $(GIT) pull \
-	  $(GIT_REPO) ; $(GIT) log -1 --format=%H > .downloaded
-
-update-publish:
-	@[ -d $(SOURCE_DIR) ] || \
-	$(GIT) clone -b $(GIT_BRANCH) $(GIT_REPO) $(SOURCE_DIR)
-	cd $(SOURCE_DIR) ; $(GIT) pull $(GIT_REPO) ; \
-	  [ "$$($(GIT) log -1 --format=%H)" == "$$(cat .downloaded)" ] || \
-	  ( $(GIT) log -1 --format=%H > .downloaded && $(MAKE) -C $$OLDPWD publish )
+	@[ -d $(SOURCE_DIR) ] || cp -rp sysding_src $(SOURCE_DIR)
 
 COMPONENT_BUILD_TARGETS = all
 
@@ -67,3 +45,4 @@ build: $(BUILD_32)
 install: $(INSTALL_32)
 
 download:: $(SOURCE_DIR)/.downloaded
+
