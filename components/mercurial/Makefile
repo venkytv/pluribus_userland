@@ -35,7 +35,7 @@ COMPONENT_ARCHIVE_URL=	http://www.selenic.com/mercurial/release/$(COMPONENT_ARCH
 COMPONENT_BUGDB=	utility/hg
 
 # Fails to build: not Python 3 ready.
-PYTHON_VERSIONS = 2.7 2.6
+PYTHON_VERSIONS = 2.7
 
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/setup.py.mk

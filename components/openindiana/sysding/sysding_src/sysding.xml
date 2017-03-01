@@ -1,44 +1,80 @@
-<?xml version='1.0'?>
-<!DOCTYPE service_bundle SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
-<service_bundle type='manifest' name='export'>
-  <service name='system/sysding' type='service' version='0'>
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<!--
+    CDDL HEADER START
+
+    The contents of this file are subject to the terms of the
+    Common Development and Distribution License (the "License").
+    You may not use this file except in compliance with the License.
+
+    You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+    or http://www.opensolaris.org/os/licensing.
+    See the License for the specific language governing permissions
+    and limitations under the License.
+
+    When distributing Covered Code, include this CDDL HEADER in each
+    file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+    If applicable, add the following below this CDDL HEADER, with the
+    fields enclosed by brackets "[]" replaced with your own identifying
+    information: Portions Copyright [yyyy] [name of copyright owner]
+
+    CDDL HEADER END
+
+    COPYRIGHT 2014 Pluribus Networks Inc.
+
+    All rights reserved. This copyright notice is Copyright Management
+    Information under 17 USC 1202 and is included to protect this work and
+    deter copyright infringement.  Removal or alteration of this Copyright
+    Management Information without the express written permission from
+    Pluribus Networks Inc is prohibited, and any such unauthorized removal
+    or alteration will be a violation of federal law.
+
+    SMF Service to fix a few platform configs on Pluribus switches.
+-->
+
+<service_bundle type='manifest' name='sysding'>
+
+<service
+    name='system/sysding'
+    type='service'
+    version='1'>
+    <create_default_instance enabled='false' />
+
     <dependency name='fs' grouping='require_all' restart_on='none' type='service'>
       <service_fmri value='svc:/system/filesystem/minimal:default'/>
     </dependency>
+
     <dependency name='identity' grouping='require_all' restart_on='none' type='service'>
       <service_fmri value='svc:/system/identity:node'/>
       <service_fmri value='svc:/system/identity:domain'/>
     </dependency>
-    <property_group name='startd' type='framework'>
-      <propval name='duration' type='astring' value='transient'/>
+
+    <dependency name='single-user' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/milestone/single-user:default'/>
+    </dependency>
+
+    <dependency name='filesystem_local' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/system/filesystem/local:default'/>
+    </dependency>
+
+    <dependency name='rpcbind' grouping='optional_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/network/rpc/bind:default'/>
+    </dependency>
+
+    <dependent name='sysconfig' restart_on='none' grouping='optional_all'>
+      <service_fmri value='svc:/milestone/sysconfig'/>
+    </dependent>
+
+    <exec_method name='start' type='method' exec='/lib/svc/method/sysding' timeout_seconds='0'/>
+    <exec_method name='stop' type='method' exec=':true' timeout_seconds='0'/>
+
+    <property_group name='config' type='application'>
+      <propval name='finished' type='boolean' value='false'/>
     </property_group>
-    <instance name='system' enabled='true'>
-      <dependency name='single-user' grouping='require_all' restart_on='none' type='service'>
-        <service_fmri value='svc:/milestone/single-user:default'/>
-      </dependency>
-      <dependency name='filesystem_local' grouping='require_all' restart_on='none' type='service'>
-        <service_fmri value='svc:/system/filesystem/local:default'/>
-      </dependency>
-      <dependency name='rpcbind' grouping='optional_all' restart_on='none' type='service'>
-        <service_fmri value='svc:/network/rpc/bind:default'/>
-      </dependency>
-      <dependent name='sysidtoolsystem_sysconfig' restart_on='none' grouping='optional_all'>
-        <service_fmri value='svc:/milestone/sysconfig'/>
-      </dependent>
-      <exec_method name='start' type='method' exec='/lib/svc/method/sysding' timeout_seconds='0'/>
-      <exec_method name='stop' type='method' exec=':true' timeout_seconds='0'/>
-      <property_group name='config' type='application'>
-	<propval name='finished' type='boolean' value='false'/>
-      </property_group>
-    </instance>
-    <stability value='Unstable'/>
-    <template>
-      <common_name>
-        <loctext xml:lang='C'>sysding</loctext>
-      </common_name>
-      <documentation>
-        <manpage title='sysding' section='1M' manpath='/usr/man'/>
-      </documentation>
-    </template>
-  </service>
+
+    <property_group name='startd' type='framework'>
+        <propval name='duration' type='astring' value='transient' />
+    </property_group>
+
+</service>
 </service_bundle>

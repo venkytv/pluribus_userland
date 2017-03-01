@@ -506,8 +506,8 @@ pkglist="$pkglist
 pkglist="$pkglist
         pkg:///library/python-2/ply
         pkg:///library/python-2/pycurl
-        pkg:///library/python-2/pyopenssl-26
-        pkg:///library/python-2/simplejson-devel-26"
+        pkg:///library/python-2/pyopenssl-27
+        pkg:///library/python-2/simplejson-devel-27"
 
 #
 # Get some diagnostic tools, truss, dtrace, etc.
