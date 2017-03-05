@@ -291,7 +291,7 @@ unconfigure_zone() {
 	ZONE_IS_MOUNTED=1
 	zoneadm -z $ZONENAME mount -f || fatal "$e_badmount"
 
-	zlogin -S $ZONENAME /usr/sbin/sys-unconfig -R /a \
+	zlogin -S $ZONENAME /usr/lib/brand/ipkg/system-unconfigure -R /a \
 	    </dev/null >/dev/null 2>&1
 	if (( $? != 0 )); then
 		error "$e_unconfig"

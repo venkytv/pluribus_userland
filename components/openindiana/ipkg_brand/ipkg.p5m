@@ -16,6 +16,7 @@ file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/fmri_compare
 file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/image_install
 file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/p2v
 file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/pkgcreatezone
+file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/system-unconfigure pkgdepend.bypass-generate=.* mangler.bypass=true
 file group=bin mode=0644 owner=root path=usr/lib/brand/ipkg/pkgrm.lst
 file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/poststate
 file group=bin mode=0755 owner=root path=usr/lib/brand/ipkg/prestate

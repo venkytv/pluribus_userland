@@ -504,9 +504,13 @@ pkglist="$pkglist
 # These are required for 'pkg' commands in the zone
 #
 pkglist="$pkglist
+        pkg:///runtime/python-26
+        pkg:///runtime/python-27
         pkg:///library/python-2/ply
         pkg:///library/python-2/pycurl
+        pkg:///library/python-2/pyopenssl-26
         pkg:///library/python-2/pyopenssl-27
+        pkg:///library/python-2/simplejson-devel-26
         pkg:///library/python-2/simplejson-devel-27"
 
 #
