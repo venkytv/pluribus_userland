@@ -136,6 +136,10 @@ else
 NOPERL_MANIFESTS = $(UNVERSIONED_MANIFESTS)
 endif
 
+ifeq ($(DEFAULT_DEPEND),)
+DEFAULT_DEPEND = 1
+endif
+
 VERSIONED_MANIFESTS = \
 	$(PYV_MANIFESTS) $(PYNV_MANIFESTS) \
 	$(PERLV_MANIFESTS) $(PERLNV_MANIFESTS) \
@@ -292,8 +296,8 @@ $(MANIFEST_BASE)-%.depend:	$(MANIFEST_BASE)-%.mangled
 	rv=$$(egrep 'name=pkg.obsolete value=true' $@ > /dev/null && echo 1 || echo 0); \
 	if [ $$rv -eq 0 ]; then \
 	(rv=$$(echo $@ | egrep "sfw-incorporation" > /dev/null && echo 1 || echo 0); \
-	[ $$rv -eq 0 ] && echo "depend fmri=consolidation/sfw/sfw-incorporation type=require" >> $@.notbd || exit 0); \
-	echo "depend fmri=system/library type=require" >> $@.notbd; \
+	[ $$rv -eq 0 -a $(DEFAULT_DEPEND) -eq 1 ] && echo "depend fmri=consolidation/sfw/sfw-incorporation type=require" >> $@.notbd || exit 0); \
+	[ $(DEFAULT_DEPEND) -eq 1 ] && echo "depend fmri=system/library type=require" >> $@.notbd; \
 	mv $@.notbd $@; fi
 
 # These files should contain a list of packages that the component is known to

@@ -30,6 +30,11 @@ COMPONENT_PROJECT_URL=  http://www.illumos.org/
 COMPONENT_CLASSIFICATION=       System/Core
 COMPONENT_SRC=          $(COMPONENT_NAME)-$(COMPONENT_VERSION)
 
+#
+# Do not pull in sfw-incorporation and system/library dependencies
+#
+DEFAULT_DEPEND = 0
+
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/ips.mk
 

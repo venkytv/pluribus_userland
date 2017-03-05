@@ -44,7 +44,7 @@ COMPONENT_BUILD_ARGS=
 
 CPPFLAGS += "-DFALSE_SHARING_ALIGN=64"
 
-CONFIGURE_ENV      +=   PERLPROG=$(PERL)
+CONFIGURE_ENV      +=   PERLPROG=$(PERL.32)
 CONFIGURE_ENV      +=   PYTHONPROG=/usr/bin/python2.7
 
 CONFIGURE_OPTIONS  +=	--with-default-snmp-version=3
@@ -84,7 +84,7 @@ CONFIGURE_OPTIONS  +=	--with-python-modules="$(PYTHON_ARGS)"
 
 # Only build 32 bit Perl support
 PERL_ARGS =			DESTDIR=$(PROTO_DIR) INSTALLDIRS=vendor
-CONFIGURE_OPTIONS.32  +=	PERLPROG="$(PERL)"
+CONFIGURE_OPTIONS.32  +=	PERLPROG="$(PERL.32)"
 CONFIGURE_OPTIONS.32  +=	PYTHONPROG=/usr/bin/python2.7
 CONFIGURE_OPTIONS.32  +=	--with-perl-modules="$(PERL_ARGS)"
 CONFIGURE_OPTIONS.32  +=	--disable-perl-cc-checks
@@ -97,6 +97,7 @@ CONFIGURE_OPTIONS	+=	CPPFLAGS="$(CPPFLAGS)"
 CONFIGURE_OPTIONS	+=	CC="$(CC)"
 
 PKG_MACROS +=	-D BUILD_DIR=$(BUILD_DIR)
+PKG_MACROS +=	-D PERL_ARCH=$(PERL_ARCH.32)
 
 COMPONENT_PREP_ACTION = \
         (cd $(@D) ; \
@@ -148,10 +149,3 @@ $(BUILD_DIR_32)/.docs:
 	    $(ENV) srcdir=$(@D) $(DOXYGEN) $(@D)/doxygen.conf)
 	$(TOUCH) $@
 
-REQUIRED_PACKAGES += SUNWcs
-REQUIRED_PACKAGES += runtime/perl-522
-REQUIRED_PACKAGES += runtime/python-27
-REQUIRED_PACKAGES += shell/bash
-REQUIRED_PACKAGES += system/library
-REQUIRED_PACKAGES += system/library/g++-4-runtime
-REQUIRED_PACKAGES += system/management/snmp/net-snmp

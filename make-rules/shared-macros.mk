@@ -88,12 +88,11 @@ LINKER =		gcc
 BITS =			32
 ifeq ($(TARGET_ILLUMOS),true)
 PYTHON_VERSION =	2.7
-PYTHON_VERSIONS =	2.7
 else
 PYTHON_VERSION =       2.6
-PYTHON_VERSIONS =	2.6 2.7
 endif
 
+PYTHON_VERSIONS =	2.6 2.7
 BASS_O_MATIC =	$(WS_TOOLS)/bass-o-matic
 
 CLONEY =	$(WS_TOOLS)/cloney

@@ -25,12 +25,12 @@ include ../../../make-rules/shared-macros.mk
 PATH=/usr/bin:/usr/gnu/bin:/usr/sbin
 
 COMPONENT_NAME=		Mako
-COMPONENT_VERSION=	0.4.1
+COMPONENT_VERSION=	0.2.2
 COMPONENT_PROJECT_URL=	http://www.makotemplates.org/
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
 COMPONENT_ARCHIVE_HASH=	\
-    sha256:c282a6bb1c15571e1bc1612df58e6b5bb8d3d7c57169e641434bb50d303af6e9
+    sha256:858b2ad7850db5e477ab81d7f355f82df33d90e4ed23a235184f380a925f2813
 COMPONENT_ARCHIVE_URL=	https://pypi.python.org/packages/source/M/Mako/$(COMPONENT_ARCHIVE)
 COMPONENT_BUGDB=	python-mod/mako
 
