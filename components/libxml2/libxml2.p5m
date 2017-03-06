@@ -34,6 +34,7 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
 depend fmri=compress/xz type=require
 depend fmri=library/zlib type=require
+depend fmri=system/library/math type=require
 
 file path=usr/bin/$(MACH64)/xml2-config facet.devel=true
 file path=usr/bin/$(MACH64)/xmlcatalog
