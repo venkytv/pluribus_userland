@@ -167,12 +167,12 @@ reset_ssh_config() {
 
 reset_sysding() {
   echo "--- Resetting sysding config/finished property"
+  touch ${ALTROOT}/etc/.UNCONFIGURED
   /usr/bin/env SVCCFG_DTD=/usr/share/lib/xml/dtd/service_bundle.dtd.1 \
 	SVCCFG_REPOSITORY=$ALTROOT/etc/svc/repository.db \
 	SVCCFG_CONFIGD_PATH=/lib/svc/bin/svc.configd \
 	svccfg -s svc:/system/sysding:system setprop \
-	config/finished=false || \
-    bomb "Failed to reset sysding config/finished property"
+	config/finished=false
 }
 
 reset_vfstab() {

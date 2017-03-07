@@ -450,7 +450,7 @@ setup_timezone() {
 
     if ! [ -f /usr/share/lib/zoneinfo/${def_tz} ]; then
 	# specfied timezone is invalid, reverting to UTC
-	log_error "specified timezone ${def_tz} not installed or invalid, reverting to UTC"
+	log_msg "specified timezone ${def_tz} not installed or invalid, reverting to UTC"
 	def_tz="UTC"
 	rt=42
 
@@ -477,7 +477,7 @@ setup_locale() {
 
     if ! locale -a | egrep "^${def_locale}$$" 2>&1 >/dev/null ; then
 	# selected locale is not installed - fall back to C and log error
-	log_error "specified locale ${def_locale} not installed, reverting to C"
+	log_msg "specified locale ${def_locale} not installed, reverting to C"
 	def_local="C"
 	rt=42
     fi
@@ -549,7 +549,8 @@ then
     if [ "x$terminal" != "x" ]
     then
         cp /etc/profile /tmp/profile
-        cat /tmp/profile | gsed "/export LOGNAME PATH/a TERM=$terminal" > /etc/profile
+        cat /tmp/profile | /usr/bin/sed "/export LOGNAME PATH/a\
+TERM=$terminal" > /etc/profile
         rm /tmp/profile
     fi
     if [ "x$system_locale" != "x" ]
