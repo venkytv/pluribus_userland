@@ -173,6 +173,7 @@ reset_sysding() {
 	SVCCFG_CONFIGD_PATH=/lib/svc/bin/svc.configd \
 	svccfg -s svc:/system/sysding:system setprop \
 	config/finished=false
+  /bin/true # Above failure is not critical
 }
 
 reset_vfstab() {
