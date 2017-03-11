@@ -22,6 +22,12 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
 license $(COMPONENT_LICENSE_FILE) license='$(COMPONENT_LICENSE)'
 
+depend fmri=library/database/gdbm type=require
+depend fmri=system/library type=require
+depend fmri=system/library/g++-4-runtime type=require
+depend fmri=system/library/math type=require
+depend fmri=metapackages/perl-modules-core type=require
+
 # This link is always mediated.
 link path=usr/bin/perl target=../perl5/$(MACH64)/5.22/bin/perl \
     mediator=perl mediator-version=5.22

@@ -22,34 +22,23 @@
 #
 include ../../../make-rules/shared-macros.mk
 
-COMPONENT_NAME=         pkg
-COMPONENT_VERSION=      1.5.11
-COMPONENT_SUMMARY=      The Image packaging system.
-COMPONENT_DESCRIPTION=  The Image packaging system is the software delivery system on OpenSolaris and derivatives.
-COMPONENT_PROJECT_URL=  http://www.illumos.org/
-COMPONENT_CLASSIFICATION=       System/Core
+COMPONENT_NAME=         lsbgcc
+COMPONENT_VERSION=      1.0
+COMPONENT_SUMMARY=      GCC 4.4.7 Linux Cross compiler for Solaris/Illumos
+COMPONENT_PROJECT_URL=  http://www.pluribusnetworks.com/
 COMPONENT_SRC=          $(COMPONENT_NAME)-$(COMPONENT_VERSION)
-
-#
-# Do not pull in sfw-incorporation and system/library dependencies
-#
-DEFAULT_DEPEND = 0
+COMPONENT_ARCHIVE_URL=  $(URL_PREFIX)/$(COMPONENT_NAME)-$(COMPONENT_VERSION).tar.bz2
 
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/ips.mk
 
 build:
 	mkdir -p $(COMPONENT_SRC)
+	(cd $(COMPONENT_SRC); bunzip2 -c ../$(COMPONENT_NAME)-$(COMPONENT_VERSION).tar.bz2 | tar xpf -)
 
 install:
-	mkdir -p $(PROTO_DIR)
-	cp -rp pkg_src/src/* $(PROTO_DIR)
-	mkdir -p $(PROTO_DIR)/usr/lib/python2.6
-	cp -rp $(PROTO_DIR)/usr/lib/python2.7/* $(PROTO_DIR)/usr/lib/python2.6/
-	mv $(PROTO_DIR)/usr/lib/python2.6/vendor-packages/pkg-0.1-py2.7.egg-info \
-	   $(PROTO_DIR)/usr/lib/python2.6/vendor-packages/pkg-0.1-py2.6.egg-info
-	$(PYTHON.2.7.32) -m compileall $(PROTO_DIR)/usr/lib/python2.7/vendor-packages
-	$(PYTHON.2.6.32) -m compileall $(PROTO_DIR)/usr/lib/python2.6/vendor-packages
+	mkdir -p build/prototype/$(MACH)
+	cp -rp $(COMPONENT_SRC)/* build/prototype/$(MACH)
 
 test:
 

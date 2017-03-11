@@ -38,6 +38,8 @@ depend fmri=system/library/math type=require
 depend fmri=system/library type=require
 depend fmri=library/security/openssl type=require
 depend fmri=SUNWcs type=require
+depend fmri=driver/ipmi type=require
+
 dir group=bin mode=0755 owner=root path=lib
 dir group=bin mode=0755 owner=root path=lib/svc
 dir group=bin mode=0755 owner=root path=lib/svc/method

@@ -35,6 +35,10 @@ set name=org.opensolaris.arc-caseid \
     value=PSARC/2000/488
 set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
+depend fmri=library/ncurses type=require
+depend fmri=runtime/perl-522 type=require
+depend fmri=shell/bash type=require
+
 file texinfo-update.xml path=lib/svc/manifest/application/texinfo-update.xml
 file svc-texinfo-update path=lib/svc/method/svc-texinfo-update disable_fmri=svc:/application/texinfo-update:default
 file path=usr/bin/info

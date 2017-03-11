@@ -128,8 +128,6 @@ install:	$(INSTALL_32_and_64)
 
 test:		$(TEST_32_and_64)
 
-REQUIRED_PACKAGES += database/berkeleydb-5
-REQUIRED_PACKAGES += library/database/gdbm
-REQUIRED_PACKAGES += system/library
-REQUIRED_PACKAGES += system/library/g++-4-runtime
-REQUIRED_PACKAGES += system/library/math
+#
+# Needs berkeledb-5 during build
+#
