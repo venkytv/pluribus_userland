@@ -21,7 +21,6 @@
 # Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
 #
 include ../../../make-rules/shared-macros.mk
-include ../illumos-gate/version-macros.mk
 
 #
 # Note this perl is 32-bit only.
@@ -31,22 +30,21 @@ include ../illumos-gate/version-macros.mk
 # a new version of perl it probably isn't installed so shared-macros.mk
 # can't call it.
 
-COMPONENT_NAME=         ibd
-COMPONENT_VERSION=      3.0
-COMPONENT_SUMMARY=      Obsolete Sun IP over InfiniBand
-COMPONENT_PROJECT_URL=  http://www.illumos.org/
-COMPONENT_CLASSIFICATION=       Development/Perl
+COMPONENT_NAME=         name
+COMPONENT_VERSION=      1.0
+COMPONENT_SUMMARY=      Enable Pluribus OS Name in /etc/release file
+COMPONENT_PROJECT_URL=  http://www.pluribusnetworks.com/
+COMPONENT_CLASSIFICATION=       System/Core
 COMPONENT_SRC=          $(COMPONENT_NAME)-$(COMPONENT_VERSION)
 
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/ips.mk
 
-PKG_MACROS += -DNVOS_MINOR=$(NVOS_MINOR)
-PKG_MACROS += -DPKG_BUILD_VERSION=$(PKG_BUILD_VERSION)
-
 build:
 	pwd
 	mkdir -p $(COMPONENT_SRC)
+	mkdir -p $(BUILD_DIR)/prototype/$(MACH)/etc
+	echo "Pluribus Networks Netvisor(TM) OS" > $(BUILD_DIR)/prototype/$(MACH)/etc/release
 
 install:
 

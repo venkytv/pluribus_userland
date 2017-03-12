@@ -1,0 +1,61 @@
+set name=pkg.fmri value=pkg:/release/name@0.5.11,$(BUILD_VERSION)
+set name=pkg.description value="$(COMPONENT_SUMMARY)"
+set name=description value="$(COMPONENT_SUMMARY)"
+set name=info.classification value=$(COMPONENT_CLASSIFICATION)
+set name=pkg.summary value="$(COMPONENT_SUMMARY)"
+
+dir group=sys mode=0755 owner=root path=etc
+file group=sys mode=0444 owner=root path=etc/release
+legacy arch=i386 category=system desc="$(COMPONENT_SUMMARY)" hotline="Please contact your local service provider" name="$(COMPONENT_SUMMARY)" pkg=SUNWsolnm variant.arch=i386 vendor="Pluribus Networks" version=11,REV=2010.03.01.11.19
+
+#
+# Additional dependencies to pull in desired packages.
+# This is ugly but needed when upgrading off old OpenSolaris
+#
+depend fmri=driver/crypto/dprov type=require
+depend fmri=driver/ipmi type=require
+depend fmri=driver/misc/virtio type=require
+depend fmri=driver/network/axf type=require
+depend fmri=driver/network/cxgbe type=require
+depend fmri=driver/network/efe type=require
+depend fmri=driver/network/eoib type=require
+depend fmri=driver/network/ibp type=require
+depend fmri=driver/network/i40e type=require
+depend fmri=driver/network/ofk type=require
+depend fmri=driver/network/rdsv3 type=require
+depend fmri=driver/network/sfxge type=require
+depend fmri=driver/network/udmf type=require
+depend fmri=driver/network/upf type=require
+depend fmri=driver/network/urf type=require
+depend fmri=driver/network/vioif type=require
+depend fmri=driver/network/vmxnet3s type=require
+depend fmri=driver/storage/nvme type=require
+depend fmri=driver/storage/pvscsi type=require
+depend fmri=driver/storage/skd type=require
+depend fmri=driver/storage/vioblk type=require
+depend fmri=library/apr-util/dbd-sqlite type=require
+depend fmri=library/gnu-libiconv type=require
+depend fmri=library/icu type=require
+depend fmri=library/idnconv type=require
+depend fmri=library/libedit type=require
+depend fmri=library/libee type=require
+depend fmri=library/libestr type=require
+depend fmri=library/lzo type=require
+depend fmri=library/openldap type=require
+depend fmri=library/pth type=require
+depend fmri=library/security/gpgme type=require
+depend fmri=all-locales type=require
+depend fmri=service/network/dns/bind type=require
+depend fmri=shell/gnu-getopt type=require
+depend fmri=system/install/configuration type=require
+depend fmri=system/ioport-utilities type=require
+depend fmri=system/library/bison-runtime type=require
+depend fmri=system/library/boot-management type=require
+depend fmri=system/library/iconv/unicode type=require
+depend fmri=system/library/iconv/utf-8/manual type=require
+depend fmri=system/library/iconv/xsh4/latin type=require
+depend fmri=system/mozilla-nss type=require
+depend fmri=text/asciidoc type=require
+depend fmri=text/auto_ef type=require
+depend fmri=text/intltool type=require
+depend fmri=text/itstool type=require

@@ -13,7 +13,8 @@
 # Copyright (c) 2013 Alexander Pyhalov
 #
 
-set name=pkg.fmri value=pkg:/driver/network/ibd@$(NVOS_MINOR),$(PKG_BUILD_VERSION)
+set name=pkg.fmri value=pkg:/gnome/gnome-audio@0.5.11,5.11-0.134
+set name=pkg.summary value="Obsolete GNOME audio support framework"
 set name=pkg.obsolete value=true
 
 set name=org.opensolaris.consolidation value=$(CONSOLIDATION)

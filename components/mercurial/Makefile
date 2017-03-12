@@ -20,7 +20,11 @@
 #
 # Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
 #
+
 include ../../make-rules/shared-macros.mk
+
+# Fails to build: not Python 3 ready.
+PYTHON_VERSIONS = 2.7
 
 PATH=/usr/bin:/usr/gnu/bin:/usr/sbin
 
@@ -33,9 +37,6 @@ COMPONENT_ARCHIVE_HASH=	\
     sha256:36e48b59a84ef5a222d06596971e955ac8217e56b076dfb94c8ce5a0c29fd705
 COMPONENT_ARCHIVE_URL=	http://www.selenic.com/mercurial/release/$(COMPONENT_ARCHIVE)
 COMPONENT_BUGDB=	utility/hg
-
-# Fails to build: not Python 3 ready.
-PYTHON_VERSIONS = 2.7
 
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/setup.py.mk

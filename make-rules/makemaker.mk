@@ -50,7 +50,7 @@ PERL_32_BUILD_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH32)-$(v
 PERL_32_INSTALL_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH32)-$(ver)/.installed )
 PERL_32_TEST_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH32)-$(ver)/.tested )
 
-ifeq ($(TARGET_ILLUMOS),true
+ifeq ($(TARGET_ILLUMOS),true)
 PERL_64_BUILD_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH64)-$(ver)/.built )
 PERL_64_INSTALL_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH64)-$(ver)/.installed )
 PERL_64_TEST_FILES:=$(foreach ver, $(PERL_VERSIONS), $(BUILD_DIR)/$(MACH64)-$(ver)/.tested )
@@ -60,7 +60,7 @@ BUILD_32 =	$(PERL_32_BUILD_FILES)
 INSTALL_32 =	$(PERL_32_INSTALL_FILES)
 TEST_32 =	$(PERL_32_TEST_FILES)
 
-ifeq ($(TARGET_ILLUMOS),true
+ifeq ($(TARGET_ILLUMOS),true)
 BUILD_64 =	$(PERL_64_BUILD_FILES)
 INSTALL_64 =	$(PERL_64_INSTALL_FILES)
 TEST_64 =	$(PERL_64_TEST_FILES)

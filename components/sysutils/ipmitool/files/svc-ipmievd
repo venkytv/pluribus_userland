@@ -21,9 +21,9 @@
 #
 #
 # Copyright 2007 Sun Microsystems, Inc.  All rights reserved.
+# Copyright 2016 Alexander Pyhalov
 # Use is subject to license terms.
 #
-#pragma ident	"@(#)svc-ipmievd	1.1	07/01/11 SMI"
 
 # These are the SMF start/stop/restart methods for ipmievd.
 
@@ -44,17 +44,18 @@ if [ $# -eq 0 ]; then
 else
     case "$1" in
 	'start')
-		# ipmievd requires the presence of a BMC character device
-		# to run.  If one is not detected, then disable the service
-		# and exit.
-
-		if [ ! -c /dev/ipmi0 ]; then
-			echo "$0:  No IPMI device found: disabling."
-			/usr/sbin/svcadm disable $SMF_FMRI
-			exit $SMF_EXIT_OK
+		props=`/usr/sbin/svccfg -s svc:/network/ipmievd listprop config/options | \
+		/usr/bin/nawk '{  for (i = 3; i <= NF; i++) printf $i" " }'`
+		props=`echo $props |sed 's/.\(.*\)/\1/'|sed 's/\(.*\)./\1/'`
+		
+		if [ -z "$props" ]; then
+			printf "ipmievd needs to be configured. Set options as ";
+			printf "svccfg -s svc:/network/ipmievd setprop config/options ";
+			printf "'\"-I lanplus -H <IP> -U <USERNAME> -f /etc/ipmievd.passwd\"'\n";
+			exit $SMF_EXIT_ERR_CONFIG
 		fi
 
-		/usr/lib/ipmievd sel
+		/usr/lib/ipmievd $props sel
 		[ $? -ne 0 ] && exit 1
 		;;
 

@@ -101,6 +101,7 @@ PKG_MACROS +=		-D COMPONENT_NAME=$(COMPONENT_NAME)
 PKG_MACROS +=		-D COMPONENT_FMRI=$(COMPONENT_FMRI)
 PKG_MACROS +=		-D COMPONENT_LICENSE="$(COMPONENT_LICENSE)"
 PKG_MACROS +=		-D COMPONENT_LICENSE_FILE=$(COMPONENT_LICENSE_FILE)
+PKG_MACROS +=		-D COMPONENT_CLASSIFICATION=$(COMPONENT_CLASSIFICATION)
 PKG_MACROS +=		-D TPNO=$(TPNO)
 PKG_MACROS +=		-D USERLAND_GIT_REMOTE=$(USERLAND_GIT_REMOTE)
 PKG_MACROS +=		-D USERLAND_GIT_BRANCH=$(USERLAND_GIT_BRANCH)
@@ -211,14 +212,15 @@ $(foreach ver,$(PYTHON_VERSIONS),$(eval $(call python-manifest-rule,$(ver))))
 # appropriate conditional dependencies into a python library's
 # runtime-version-generic package to pull in the version-specific bits when the
 # corresponding version of python is on the system.
-$(WS_TOP)/transforms/mkgeneric-python: $(WS_TOP)/make-rules/shared-macros.mk
+$(BUILD_DIR)/transforms/mkgeneric-python: $(WS_TOP)/make-rules/shared-macros.mk
+	$(MKDIR) -p $(BUILD_DIR)/transforms
 	$(RM) $@
 	$(foreach ver,$(shell echo $(PYTHON_VERSIONS) | tr -d .), \
 		$(call mkgeneric,runtime/python,$(ver)))
 
 # Build Python version-wrapping manifests from the generic version.
-$(MANIFEST_BASE)-%.p5m: %-PYVER.p5m $(WS_TOP)/transforms/mkgeneric-python
-	$(PKGMOGRIFY) -D PYV=### $(WS_TOP)/transforms/mkgeneric-python \
+$(MANIFEST_BASE)-%.p5m: %-PYVER.p5m $(BUILD_DIR)/transforms/mkgeneric-python
+	$(PKGMOGRIFY) -D PYV=### $(BUILD_DIR)/transforms/mkgeneric-python \
 		$(WS_TOP)/transforms/mkgeneric $< > $@
 	if [ -f $*-GENFRAG.p5m ]; then cat $*-GENFRAG.p5m >> $@; fi
 
