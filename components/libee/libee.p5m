@@ -35,6 +35,9 @@ set name=info.upstream value="Rainer Gerhards <rgerhards@hq.adiscon.com>"
 set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
 set name=org.opensolaris.arc-caseid value=PSARC/2012/197
 set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+
+depend fmri=library/libestr type=require
+
 file path=usr/include/libee/apache.h
 file path=usr/include/libee/ctx.h
 file path=usr/include/libee/event.h

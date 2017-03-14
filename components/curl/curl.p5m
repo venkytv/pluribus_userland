@@ -632,3 +632,4 @@ file path=usr/share/man/man3/libcurl.3
 license curl.license license=CURL
 
 depend type=require fmri=library/security/openssl
+depend type=require fmri=system/library/mozilla-nss

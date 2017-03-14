@@ -36,6 +36,12 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
 license apr-util.license license="Apache v2.0"
 
+depend fmri=SUNWcs type=require
+depend fmri=library/expat type=require
+depend fmri=system/library type=require
+depend fmri=library/apr type=require
+depend fmri=library/apr-util/dbd-sqlite type=require
+
 link path=usr/apr-util/lib/libaprutil-1.so.0 target=libaprutil-1.so.0.5.3
 link path=usr/apr-util/lib/$(MACH64)/libaprutil-1.so target=libaprutil-1.so.0.5.3
 link path=usr/apr-util/lib/$(MACH64)/libaprutil-1.so.0 target=libaprutil-1.so.0.5.3

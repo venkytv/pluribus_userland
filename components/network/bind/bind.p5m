@@ -44,6 +44,9 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 # This package name has known conflicts with other packages in the WOS
 set pkg.linted.pkglint.manifest004=true
 
+depend fmri=service/security/kerberos-5 type=require
+depend fmri=SUNWcs type=require
+depend fmri=system/library type=require
 
 # Solaris additions
 file Solaris/server.xml path=lib/svc/manifest/network/dns/server.xml

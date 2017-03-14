@@ -162,8 +162,10 @@ class CfgFile(object):
         if orig:
             lineno = orig[2]
             del self.index[tuple(orig[1][k] for k in self.keys)]
-        else:
+        elif self.index:
             lineno = max((self.index[k][2] for k in self.index)) + 1
+        else:
+            lineno = 0
         line = self.valuetostr(template)
         self.index[tuple(template[k] for k in self.keys)] = \
             (line, template, lineno)

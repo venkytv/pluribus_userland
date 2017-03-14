@@ -34,6 +34,8 @@ set name=org.opensolaris.arc-caseid \
     value=LSARC/2008/541
 set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
+depend fmri=database/mariadb-55/library type=require
+
 file path=usr/apr-util/lib/apr-util-1/apr_dbd_mysql-1.so
 file path=usr/apr-util/lib/$(MACH64)/apr-util-1/apr_dbd_mysql-1.so
 link path=usr/apr-util/lib/apr-util-1/apr_dbd_mysql.so target=apr_dbd_mysql-1.so 

@@ -39,6 +39,15 @@ set name=org.opensolaris.arc-caseid \
 # This package name has known conflicts with other packages in the WOS
 set pkg.linted.pkglint.manifest004=true
 
+depend fmri=library/json-c type=require
+depend fmri=library/libedit type=require
+depend fmri=library/libxml2 type=require
+depend fmri=library/security/openssl type=require
+depend fmri=service/network/dns/bind type=require
+depend fmri=service/security/kerberos-5 type=require
+depend fmri=SUNWcs type=require
+depend fmri=system/library type=require
+depend fmri=system/library/security/gss type=require
 
 license bind.license license="ISC license"
 

@@ -21,6 +21,9 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
 license COPYING license='LGPLv2.1'
 
+depend fmri=library/security/gpgme type=require
+depend fmri=library/glib2 type=require
+
 <transform file path=usr/share/gtk-doc/.* ->  default facet.doc true>
 <transform file path=usr/share/gtk-doc/html/.* ->  default facet.doc.html true>
 

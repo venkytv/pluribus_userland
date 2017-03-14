@@ -1,4 +1,4 @@
-set name=pkg.fmri value=pkg:/consolidation/ips/ips-incorporation@0.5.11,5.11-0.144
+set name=pkg.fmri value=pkg:/consolidation/ips/ips-incorporation@1.5.11,5.11-0.144
 set name=pkg.depend.install-hold value=core-os.ips
 set name=description value="ips consolidation incorporation"
 set name=pkg.summary value="ips consolidation incorporation"
@@ -8,7 +8,7 @@ depend fmri=library/python-2/ply@3.1-0.134 type=incorporate
 depend fmri=library/python-2/cherrypy@3.1.2-0.134 type=incorporate
 depend fmri=library/python-2/mako@0.2.2-0.134 type=incorporate
 depend fmri=SUNWipkg-um@0.5.11-0.133 type=incorporate
-depend fmri=package/pkg@0.5.11-0.144 type=incorporate
+depend fmri=package/pkg@1.5.11-0.144 type=incorporate
 depend fmri=system/desktop/ldtp@1.7.1-0.134 type=incorporate
 depend fmri=system/trusted/trusted-nonglobal@0.5.11-0.134 type=incorporate
 depend fmri=system/zones/brand/ipkg@0.5.11-0.144 type=incorporate

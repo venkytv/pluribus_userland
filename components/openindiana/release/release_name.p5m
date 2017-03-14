@@ -33,19 +33,12 @@ depend fmri=driver/storage/nvme type=require
 depend fmri=driver/storage/pvscsi type=require
 depend fmri=driver/storage/skd type=require
 depend fmri=driver/storage/vioblk type=require
-depend fmri=library/apr-util/dbd-sqlite type=require
 depend fmri=library/gnu-libiconv type=require
 depend fmri=library/icu type=require
 depend fmri=library/idnconv type=require
 depend fmri=library/libedit type=require
-depend fmri=library/libee type=require
-depend fmri=library/libestr type=require
 depend fmri=library/lzo type=require
-depend fmri=library/openldap type=require
-depend fmri=library/pth type=require
-depend fmri=library/security/gpgme type=require
 depend fmri=all-locales type=require
-depend fmri=service/network/dns/bind type=require
 depend fmri=shell/gnu-getopt type=require
 depend fmri=system/install/configuration type=require
 depend fmri=system/ioport-utilities type=require
@@ -54,7 +47,6 @@ depend fmri=system/library/boot-management type=require
 depend fmri=system/library/iconv/unicode type=require
 depend fmri=system/library/iconv/utf-8/manual type=require
 depend fmri=system/library/iconv/xsh4/latin type=require
-depend fmri=system/mozilla-nss type=require
 depend fmri=text/asciidoc type=require
 depend fmri=text/auto_ef type=require
 depend fmri=text/intltool type=require

@@ -39,6 +39,17 @@ set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
 
 license LICENSE license="Apache v2.0"
 
+depend fmri=library/apr type=require
+depend fmri=compress/xz type=require
+depend fmri=library/expat type=require
+depend fmri=system/library type=require
+depend fmri=library/libxml2 type=require
+depend fmri=library/apr-util type=require
+depend fmri=library/openldap type=require
+depend fmri=library/security/openssl type=require
+depend fmri=system/library/security/gss type=require
+depend fmri=developer/versioning/subversion type=require
+
 dir path=var/apache2/2.2/libexec/$(MACH64)
 dir path=var/apache2/2.2/logs mode=0700
 dir path=var/apache2/2.2/proxy group=webservd owner=webservd
