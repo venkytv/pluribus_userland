@@ -14,7 +14,6 @@ legacy arch=i386 category=system desc="$(COMPONENT_SUMMARY)" hotline="Please con
 #
 depend fmri=driver/crypto/dprov type=require
 depend fmri=driver/ipmi type=require
-depend fmri=driver/misc/virtio type=require
 depend fmri=driver/network/axf type=require
 depend fmri=driver/network/cxgbe type=require
 depend fmri=driver/network/efe type=require
@@ -27,12 +26,8 @@ depend fmri=driver/network/sfxge type=require
 depend fmri=driver/network/udmf type=require
 depend fmri=driver/network/upf type=require
 depend fmri=driver/network/urf type=require
-depend fmri=driver/network/vioif type=require
-depend fmri=driver/network/vmxnet3s type=require
 depend fmri=driver/storage/nvme type=require
-depend fmri=driver/storage/pvscsi type=require
 depend fmri=driver/storage/skd type=require
-depend fmri=driver/storage/vioblk type=require
 depend fmri=library/gnu-libiconv type=require
 depend fmri=library/icu type=require
 depend fmri=library/idnconv type=require
