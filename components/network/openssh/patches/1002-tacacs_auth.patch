@@ -42,8 +42,8 @@
  }
  
  #ifdef BSD_AUTH
---- openssh-7.2p2/auth2.c.~4~	Wed Feb 22 20:48:51 2017
-+++ openssh-7.2p2/auth2.c	Wed Feb 22 20:57:22 2017
+--- openssh-7.2p2/auth2.c.~4~	Fri Mar 24 09:05:39 2017
++++ openssh-7.2p2/auth2.c	Fri Mar 24 09:09:14 2017
 @@ -324,9 +324,22 @@
          debug3("%s: entering", __func__);
  #endif
@@ -70,9 +70,96 @@
  	if (authenticated && authctxt->postponed)
  		fatal("INTERNAL ERROR: authenticated and postponed");
  
---- openssh-7.2p2/auth-pam.c.~5~	Wed Feb 22 21:01:00 2017
-+++ openssh-7.2p2/auth-pam.c	Wed Feb 22 21:08:10 2017
-@@ -900,8 +900,7 @@
+--- openssh-7.2p2/auth2-chall.c.~1~	Fri Mar 24 09:20:56 2017
++++ openssh-7.2p2/auth2-chall.c	Fri Mar 24 09:21:15 2017
+@@ -326,7 +326,13 @@
+ 	switch (res) {
+ 	case 0:
+ 		/* Success! */
+-		authenticated = authctxt->valid ? 1 : 0;
++		/*
++		 * Force authenticatd even for apparently invalid user to allow
++		 * usage with TACACS+.
++		 *
++		 * authenticated = authctxt->valid ? 1 : 0;
++		 */
++		authenticated = 1;
+ 		break;
+ 	case 1:
+ 		/* Authentication needs further interaction */
+--- openssh-7.2p2/monitor.c.~4~	Fri Mar 24 09:21:09 2017
++++ openssh-7.2p2/monitor.c	Fri Mar 24 09:21:19 2017
+@@ -466,8 +466,15 @@
+ 		hostbased_cuser = NULL;
+ 	}
+ #endif
+-	if (!authctxt->valid)
+-		fatal("%s: authenticated invalid user", __func__);
++
++	/*
++	 * Forget about apparent lack of validity. We can't probe user
++	 * existence when interacting with TACACS+. If it authenticates
++	 * then that's the final word.
++	 *
++	 *if (!authctxt->valid)
++	 *	fatal("%s: authenticated invalid user", __func__);
++	 */
+ 	if (strcmp(auth_method, "unknown") == 0)
+ 		fatal("%s: authentication method name unknown", __func__);
+ 
+--- openssh-7.2p2/auth-pam.c.~5~	Fri Mar 24 09:21:50 2017
++++ openssh-7.2p2/auth-pam.c	Fri Mar 24 10:45:28 2017
+@@ -451,8 +451,7 @@
+ 			    strerror(errno));
+ 
+ 	if (sshpam_authctxt != NULL) {
+-		setproctitle("%s [pam]",
+-		    sshpam_authctxt->valid ? pam_user : "unknown");
++		setproctitle("%s [pam]", pam_user);
+ 	}
+ #endif
+ 
+@@ -468,8 +467,38 @@
+ 	if (sshpam_err != PAM_SUCCESS)
+ 		goto auth_fail;
+ 	sshpam_err = pam_authenticate(sshpam_handle, flags);
+-	if (sshpam_err != PAM_SUCCESS)
++
++	if (sshpam_err == PAM_SUCCESS) {
++		struct passwd *fpw, *pw;
++
++		debug("PAM: password authentication accepted for %.100s",
++		    sshpam_authctxt->user);
++
++		/*
++		 * At this point re-probe user that was not found earlier
++		 * if this is fakepw().
++		 */
++		fpw = fakepw();
++		pw = sshpam_authctxt->pw;
++		if (!sshpam_authctxt->valid &&
++		    strcmp(pw->pw_name, fpw->pw_name) == 0 &&
++		    strcmp(pw->pw_gecos, fpw->pw_gecos) == 0 &&
++		    strcmp(pw->pw_shell, fpw->pw_shell) == 0) {
++			debug("Re-attempting user check");
++			pw = getpwnamallow(sshpam_authctxt->user);
++			if (pw == NULL) {
++				debug("User %s not found even after PAM auth.",
++				    sshpam_authctxt->user);
++				return 0;
++			} else {
++				sshpam_authctxt->pw = pw;
++				sshpam_authctxt->valid = 1;
++				debug("User record valid after authentication");
++			}
++		}
++	} else {
+ 		goto auth_fail;
++	}
+ 
+ 	if (compat20) {
+ 		if (!do_pam_account()) {
+@@ -900,8 +929,7 @@
  				**prompts = NULL;
  			}
  			if (type == PAM_SUCCESS) {
@@ -82,7 +169,7 @@
  				    options.permit_root_login != PERMIT_YES))
  					fatal("Internal error: PAM auth "
  					    "succeeded when it should have "
-@@ -951,9 +950,8 @@
+@@ -951,9 +979,8 @@
  		return (-1);
  	}
  	buffer_init(&buffer);
@@ -94,7 +181,7 @@
  		buffer_put_cstring(&buffer, *resp);
  	else
  		buffer_put_cstring(&buffer, badpw);
-@@ -1357,8 +1355,8 @@
+@@ -1357,8 +1384,8 @@
  	 * by PermitRootLogin, use an invalid password to prevent leaking
  	 * information via timing (eg if the PAM config has a delay on fail).
  	 */
@@ -105,7 +192,7 @@
  		sshpam_password = badpw;
  
  #ifdef PAM_BUGFIX
-@@ -1388,9 +1386,34 @@
+@@ -1388,9 +1415,34 @@
  	}
  #endif
  
@@ -141,3 +228,20 @@
  		return 1;
  	} else {
  		debug("PAM: password authentication failed for %.100s: %s",
+--- openssh-7.2p2/sshd.c.~7~	Fri Mar 24 12:08:52 2017
++++ openssh-7.2p2/sshd.c	Fri Mar 24 12:10:23 2017
+@@ -2280,6 +2280,14 @@
+ 		startup_pipe = -1;
+ 	}
+ 
++	/*
++	 * Re-probe user record.
++	 */
++        if (!authctxt->valid) {
++                authctxt->pw = getpwnamallow(authctxt->user);
++                authctxt->valid = 1;
++        }
++
+ #ifdef SSH_AUDIT_EVENTS
+ #ifndef	USE_SOLARIS_AUDIT
+ 	audit_event(SSH_AUTH_SUCCESS);
