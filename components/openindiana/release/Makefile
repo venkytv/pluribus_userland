@@ -21,6 +21,7 @@
 # Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
 #
 include ../../../make-rules/shared-macros.mk
+include ../illumos-gate/version-macros.mk
 
 #
 # Note this perl is 32-bit only.
@@ -45,6 +46,7 @@ build:
 	mkdir -p $(COMPONENT_SRC)
 	mkdir -p $(BUILD_DIR)/prototype/$(MACH)/etc
 	echo "Pluribus Networks Netvisor(TM) OS" > $(BUILD_DIR)/prototype/$(MACH)/etc/release
+	echo "Illumos BUILD $(ONNV_BUILDNUM)" > $(BUILD_DIR)/prototype/$(MACH)/etc/illumos-release
 
 install:
 

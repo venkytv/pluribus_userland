@@ -18,48 +18,45 @@
 #
 # CDDL HEADER END
 #
-
-#
 # Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
 #
+include ../../../make-rules/shared-macros.mk
 
-include ../../make-rules/shared-macros.mk
-
-COMPONENT_NAME=		pv
-COMPONENT_VERSION=	1.6.0
+COMPONENT_NAME=		top
+COMPONENT_VERSION=	3.8beta1
+COMPONENT_REVISION=	2
+COMPONENT_PROJECT_URL=	http://www.unixtop.org/
 COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
-COMPONENT_FMRI=		shell/pipe-viewer
-COMPONENT_SUMMARY=	'Pipe Viewer'
-COMPONENT_LICENSE=	Artistic
-COMPONENT_LICENSE_FILE=	pv.license
-COMPONENT_PROJECT_URL=	http://www.ivarch.com/programs/pv.shtml
-COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.bz2
+COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
 COMPONENT_ARCHIVE_HASH=	\
-    sha256:0ece824e0da27b384d11d1de371f20cafac465e038041adab57fcf4b5036ef8d
-COMPONENT_ARCHIVE_URL=	http://www.ivarch.com/programs/sources/$(COMPONENT_ARCHIVE)
-COMPONENT_BUGDB=	utility/pv
+    sha256:6c683e9cb092078cbc1b2233b15fa8bd3d35a00874e6ba27cf54370d1d64fa4d
+COMPONENT_ARCHIVE_URL=	$(COMPONENT_PROJECT_URL)dist/$(COMPONENT_ARCHIVE)
+COMPONENT_BUGDB=	utility/top
 
 include $(WS_MAKE_RULES)/prep.mk
 include $(WS_MAKE_RULES)/configure.mk
 include $(WS_MAKE_RULES)/ips.mk
 
-PKG_PROTO_DIRS += $(BUILD_DIR_32)
+IPS_COMPONENT_VERSION =	3.8
 
-COMPONENT_PRE_CONFIGURE_ACTION = \
-    ($(CLONEY) $(SOURCE_DIR) $(@D))
+CONFIGURE_BINDIR.64=$(CONFIGURE_PREFIX)/bin
 
-COMPONENT_TEST_ENV +=  PATH="$(GNUBIN):$(PATH)"
+# viewpathing support in the build is broken in the 'install' target
+COMPONENT_PRE_CONFIGURE_ACTION = ($(CLONEY) $(SOURCE_DIR) $(@D))
 
 ASLR_MODE = $(ASLR_ENABLE)
-LD_Z_IGNORE =
+
+# top build process is producing both 32-bit and 64-bit in one Makefile target.
+# It will receive LDFLAGS and cause 64-bit object files linked with 32-bit argument.
+# Till top fixes that mess, unseting LDFLAGS is the hacky workaround.
+LDFLAGS=
 
 # common targets
-build:		$(BUILD_32)
+build:		$(BUILD_64)
 
-install:	$(INSTALL_32)
+install:	$(INSTALL_64)
 
-test:		$(TEST_32)
+test:		$(NO_TESTS)
 
-BUILD_PKG_DEPENDENCIES =	$(BUILD_TOOLS)
-
-include $(WS_MAKE_RULES)/depend.mk
+REQUIRED_PACKAGES += system/library
+REQUIRED_PACKAGES += system/library/math

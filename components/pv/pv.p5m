@@ -41,3 +41,5 @@ file path=usr/share/locale/pt/LC_MESSAGES/pv.mo
 dir  path=usr/share/man
 dir  path=usr/share/man/man1
 file doc/quickref.1 path=usr/share/man/man1/pv.1
+
+depend fmri=system/library type=require
