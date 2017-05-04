@@ -10,7 +10,7 @@
 #
 
 #
-# Copyright (c) 2013 Alexander Pyhalov
+# Copyright 2017 Pluribus Networks Inc.
 #
 
 set name=pkg.fmri value=pkg:/driver/i86pc/bmc@$(NVOS_MINOR),$(PKG_BUILD_VERSION)

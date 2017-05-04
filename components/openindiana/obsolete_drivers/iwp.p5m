@@ -13,7 +13,7 @@
 # Copyright 2017 Pluribus Networks Inc.
 #
 
-set name=pkg.fmri value=pkg:/driver/network/ibd@$(NVOS_MINOR),$(PKG_BUILD_VERSION)
+set name=pkg.fmri value=pkg:/driver/network/iwp@$(NVOS_MINOR),$(PKG_BUILD_VERSION)
 set name=pkg.obsolete value=true
 
 set name=org.opensolaris.consolidation value=$(CONSOLIDATION)

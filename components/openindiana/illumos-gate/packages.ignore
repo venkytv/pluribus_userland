@@ -6,3 +6,4 @@
 /^pkg:\/service\/network\/ssh@.*/d
 /^pkg:\/service\/network\/ssh-common@.*/d
 /^pkg:\/consolidation\/osnet\/osnet-incorporation@.*/d
+/^pkg:\/driver\/network\/iwp@.*/d

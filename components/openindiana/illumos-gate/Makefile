@@ -11,6 +11,7 @@
 #
 # Copyright 2013, Andrzej Szeszo
 # Copyright 2016, Adam Stevko
+# Copyright 2017, Pluribus Networks Inc.
 #
 
 include ../../../make-rules/shared-macros.mk
@@ -554,6 +555,7 @@ $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
 	echo "<transform depend fmri=pkg:/system/storage/mms@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/storage/parted@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/zones/brand/lx@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	echo "<transform depend fmri=pkg:/driver/network/iwp@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 
 	# TODO: Needed for MTA replacement
 	# No MTA replacement at present
@@ -584,6 +586,10 @@ $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
 	  echo "<transform file path=$$i -> set action.hash $$i >" >> \
 	    $(BUILD_DIR)/$(MACH)/publish.transforms; \
 	  echo "<transform file path=$$i -> delete chash .* >" >> \
+	    $(BUILD_DIR)/$(MACH)/publish.transforms; \
+	  echo "<transform file path=$$i -> delete pkg.csize .* >" >> \
+	    $(BUILD_DIR)/$(MACH)/publish.transforms; \
+	  echo "<transform file path=$$i -> delete pkg.size .* >" >> \
 	    $(BUILD_DIR)/$(MACH)/publish.transforms; \
 	done
 

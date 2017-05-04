@@ -5,6 +5,7 @@ set name=info.classification value=$(COMPONENT_CLASSIFICATION)
 set name=pkg.summary value="$(COMPONENT_SUMMARY)"
 
 depend fmri=service/management/sysding type=require
+depend fmri=library/python-2/pyyaml type=require
 
 #dir group=bin mode=0755 owner=root path=.
 dir group=bin mode=0755 owner=root path=etc/brand
