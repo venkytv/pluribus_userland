@@ -19,13 +19,11 @@
 #
 # CDDL HEADER END
 #
-
-#
-# Copyright 2008 Sun Microsystems, Inc.  All rights reserved.
-# Use is subject to license terms.
+# Copyright (c) 2008, 2015, Oracle and/or its affiliates. All rights reserved.
 #
 
 import os
+import platform
 import types
 import subprocess
 import pkg.portable
@@ -37,6 +35,7 @@ except ImportError:
         pass
 
 __all__ = ["Popen", "PIPE", "STDOUT", "call"]
+py_version = '.'.join(platform.python_version_tuple()[:2])
 
 def call(*args, **kwargs):
         return Popen(*args, **kwargs).wait()
@@ -45,25 +44,20 @@ PIPE = subprocess.PIPE
 STDOUT = subprocess.STDOUT
 
 class Popen(subprocess.Popen):
-        def __init__(self, args, bufsize=128 * 1024, executable=None,
-            stdin=None, stdout=None, stderr=None, preexec_fn=None,
-            close_fds=False, shell=False, cwd=None, env=None,
-            universal_newlines=False, startupinfo=None, creationflags=0):
-
-                subprocess.Popen.__init__(self, args, bufsize, executable,
-                    stdin, stdout, stderr, preexec_fn, close_fds, shell, cwd,
-                    env, universal_newlines, startupinfo, creationflags)
-
+        def __init__(self, args, **kwargs):
+                if "bufsize" not in kwargs:
+                        kwargs["bufsize"] = 128 * 1024
+                subprocess.Popen.__init__(self, args, **kwargs)
 
         if "posix_spawnp" in globals():
 
-                def _execute_child(self, args, executable, preexec_fn,
+                def __execute(self, args, executable, preexec_fn,
                     close_fds, cwd, env, universal_newlines, startupinfo,
                     creationflags, shell, p2cread, p2cwrite, c2pread, c2pwrite,
-                    errread, errwrite):
+                    errread, errwrite, to_close=None):
                         """Execute program using posix spawn"""
 
-                        if isinstance(args, types.StringTypes):
+                        if isinstance(args, (str, bytes)):
                                 args = [args]
 
                         if shell:
@@ -87,6 +81,14 @@ class Popen(subprocess.Popen):
                                 sfa.add_close(errread)
                                 closed_fds.append(errread)
 
+                        # When duping fds, if there arises a situation
+                        # where one of the fds is either 0, 1 or 2, it
+                        # is possible that it is overwritten (#12607).
+                        if c2pwrite == 0:
+                                c2pwrite = os.dup(c2pwrite)
+                        if errwrite == 0 or errwrite == 1:
+                                errwrite = os.dup(errwrite)
+
                         # Dup fds for child
                         if p2cread:
                                 sfa.add_dup2(p2cread, 0)
@@ -107,7 +109,14 @@ class Popen(subprocess.Popen):
                                 sfa.add_close(errwrite)
                                 closed_fds.append(errwrite)
 
-                        # Close all other fds, if asked for.
+                        if cwd != None:
+                                os.chdir(cwd)
+
+                        if preexec_fn:
+                                preexec_fn()
+
+                        # Close all other fds, if asked for - after
+                        # preexec_fn(), which may open FDs.
                         if close_fds:
                                 #
                                 # This is a bit tricky.  Due to a sad
@@ -130,15 +139,9 @@ class Popen(subprocess.Popen):
                                                 sfa.add_close(i)
                                                 closed_fds.append(i)
                                         except OSError:
-                                                pass 
+                                                pass
                                 closefrom = max([3, max(closed_fds) + 1])
                                 sfa.add_close_childfds(closefrom)
-
-                        if cwd != None:
-                                os.chdir(cwd)
-
-                        if preexec_fn:
-                                apply(preexec_fn)
 
                         if env is None:
                                 # If caller didn't pass us an environment in
@@ -151,7 +154,7 @@ class Popen(subprocess.Popen):
                                 # the "env" argument.  Allow that here by doing
                                 # the explicit conversion to a list.
                                 env = [
-                                    "%s=%s" % (k, v)
+                                    "{0}={1}".format(k, v)
                                     for k, v in env.iteritems()
                                 ]
 
@@ -159,10 +162,40 @@ class Popen(subprocess.Popen):
 
                         self._child_created = True
 
+                        if to_close:
+                                def _close_in_parent(fd):
+                                        os.close(fd)
+                                        to_close.remove(fd)
+                        else:
+                                def _close_in_parent(fd):
+                                        os.close(fd)
+
                         # Parent
                         if p2cread and p2cwrite:
-                                os.close(p2cread)
+                                _close_in_parent(p2cread)
                         if c2pwrite and c2pread:
-                                os.close(c2pwrite)
+                                _close_in_parent(c2pwrite)
                         if errwrite and errread:
-                                os.close(errwrite)
+                                _close_in_parent(errwrite)
+
+                if  py_version == '2.6':
+                        def _execute_child(self, args, executable, preexec_fn,
+                            close_fds, cwd, env, universal_newlines, startupinfo,
+                            creationflags, shell, p2cread, p2cwrite, c2pread,
+                            c2pwrite, errread, errwrite):
+                                self.__execute(args, executable, preexec_fn,
+                                    close_fds, cwd, env, universal_newlines,
+                                    startupinfo, creationflags, shell, p2cread,
+                                    p2cwrite, c2pread, c2pwrite, errread, errwrite)
+
+                elif py_version == '2.7':
+                        def _execute_child(self, args, executable, preexec_fn,
+                            close_fds, cwd, env, universal_newlines, startupinfo,
+                            creationflags, shell, to_close, p2cread, p2cwrite,
+                            c2pread, c2pwrite, errread, errwrite):
+                                self.__execute(args, executable, preexec_fn,
+                                    close_fds, cwd, env, universal_newlines,
+                                    startupinfo, creationflags, shell, p2cread,
+                                    p2cwrite, c2pread, c2pwrite, errread,
+                                    errwrite, to_close=to_close)
+
